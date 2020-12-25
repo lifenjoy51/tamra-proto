@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="3" height="6" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="7">
+ <tileset firstgid="1" name="port-tileset" tilewidth="16" tileheight="16" tilecount="4" columns="2">
+  <image source="port-tileset.png" width="32" height="32"/>
+  <tile id="0" type="1"/>
+  <tile id="1" type="2"/>
+  <tile id="2" type="3"/>
+  <tile id="3" type="4"/>
+ </tileset>
+ <layer id="1" name="terrain" width="3" height="6">
+  <data encoding="csv">
+2,2,2,
+2,2,2,
+2,2,2,
+2,2,2,
+1,1,1,
+1,1,1
+</data>
+ </layer>
+ <layer id="2" name="site" width="3" height="6">
+  <data encoding="csv">
+0,0,0,
+0,0,0,
+4,0,0,
+0,0,4,
+0,3,0,
+0,0,0
+</data>
+ </layer>
+ <objectgroup id="3" name="area" visible="0">
+  <object id="2" name="area" x="1.85418" y="13.3479">
+   <polygon points="0.637373,-6.55356 44.3844,-7.20592 44.5002,48.5353 28.3651,48.4385 27.3338,64.744 17.2105,65.1206 17.4407,48.1887 0.521487,48.3584"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="4" name="buildings" visible="0">
+  <object id="3" name="dock" x="24.336" y="73.1241">
+   <point/>
+  </object>
+  <object id="4" name="market" x="7.53259" y="39.7489">
+   <point/>
+  </object>
+  <object id="6" name="shipyard" x="40.0966" y="56.7262">
+   <point/>
+  </object>
+ </objectgroup>
+</map>

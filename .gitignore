@@ -1,0 +1,11 @@
+/.idea
+/.gradle
+*.iml
+build/
+/.gradle/
+/.idea/
+/build/
+/gradle/
+/tokens/StoredCredential
+/resource-downloader/src/main/resources/credentials.json
+/resource-downloader/build/
