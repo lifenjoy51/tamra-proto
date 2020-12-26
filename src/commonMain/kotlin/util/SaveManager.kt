@@ -1,5 +1,6 @@
 package util
 
+import com.soywiz.kds.associateByInt
 import com.soywiz.korio.serialization.json.Json
 import domain.*
 
@@ -11,7 +12,7 @@ class SaveManager {
             savedGame["ships"] = context.ships.map {
                 mapOf(
                     "type" to it.type.name,
-                    "cargos" to it.cargos.joinToString(),
+                    "cargos" to it.cargos.values.joinToString(),
                     "speed" to it.speed,
                     "name" to it.name
                 )
@@ -35,7 +36,7 @@ class SaveManager {
                     cargos.toString()
                         .split(",")
                         .map { p -> ProductId.valueOf(p.trim()) }
-                        .toMutableList(),
+                        .associateByInt { index, _ -> index },
                     speed.toString().toDouble(),
                     name.toString()
                 )

@@ -22,8 +22,6 @@ enum class ProductType {
 }
 
 enum class ProductId {
-    EMPTY,  // 빈공간을 의미.
-
     GODUNGU,
     GALCHI,
     DOLDOM,

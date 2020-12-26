@@ -9,3 +9,4 @@ build/
 /tokens/StoredCredential
 /resource-downloader/src/main/resources/credentials.json
 /resource-downloader/build/
+.DS_Store

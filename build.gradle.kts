@@ -32,6 +32,6 @@ korge {
   //targetJs()
 
   //targetDesktop()
-  //targetIos()
+  // targetIos()
   //targetAndroidIndirect() // targetAndroidDirect()
 }

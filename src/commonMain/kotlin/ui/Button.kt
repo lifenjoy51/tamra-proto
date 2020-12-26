@@ -2,41 +2,43 @@ package ui
 
 import com.soywiz.korge.ui.UIButton
 import com.soywiz.korge.ui.UISkin
-import com.soywiz.korge.ui.UITextButton
 import com.soywiz.korge.ui.uiObservable
-import com.soywiz.korge.view.ViewLeaf
-import com.soywiz.korge.view.centerOn
-import com.soywiz.korge.view.setText
-import com.soywiz.korge.view.text
+import com.soywiz.korge.view.*
 import com.soywiz.korim.bitmap.*
 import com.soywiz.korim.color.Colors
-import com.soywiz.korim.font.Font
 import com.soywiz.korim.paint.ColorPaint
 import com.soywiz.korma.geom.degrees
 import com.soywiz.korma.geom.vector.*
+
+
+inline fun Container.tamraButton(
+    width: Double = 80.0,
+    height: Double = 40.0,
+    text: String = "Button",
+    textSize: Double = 20.0,
+    block: @ViewDslMarker TamraButton.() -> Unit = {}
+): TamraButton = TamraButton(width = width, height = height, text = text, textSize = textSize).addTo(this).apply(block)
 
 open class TamraButton(
     width: Double = 80.0,
     height: Double = 40.0,
     text: String = "Button",
     skin: UISkin = TamraUISkin,
-    textFont: Font = TamraFont.get(),
     textSize: Double = 20.0
 ) : UIButton(width, height, skin), ViewLeaf {
 
     var text by uiObservable(text) { updateText(); }
     var textSize by uiObservable(textSize) { updateText() }
     var textColor by uiObservable(Colors.WHITE) { updateText() }
-    var textFont by uiObservable(textFont) { updateText(); }
 
-    private val textView = text(text, textSize)
+    private val textView = tamraText(text, textSize)
 
     init {
         updateText()
     }
 
     private fun updateText() {
-        textView.font = textFont
+        textView.font = TamraFont.get()
         textView.textSize = textSize
         textView.color = textColor
         textView.centerOn(root)

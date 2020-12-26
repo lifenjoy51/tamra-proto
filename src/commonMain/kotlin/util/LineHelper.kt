@@ -10,9 +10,9 @@ class LineHelper {
         // point q lies on line segment 'pr'
         private fun onSegment(p: XY, q: XY, r: XY): Boolean {
             return q.x <= MathEx.max(p.x, r.x) &&
-                    q.x >= MathEx.min(p.x, r.x) &&
-                    q.y <= MathEx.max(p.y, r.y) &&
-                    q.y >= MathEx.min(p.y, r.y)
+                q.x >= MathEx.min(p.x, r.x) &&
+                q.y <= MathEx.max(p.y, r.y) &&
+                q.y >= MathEx.min(p.y, r.y)
         }
 
         // To find orientation of ordered triplet (p, q, r).
@@ -24,7 +24,7 @@ class LineHelper {
             // See https://www.geeksforgeeks.org/orientation-3-ordered-points/
             // for details of below formula.
             val v = (q.y - p.y) * (r.x - q.x) -
-                    (q.x - p.x) * (r.y - q.y)
+                (q.x - p.x) * (r.y - q.y)
             if (v == 0.0) return 0 // colinear
             return if (v > 0) 1 else 2 // clock or counterclock wise
         }

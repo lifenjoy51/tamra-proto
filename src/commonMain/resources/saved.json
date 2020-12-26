@@ -1,1 +1,1 @@
-{"ships":[{"type":"DOTBAE","cargos":"EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY","speed":5.0,"name":"돛단배"}],"port":"JEJU","location.x":132.79999999999995,"location.y":84.39999999999995}
+{"ships":[{"type":"CHOMASUN","cargos":"SSAL, SALT","speed":5.0,"name":"첫배"},{"type":"DOTBAE","cargos":"MOSI","speed":4.0,"name":"짐배"}],"port":"SUGUIPO","location.x":68.00000000000021,"location.y":158.80000000000032}

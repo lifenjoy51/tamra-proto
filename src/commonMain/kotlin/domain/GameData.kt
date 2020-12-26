@@ -1,5 +1,8 @@
 package domain
 
+import com.soywiz.kds.IntMap
+import com.soywiz.korim.bitmap.Bitmap
+
 class GameData(
     val ports: Map<PortId, Port>,
     val products: Map<ProductId, Product>,
@@ -15,7 +18,7 @@ class GameData(
 
 class Ship(
     val type: ShipType,
-    val cargos: MutableList<ProductId>,
+    val cargos: IntMap<ProductId>,
     val speed: Double,
     val name: String,
 )
@@ -23,6 +26,7 @@ class Ship(
 class ShipBlueprint(
     val type: ShipType,
     val typeName: String,
+    val imgSprite: Bitmap,
     val cargoSize: Int,
     val speed: Int,
     val price: Int
@@ -30,16 +34,12 @@ class ShipBlueprint(
     fun makeShip(name: String): Ship {
         return Ship(
             type = type,
-            cargos = MutableList(cargoSize) { ProductId.EMPTY },
+            cargos = IntMap(cargoSize, 1.0),
             speed = speed.toDouble(),
             name = name
         )
     }
 }
-
-class CargoSpace(
-    val size: Int
-)
 
 class Port(
     val id: PortId,

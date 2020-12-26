@@ -2,10 +2,8 @@ package domain
 
 import util.LineHelper
 
-class GameMap(
-    private val tileSize: Int,
-    private val movableArea: List<List<Pair<XY, XY>>>
-) {
+abstract class GameMap {
+    abstract val movableArea: List<List<Pair<XY, XY>>>
 
     fun isMovable(xy: XY): Boolean {
         val base = (xy to XY(0.0, xy.y))

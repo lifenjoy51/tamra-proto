@@ -2,6 +2,7 @@ import com.soywiz.korge.Korge
 import com.soywiz.korge.scene.Module
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korim.font.readTtfFont
+import com.soywiz.korim.format.readBitmap
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
@@ -9,7 +10,7 @@ import com.soywiz.korma.geom.SizeInt
 import domain.*
 import scene.MainScene
 import scene.PortScene
-import scene.WorldScene
+import scene.world.WorldScene
 import ui.TamraFont
 import util.SaveManager
 import kotlin.reflect.KClass
@@ -22,7 +23,8 @@ const val windowWidth = mainWidth * 4 / 5
 const val windowHeight = mainHeight * 4 / 5
 
 object TamraModule : Module() {
-    override val mainScene: KClass<out Scene> = MainScene::class
+    // override val mainScene: KClass<out Scene> = MainScene::class
+    override val mainScene: KClass<out Scene> = WorldScene::class
     override val size: SizeInt = SizeInt(mainWidth, mainHeight)
 
     override suspend fun AsyncInjector.configure() {
@@ -42,11 +44,12 @@ object TamraModule : Module() {
     }
 
     private suspend fun loadContext(): GameContext {
-        val savedGameJsonString = resourcesVfs["saved.json"]?.readString() ?: ""
+        val savedGameJsonString = resourcesVfs["saved.json"].readString()
         return if (savedGameJsonString.isEmpty()) {
             GameContext(
                 ships = mutableListOf(
-                    GameData.instance.shipBlueprints[ShipType.DOTBAE]!!.makeShip("돛단배")
+                    GameData.instance.shipBlueprints[ShipType.CHOMASUN]!!.makeShip("첫배"),
+                    GameData.instance.shipBlueprints[ShipType.DOTBAE]!!.makeShip("짐배")
                 ),
                 port = PortId.JEJU,
                 location = XY(100.0, 70.0)
@@ -86,16 +89,18 @@ object TamraModule : Module() {
         }
     }
 
-    private fun loadShipBlueprints(data: Map<String, MutableList<Map<String, String>>>): Map<ShipType, ShipBlueprint> {
+    private suspend fun loadShipBlueprints(data: Map<String, MutableList<Map<String, String>>>): Map<ShipType, ShipBlueprint> {
         return data["ships"]!!.associate { shipData ->
             val shipType = ShipType.valueOf(shipData["shipType"]!!)
+            val imgName = shipData["imgName"]!!
+            val imgSprite = resourcesVfs[imgName].readBitmap()
             val shipTypeName = shipData["typeName"]!!
             val cargoSize = shipData["cargoSize"]!!.toInt()
             val speed = shipData["speed"]!!.toInt()
             val price = shipData["price"]!!.toInt()
 
             shipType to ShipBlueprint(
-                shipType, shipTypeName, cargoSize, speed, price
+                shipType, shipTypeName, imgSprite, cargoSize, speed, price
             )
         }
     }

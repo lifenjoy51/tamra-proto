@@ -11,7 +11,8 @@ import com.soywiz.korio.file.std.resourcesVfs
 import domain.GameContext
 import mainHeight
 import mainWidth
-import ui.TamraFont
+import scene.world.WorldScene
+import ui.tamraText
 
 class MainScene(val gameContext: GameContext) : Scene() {
     override suspend fun Container.sceneInit() {
@@ -20,18 +21,18 @@ class MainScene(val gameContext: GameContext) : Scene() {
 
         }
         // title
-        text("탐라", color = Colors.DARKBLUE, textSize = 96.0, font = TamraFont.get()) {
+        tamraText("탐라", color = Colors.DARKBLUE, textSize = 96.0) {
             centerXOnStage()
             positionY(64)
         }
         // logo
         sprite(
-            texture = resourcesVfs["L200.png"].readBitmap()
+                texture = resourcesVfs["L200.png"].readBitmap()
         ) {
             centerOnStage()
         }
         // start
-        text("Touch to Start", textSize = 36.0, color = Colors.DARKBLUE) {
+        tamraText("Touch to Start", textSize = 36.0, color = Colors.DARKBLUE) {
             centerXOnStage()
             positionY(mainHeight * 2 / 3)
             alpha = 0.8

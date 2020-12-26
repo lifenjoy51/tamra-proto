@@ -15,10 +15,11 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import domain.GameContext
-import domain.GameMap
 import domain.XY
 import domain.port.Player
+import domain.port.PortMap
 import domain.port.PortTile
+import scene.world.WorldScene
 import util.SaveManager
 import util.getMovableArea
 import util.getObjectNames
@@ -40,7 +41,6 @@ class PortScene(private val context: GameContext) : Scene() {
             resourcesVfs["saved.json"].writeString(it)
         }
 
-
         val tiledMap = resourcesVfs["port.tmx"].readTiledMap()
         val tileSize = tiledMap.tilewidth
 
@@ -50,7 +50,7 @@ class PortScene(private val context: GameContext) : Scene() {
         val movableArea = tiledMap.getMovableArea()
         val buildings = tiledMap.getObjectNames("buildings")
 
-        val gameMap = GameMap(tiledMap.tileheight, movableArea)
+        val gameMap = PortMap(movableArea, tiledMap.tileheight, emptyMap())
         val player = Player(xy = XY(24.0, 24.0), map = gameMap)
         val viewPlayer = Sprite(resourcesVfs["player.png"].readBitmap()).apply {
             x = player.xy.x
