@@ -8,24 +8,24 @@ import com.soywiz.korge.view.*
 import windowWidth
 
 inline fun Container.uiHorizontalScrollableArea(
-        width: Double = windowWidth.toDouble(),
-        height: Double = 100.0,
-        contentWidth: Double = 512.0,
-        contentHeight: Double = 100.0,
-        buttonSize: Double = 16.0,
-        config: UIHorizontalScrollableArea.() -> Unit = {},
-        block: @ViewDslMarker Container.() -> Unit = {}
+    width: Double = windowWidth.toDouble(),
+    height: Double = 100.0,
+    contentWidth: Double = 512.0,
+    contentHeight: Double = 100.0,
+    buttonSize: Double = 16.0,
+    config: UIHorizontalScrollableArea.() -> Unit = {},
+    block: @ViewDslMarker Container.() -> Unit = {}
 ): UIHorizontalScrollableArea = UIHorizontalScrollableArea(width, height, contentWidth, contentHeight, buttonSize)
     .addTo(this).apply(config).also { block(it.container) }
 
 // @TODO: Optimize this!
 // @TODO: Add an actualContainer = this inside Container
 open class UIHorizontalScrollableArea(
-        width: Double = windowWidth.toDouble(),
-        height: Double = 50.0,
-        contentWidth: Double = 512.0,
-        contentHeight: Double = 50.0,
-        buttonSize: Double = 16.0,
+    width: Double = windowWidth.toDouble(),
+    height: Double = 50.0,
+    contentWidth: Double = 512.0,
+    contentHeight: Double = 50.0,
+    buttonSize: Double = 16.0,
 ) : UIView(width, height) {
 
     var buttonSize by uiObservable(buttonSize) { onSizeChanged() }

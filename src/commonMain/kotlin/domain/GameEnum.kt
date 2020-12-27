@@ -13,6 +13,13 @@ enum class PortId {
     SUNGSANPO
 }
 
+enum class BuildingType {
+    SHIPYARD,
+    MARKET,
+    DOCK
+}
+
+
 enum class ProductType {
     FISH, // 어류
     GRAIN, // 곡물

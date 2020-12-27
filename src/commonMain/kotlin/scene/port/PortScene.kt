@@ -1,4 +1,4 @@
-package scene.world
+package scene.port
 
 import ViewModelProvider
 import com.soywiz.klock.TimeSpan
@@ -6,25 +6,31 @@ import com.soywiz.korev.Key
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addFixedUpdater
+import com.soywiz.korio.file.std.resourcesVfs
 import domain.GameStore
-import scene.port.PortScene
+import scene.world.WorldScene
+import util.SaveManager
 
-class WorldScene(store: GameStore, viewModelProvider: ViewModelProvider) : Scene() {
+class PortScene(private val store: GameStore, viewModelProvider: ViewModelProvider) : Scene() {
 
-    private val worldView = WorldView(
+    private val portView = PortView(
         viewModelProvider
-    ) { sceneContainer.changeTo<PortScene>() }
-    private val vm = viewModelProvider.worldViewModel
+    ) { sceneContainer.changeTo<WorldScene>() }
+    private val vm = viewModelProvider.portViewModel
 
     override suspend fun Container.sceneInit() {
-        // draw ui..
-        worldView.draw(this)
+        // save
+        SaveManager.save(store).let {
+            resourcesVfs["saved.json"].writeString(it)
+        }
+
+        // draw ui
+        portView.draw(this)
 
         // update
         addFixedUpdater(TimeSpan(100.0)) {
             onKeyInput()
         }
-
     }
 
     private fun onKeyInput() {

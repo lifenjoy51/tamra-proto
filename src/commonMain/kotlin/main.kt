@@ -9,8 +9,11 @@ import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.SizeInt
 import domain.*
 import scene.MainScene
-import scene.PortScene
+import scene.port.PortScene
+import scene.port.PortViewModel
+import scene.world.FleetInfoViewModel
 import scene.world.WorldScene
+import scene.world.WorldViewModel
 import ui.TamraFont
 import util.SaveManager
 import kotlin.reflect.KClass
@@ -31,26 +34,43 @@ object TamraModule : Module() {
         // loading..
         loadFont()
         loadGameData()
-        mapInstance(loadContext())
+
+        //
+        val store = loadStore()
+        mapInstance(store)
+
+        val viewModelProvider = initViewModels(store)
+        mapInstance(viewModelProvider)
+
+        //
         mapPrototype { MainScene(get()) }
-        mapPrototype { WorldScene(get()) }
-        mapPrototype { PortScene(get()) }
+        mapPrototype { WorldScene(get(), get()) }
+        mapPrototype { PortScene(get(), get()) }
+    }
+
+    private fun initViewModels(store: GameStore): ViewModelProvider {
+        return ViewModelProvider(
+            WorldViewModel(store),
+            FleetInfoViewModel(store),
+            PortViewModel(store)
+        )
     }
 
     private suspend fun loadFont() {
         // https://software.naver.com/software/summary.nhn?softwareId=GWS_003430&categoryId=I0100000#
         val ttf = resourcesVfs["today.ttf"].readTtfFont()
-        TamraFont.instance = TamraFont(ttf)
+        TamraFont.init(ttf)
     }
 
-    private suspend fun loadContext(): GameContext {
+    private suspend fun loadStore(): GameStore {
         val savedGameJsonString = resourcesVfs["saved.json"].readString()
         return if (savedGameJsonString.isEmpty()) {
-            GameContext(
+            GameStore(
                 ships = mutableListOf(
-                    GameData.instance.shipBlueprints[ShipType.CHOMASUN]!!.makeShip("첫배"),
-                    GameData.instance.shipBlueprints[ShipType.DOTBAE]!!.makeShip("짐배")
+                    GameData.blueprints[ShipType.CHOMASUN]!!.makeShip("첫배"),
+                    GameData.blueprints[ShipType.DOTBAE]!!.makeShip("짐배")
                 ),
+                money = 1000,
                 port = PortId.JEJU,
                 location = XY(100.0, 70.0)
             )
@@ -66,7 +86,7 @@ object TamraModule : Module() {
         val products = loadProducts(data)
         val shipBlueprints = loadShipBlueprints(data)
         val ports = loadPorts(data, products, shipBlueprints)
-        GameData.instance = GameData(
+        GameData.init(
             products = products,
             ports = ports,
             shipBlueprints = shipBlueprints

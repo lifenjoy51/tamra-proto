@@ -1,1 +1,1 @@
-{"ships":[{"type":"CHOMASUN","cargos":"SSAL, SALT","speed":5.0,"name":"첫배"},{"type":"DOTBAE","cargos":"MOSI","speed":4.0,"name":"짐배"}],"port":"SUGUIPO","location.x":68.00000000000021,"location.y":158.80000000000032}
+{"ships":[{"type":"CHOMASUN","cargos":"SSAL, SALT","speed":5.0,"name":"첫배"},{"type":"DOTBAE","cargos":"MOSI","speed":4.0,"name":"짐배"}],"money":1000,"port":"MOSULPO","location.x":71.200000000002,"location.y":153.20000000000041}

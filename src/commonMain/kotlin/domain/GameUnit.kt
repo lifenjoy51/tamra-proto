@@ -6,7 +6,7 @@ abstract class GameUnit {
     abstract var size: XY
     abstract val map: GameMap
 
-    private fun isMovable(xy: XY) = map.isMovable(xy + XY(size.x / 2, size.y / 2))
+    private fun isMovable(xy: XY) = map.isMovable(xy)
 
     fun moveUp() {
         val newXy = XY(xy.x, xy.y - v)

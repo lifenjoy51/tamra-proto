@@ -8,13 +8,13 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.GameContext
+import domain.GameStore
 import mainHeight
 import mainWidth
 import scene.world.WorldScene
 import ui.tamraText
 
-class MainScene(val gameContext: GameContext) : Scene() {
+class MainScene(val store: GameStore) : Scene() {
     override suspend fun Container.sceneInit() {
         // background
         solidRect(mainWidth, mainHeight, Colors.LIGHTBLUE) {
@@ -27,7 +27,7 @@ class MainScene(val gameContext: GameContext) : Scene() {
         }
         // logo
         sprite(
-                texture = resourcesVfs["L200.png"].readBitmap()
+            texture = resourcesVfs["L200.png"].readBitmap()
         ) {
             centerOnStage()
         }

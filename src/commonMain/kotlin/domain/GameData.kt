@@ -3,13 +3,26 @@ package domain
 import com.soywiz.kds.IntMap
 import com.soywiz.korim.bitmap.Bitmap
 
+// static immutable game data object.
 class GameData(
-    val ports: Map<PortId, Port>,
-    val products: Map<ProductId, Product>,
-    val shipBlueprints: Map<ShipType, ShipBlueprint>
+    private val ports: Map<PortId, Port>,
+    private val products: Map<ProductId, Product>,
+    private val shipBlueprints: Map<ShipType, ShipBlueprint>
 ) {
     companion object {
-        lateinit var instance: GameData
+        private lateinit var instance: GameData
+        fun init(
+            ports: Map<PortId, Port>,
+            products: Map<ProductId, Product>,
+            shipBlueprints: Map<ShipType, ShipBlueprint>
+        ) {
+            instance = GameData(
+                products = products,
+                ports = ports,
+                shipBlueprints = shipBlueprints
+            )
+        }
+
         val ports get() = instance.ports
         val products get() = instance.products
         val blueprints get() = instance.shipBlueprints

@@ -41,6 +41,7 @@ open class TamraButton(
         textView.font = TamraFont.get()
         textView.textSize = textSize
         textView.color = textColor
+        // text 변경 시 root가 바뀌어서 원치않게 동작..
         textView.centerOn(root)
         //textView.setTextBounds(Rectangle(0.0, 0.0, width, height))
         textView.setText(text)

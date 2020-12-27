@@ -1,20 +1,19 @@
 package scene.world
 
+import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.*
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.GameContext
 import domain.GameData
 import domain.PortId
-import domain.world.PlayerFleet
 import domain.world.WorldMap
 import mainHeight
 import mainWidth
-import scene.PortScene
 import ui.tamraButton
+import ui.tamraText
 import util.getMovableArea
 import util.getObjectNames
 import windowHeight
@@ -23,16 +22,16 @@ import windowWidth
 const val viewScale = 4.0
 
 class WorldView(
-        private val context: GameContext,
-        private val vm: WorldViewModel,
-        private val worldScene: WorldScene
+    viewModelProvider: ViewModelProvider,
+    private val changePortScene: suspend () -> Unit
 ) {
-    private val fleetInfoView = FleetInfoView(context, FleetInfoViewModel.instance, vm)
+    private val vm: WorldViewModel = viewModelProvider.worldViewModel
+    private val fleetInfoView = FleetInfoView(viewModelProvider.fleetInfoViewModel, vm)
 
     suspend fun draw(container: Container) {
         val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
-        val tileSize = tiledMap.tilewidth
         /*
+        val tileSize = tiledMap.tilewidth
         val tileSet = tiledMap.tilesets.first().data    // 타일셋이 하나일 때.
         val tileTypeMap = tileSet.tiles.associate { (id, type) ->
             // 0은 없음을 나타냄. 그러므로 맵 데이터는 각 id+1.
@@ -45,7 +44,7 @@ class WorldView(
         val portPositions = tiledMap.getObjectNames("ports").mapValues { (k, v) ->
             GameData.ports[PortId.valueOf(v)]
         }
-        val gameMap = WorldMap(tiledMap.getMovableArea(), tiledMap.tileheight, portPositions)
+        val worldMap = WorldMap(tiledMap.getMovableArea(), tiledMap.tileheight, portPositions)
 
         container.apply {
             // TODO change texture..
@@ -58,15 +57,13 @@ class WorldView(
             camera.scale = viewScale
 
             // on update fleet position
-            vm.fleet.observe {
+            vm.playerFleet.observe {
                 // move fleet view
                 viewFleet.x = it.xy.x - viewFleet.width / 2
                 viewFleet.y = it.xy.y - viewFleet.height / 2
                 // centering camera
                 camera.x = (camera.containerRoot.width / 2) - (it.xy.x * viewScale)
                 camera.y = (camera.containerRoot.height / 2) - (it.xy.y * viewScale)
-                // update context location
-                context.location = it.xy
             }
 
             val background = SolidRect(width = mainWidth, height = mainHeight)
@@ -79,26 +76,36 @@ class WorldView(
             }
 
             tamraButton(
-                    text = "항구 들어가기",
-                    width = 140.0
+                text = "항구 들어가기",
+                width = 140.0
             ).apply {
                 alignX(background, 0.98, true)
                 alignY(background, 0.99, true)
                 onClick {
-                    if (context.port != null) {
-                        worldScene.sceneContainer.changeTo<PortScene>()
+                    println("click port ${vm.nearPort.value}")
+                    if (!vm.nearPort.value.isNullOrEmpty()) {
+                        vm.enterPort()
+                        changePortScene.invoke()
                     }
                 }
-                vm.toggleEnterPort.observe {
-                    visible = it
+                vm.nearPort.observe {
+                    visible = !it.isNullOrEmpty()
                 }
             }
 
-            tamraButton(
-                    width = 60.0, height = 40.0, textSize = 20.0,
-                    text = "정보"
+            tamraText(
+                text = "", textSize = 20.0
             ).apply {
-                alignX(background, 0.02, true)
+                alignX(background, 0.06, true)
+                alignY(background, 0.03, true)
+                vm.money.observe { text = it.toString() }
+            }
+
+            tamraButton(
+                width = 60.0, height = 40.0, textSize = 20.0,
+                text = "정보"
+            ).apply {
+                alignX(background, 0.98, true)
                 alignY(background, 0.01, true)
                 onClick {
                     vm.toggleFleetInfo(true)
@@ -107,7 +114,8 @@ class WorldView(
         }
 
         // init vm fleet
-        vm.fleet(PlayerFleet(xy = context.location, map = gameMap))
+        vm.initPlayerFleet(worldMap)
+        vm.initMoney()
     }
 
 }
