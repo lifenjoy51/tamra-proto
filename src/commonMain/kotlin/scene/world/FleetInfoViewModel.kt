@@ -2,8 +2,8 @@ package scene.world
 
 import com.soywiz.korim.bitmap.Bitmap
 import com.soywiz.korim.bitmap.Bitmap32
-import domain.GameStore
 import domain.GameData
+import domain.GameStore
 import domain.Ship
 import ui.LiveData
 
@@ -23,8 +23,8 @@ class FleetInfoViewModel(
         }
         shipName(ship.name)
         shipSpeed(ship.speed.toString())
-        shipCargos(ship.cargos.values.joinToString("\n") {
-            GameData.products[it]!!.name
+        shipCargos(ship.cargos.joinToString("\n") {
+            GameData.products[it.id]!!.name
         })
     }
 

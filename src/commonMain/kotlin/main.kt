@@ -72,12 +72,15 @@ object TamraModule : Module() {
         return if (savedGameJsonString.isEmpty()) {
             GameStore(
                 ships = mutableListOf(
-                    GameData.blueprints[ShipType.CHOMASUN]!!.makeShip("첫배"),
-                    GameData.blueprints[ShipType.DOTBAE]!!.makeShip("짐배")
+                    GameData.blueprints.getValue(ShipType.CHOMASUN).makeShip("첫배"),
+                    GameData.blueprints.getValue(ShipType.DOTBAE).makeShip("짐배")
                 ),
                 money = 1000,
                 port = PortId.JEJU,
-                location = XY(100.0, 70.0)
+                location = XY(100.0, 70.0),
+                marketStates = GameData.ports.flatMap { (k, v) ->
+                    v.market.marketProducts.map { (id, mp) -> (k to id) to mp.marketState }
+                }.associate { it.first to it.second },
             )
         } else {
             SaveManager.load(savedGameJsonString)
@@ -99,11 +102,11 @@ object TamraModule : Module() {
     }
 
     private fun loadProducts(data: Map<String, MutableList<Map<String, String>>>): Map<ProductId, Product> {
-        return data["products"]!!.associate { productData ->
-            val productId = ProductId.valueOf(productData["productId"]!!)
-            val productType = ProductType.valueOf(productData["productType"]!!)
-            val productName = productData["name"]!!
-            val price = productData["price"]!!.toInt()
+        return data.getValue("products").associate { productData ->
+            val productId = ProductId.valueOf(productData.getValue("productId"))
+            val productType = ProductType.valueOf(productData.getValue("productType"))
+            val productName = productData.getValue("name")
+            val price = productData.getValue("price").toInt()
 
             productId to Product(
                 id = productId,
@@ -115,14 +118,14 @@ object TamraModule : Module() {
     }
 
     private suspend fun loadShipBlueprints(data: Map<String, MutableList<Map<String, String>>>): Map<ShipType, ShipBlueprint> {
-        return data["ships"]!!.associate { shipData ->
-            val shipType = ShipType.valueOf(shipData["shipType"]!!)
-            val imgName = shipData["imgName"]!!
+        return data.getValue("ships").associate { shipData ->
+            val shipType = ShipType.valueOf(shipData.getValue("shipType"))
+            val imgName = shipData.getValue("imgName")
             val imgSprite = resourcesVfs[imgName].readBitmap()
-            val shipTypeName = shipData["typeName"]!!
-            val cargoSize = shipData["cargoSize"]!!.toInt()
-            val speed = shipData["speed"]!!.toInt()
-            val price = shipData["price"]!!.toInt()
+            val shipTypeName = shipData.getValue("typeName")
+            val cargoSize = shipData.getValue("cargoSize").toInt()
+            val speed = shipData.getValue("speed").toInt()
+            val price = shipData.getValue("price").toInt()
 
             shipType to ShipBlueprint(
                 shipType, shipTypeName, imgSprite, cargoSize, speed, price
@@ -135,22 +138,34 @@ object TamraModule : Module() {
         allProducts: Map<ProductId, Product>,
         allShips: Map<ShipType, ShipBlueprint>
     ): Map<PortId, Port> {
-        return data["ports"]!!.associate { portData ->
-            val portId = portData["id"]!!
-            val portName = portData["name"]!!
+        return data.getValue("ports").associate { portData ->
+            val portId = portData.getValue("id")
+            val portName = portData.getValue("name")
 
-            val products = data["ports_products"]!!.filter { it["portId"] == portId }.map {
-                val productId = ProductId.valueOf(it["productId"]!!)
-                allProducts[productId]!!
-            }
+            val products = data.getValue("ports_products")
+                .filter { it["portId"] == portId }.associate {
+                    val productId = ProductId.valueOf(it.getValue("productId"))
+                    val marketSize = it.getValue("marketSize").toString().toInt()
+                    val marketPrice = it.getValue("marketPrice").toString().toDouble()
+
+                    productId to MarketProduct(
+                        product = allProducts.getValue(productId),
+                        marketState = MarketState(
+                            marketSize = marketSize,
+                            marketStock = marketSize,
+                            marketPrice = marketPrice
+                        )
+                    )
+                }
             val portMarket = Market(
                 products
             )
 
-            val shipsOnSale = data["ports_ships"]!!.filter { it["portId"] == portId }.map {
-                val shipType = ShipType.valueOf(it["shipType"]!!)
-                allShips[shipType]!!
-            }
+            val shipsOnSale = data.getValue("ports_ships")
+                .filter { it["portId"] == portId }.map {
+                    val shipType = ShipType.valueOf(it.getValue("shipType"))
+                    allShips.getValue(shipType)
+                }
             val portShipYard = ShipYard(
                 shipsOnSale
             )

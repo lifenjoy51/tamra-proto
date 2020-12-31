@@ -1,6 +1,5 @@
 package domain
 
-import com.soywiz.kds.IntMap
 import com.soywiz.korim.bitmap.Bitmap
 
 // static immutable game data object.
@@ -31,7 +30,8 @@ class GameData(
 
 class Ship(
     val type: ShipType,
-    val cargos: IntMap<ProductId>,
+    val cargos: MutableList<PurchasedProduct>,
+    val cargoSize: Int,
     val speed: Double,
     val name: String,
 )
@@ -47,7 +47,8 @@ class ShipBlueprint(
     fun makeShip(name: String): Ship {
         return Ship(
             type = type,
-            cargos = IntMap(cargoSize, 1.0),
+            cargos = mutableListOf(),
+            cargoSize = cargoSize,
             speed = speed.toDouble(),
             name = name
         )
@@ -68,11 +69,27 @@ class Product(
     val price: Int,
 )
 
+data class MarketState(
+    val marketSize: Int,
+    var marketStock: Int,
+    var marketPrice: Double
+)
+
+data class MarketProduct(
+    val product: Product,
+    val marketState: MarketState
+) {
+    val price get() = (product.price * marketState.marketPrice).toInt()
+}
+
+data class PurchasedProduct(
+    val id: ProductId,
+    val price: Int
+)
+
 class Market(
     // 판매상품
-    val saleProducts: List<Product>,
-    // 시세.
-    // val marketPrices: MutableMap<ProductId, Double>,
+    val marketProducts: Map<ProductId, MarketProduct>
 )
 
 class ShipYard(

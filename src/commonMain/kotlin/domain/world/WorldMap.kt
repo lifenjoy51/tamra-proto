@@ -6,7 +6,7 @@ import domain.TXY
 import domain.XY
 
 class WorldMap(
-        override val movableArea: List<List<Pair<XY, XY>>>,
-        val tileSize: Int,
-        val portPositions: Map<TXY, Port?>
+    override val movableArea: List<List<Pair<XY, XY>>>,
+    val tileSize: Int,
+    val portPositions: Map<TXY, Port?>
 ) : GameMap()

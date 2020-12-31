@@ -19,6 +19,7 @@ class TamraFont(
         fun init(font: TtfFont) {
             instance = TamraFont(font)
         }
+
         fun get(): TtfFont = instance.font
     }
 }

@@ -1,6 +1,9 @@
 package scene.world
 
-import domain.*
+import domain.GameStore
+import domain.Port
+import domain.PortId
+import domain.TXY
 import domain.world.PlayerFleet
 import domain.world.WorldMap
 import ui.LiveData
