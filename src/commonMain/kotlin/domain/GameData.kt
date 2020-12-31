@@ -42,7 +42,7 @@ class ShipBlueprint(
     val imgSprite: Bitmap,
     val cargoSize: Int,
     val speed: Int,
-    val price: Int
+    val price: Int,
 ) {
     fun makeShip(name: String): Ship {
         return Ship(
@@ -58,7 +58,7 @@ class Port(
     val id: PortId,
     val name: String,
     val market: Market,
-    val shipYard: ShipYard
+    val shipYard: ShipYard,
 )
 
 class Product(
@@ -69,9 +69,12 @@ class Product(
 )
 
 class Market(
-    val products: List<Product>
+    // 판매상품
+    val saleProducts: List<Product>,
+    // 시세.
+    // val marketPrices: MutableMap<ProductId, Double>,
 )
 
 class ShipYard(
-    val shipsOnSale: List<ShipBlueprint>
+    val shipsOnSale: List<ShipBlueprint>,
 )

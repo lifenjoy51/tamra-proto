@@ -10,7 +10,7 @@ class PortViewModel(
 ) {
     val player: LiveData<Player> = LiveData(null)
     val currentBuilding: LiveData<String> = LiveData(null)
-    lateinit var port: Port
+    val port: LiveData<Port> = LiveData(null)
 
     fun up() {
         player.value?.let {
@@ -40,6 +40,9 @@ class PortViewModel(
         }
     }
 
+    fun init() {
+        port(GameData.ports[store.port]!!)
+    }
 
     fun initPlayer(portMap: PortMap) {
         val dockTxy = portMap.buildingMap.filterValues { it == BuildingType.DOCK }.keys.first()
@@ -66,17 +69,5 @@ class PortViewModel(
 
     fun leavePort() {
         store.port = null
-    }
-
-    fun enterShipyard() {
-        println("조선소!! ${port.shipYard.shipsOnSale}")
-    }
-
-    fun enterMarket() {
-        println("시장!!! ${port.market.products}")
-    }
-
-    fun initPort() {
-        port = GameData.ports[store.port]!!
     }
 }

@@ -11,6 +11,8 @@ import domain.*
 import scene.MainScene
 import scene.port.PortScene
 import scene.port.PortViewModel
+import scene.port.market.MarketScene
+import scene.port.market.MarketViewModel
 import scene.world.FleetInfoViewModel
 import scene.world.WorldScene
 import scene.world.WorldViewModel
@@ -27,7 +29,8 @@ const val windowHeight = mainHeight * 4 / 5
 
 object TamraModule : Module() {
     // override val mainScene: KClass<out Scene> = MainScene::class
-    override val mainScene: KClass<out Scene> = WorldScene::class
+    // override val mainScene: KClass<out Scene> = WorldScene::class
+    override val mainScene: KClass<out Scene> = PortScene::class
     override val size: SizeInt = SizeInt(mainWidth, mainHeight)
 
     override suspend fun AsyncInjector.configure() {
@@ -42,17 +45,19 @@ object TamraModule : Module() {
         val viewModelProvider = initViewModels(store)
         mapInstance(viewModelProvider)
 
-        //
+        // map scenes
         mapPrototype { MainScene(get()) }
         mapPrototype { WorldScene(get(), get()) }
         mapPrototype { PortScene(get(), get()) }
+        mapPrototype { MarketScene(get(), get()) }
     }
 
     private fun initViewModels(store: GameStore): ViewModelProvider {
         return ViewModelProvider(
             WorldViewModel(store),
             FleetInfoViewModel(store),
-            PortViewModel(store)
+            PortViewModel(store),
+            MarketViewModel(store)
         )
     }
 
