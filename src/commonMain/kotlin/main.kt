@@ -146,14 +146,14 @@ object TamraModule : Module() {
                 .filter { it["portId"] == portId }.associate {
                     val productId = ProductId.valueOf(it.getValue("productId"))
                     val marketSize = it.getValue("marketSize").toString().toInt()
-                    val marketPrice = it.getValue("marketPrice").toString().toDouble()
+                    val supplyAndDemand = it.getValue("supplyAndDemand").toString().toInt()
 
                     productId to MarketProduct(
                         product = allProducts.getValue(productId),
                         marketState = MarketState(
                             marketSize = marketSize,
                             marketStock = marketSize,
-                            marketPrice = marketPrice
+                            supplyAndDemand = supplyAndDemand
                         )
                     )
                 }

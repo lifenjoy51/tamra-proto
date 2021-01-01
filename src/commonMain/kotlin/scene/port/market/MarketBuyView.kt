@@ -46,7 +46,7 @@ class MarketBuyView(val vm: MarketViewModel) {
                 contentWidth = mainWidth.toDouble(), contentHeight = mainHeight * 6 / 10.0) {
                 // list?
                 vm.market.observe {
-                    it.marketProducts.values.filter { mp -> mp.marketState.marketSize > 0 }.forEachIndexed { index, marketProduct ->
+                    it.marketProducts.values.filter { mp -> mp.marketState.supplyAndDemand > 0 }.forEachIndexed { index, marketProduct ->
                         val item = fixedSizeContainer(mainWidth, 60) {
                             positionY(index * 60)
                         }
@@ -147,8 +147,8 @@ class MarketBuyItemView(val vm: MarketViewModel) {
                     text = "${marketStock - productCount} / $marketStock"
                 }
             }
-            val marketPricePercent = marketProduct.marketState.marketPrice * 100
-            tamraText(text = "$marketPricePercent%") {
+            val pricePercent = (marketProduct.price * 100 / product.price)
+            tamraText(text = "$pricePercent%") {
                 positionX(margin + 50)
                 positionY(margin + 25)
             }

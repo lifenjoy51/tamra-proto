@@ -72,14 +72,14 @@ class Product(
 data class MarketState(
     val marketSize: Int,
     var marketStock: Int,
-    var marketPrice: Double
+    var supplyAndDemand: Int
 )
 
 data class MarketProduct(
     val product: Product,
     val marketState: MarketState
 ) {
-    val price get() = (product.price * marketState.marketPrice).toInt()
+    val price get() = product.price - (product.price * marketState.supplyAndDemand / marketState.marketSize)
 }
 
 data class PurchasedProduct(

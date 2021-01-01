@@ -26,8 +26,8 @@ class SaveManager {
                 val productId = k.second
                 val marketSize = v.marketSize
                 val marketStock = v.marketStock
-                val marketPrice = v.marketPrice
-                listOf(portId, productId, marketSize, marketStock, marketPrice).joinToString(delimeter)
+                val supplyAndDemand = v.supplyAndDemand
+                listOf(portId, productId, marketSize, marketStock, supplyAndDemand).joinToString(delimeter)
             }
 
             return Json.stringify(savedGame)
@@ -68,9 +68,9 @@ class SaveManager {
                     val productId = ProductId.valueOf(v[1])
                     val marketSize = v[2].toInt()
                     val marketStock = v[3].toInt()
-                    val marketPrice = v[4].toDouble()
+                    val supplyAndDemand = v[4].toInt()
                     (portId to productId) to MarketState(
-                        marketSize = marketSize, marketStock = marketStock, marketPrice = marketPrice
+                        marketSize = marketSize, marketStock = marketStock, supplyAndDemand = supplyAndDemand
                     )
                 }
 
