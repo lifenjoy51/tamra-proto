@@ -3,39 +3,44 @@ package scene.port.market
 import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.fixedSizeContainer
-import com.soywiz.korge.view.positionY
-import com.soywiz.korge.view.solidRect
+import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import defaultMargin
-import domain.GameStore
 import mainHeight
 import mainWidth
 import scene.port.PortScene
 import ui.tamraButton
 import ui.tamraText
 
-class MarketScene(private val store: GameStore, viewModelProvider: ViewModelProvider) : Scene() {
+class MarketScene(viewModelProvider: ViewModelProvider) : Scene() {
 
-    private val vm = viewModelProvider.marketViewModel
-    private val buyView = MarketBuyView(vm) { sceneContainer.changeTo<PortScene>() }
-    private val sellView = MarketSellView(vm) { sceneContainer.changeTo<PortScene>() }
+    private val headerVm = viewModelProvider.headerViewModel
+
+    private val buyVm = viewModelProvider.marketBuyViewModel
+    private val buyView = MarketBuyView(buyVm) { sceneContainer.changeTo<PortScene>() }
+
+    private val sellVm = viewModelProvider.marketSellViewModel
+    private val sellView = MarketSellView(sellVm) { sceneContainer.changeTo<PortScene>() }
 
     override suspend fun Container.sceneInit() {
-        val background = solidRect(width = mainWidth, height = mainHeight)
+        // clear vm
+        headerVm.clear()
+
         // draw ui..
-        val buyArea = fixedSizeContainer(mainWidth, mainHeight * 6 / 10) {
+        val background = solidRect(width = mainWidth, height = mainHeight)
+        val area = fixedSizeContainer(mainWidth, mainHeight * 6 / 10) {
             positionY(mainHeight * 4 / 10)
         }
-        buyView.draw(buyArea)
 
         tamraText(text = "", color = Colors.BLACK) {
-            vm.money.observe { text = it.toString() }
+            headerVm.money.observe { text = it.toString() }
         }
 
         tamraText("시장", color = Colors.BLACK, hc = background) {
-            positionY(defaultMargin)
+            headerVm.menu.observe {
+                text = "시장/$it"
+                alignX(background, 0.5, true)
+            }
         }
 
         tamraButton(text = "X", textSize = 10.0, width = 20.0, height = 20.0, px = mainWidth - 25, py = defaultMargin / 2) {
@@ -43,20 +48,31 @@ class MarketScene(private val store: GameStore, viewModelProvider: ViewModelProv
         }
 
         tamraButton(text = "구매", width = mainWidth / 2.0, px = 0, py = 30) {
-            onClick {
-                println("buy")
-            }
+            onClick { initBuyArea(area) }
         }
 
         tamraButton(text = "판매", width = mainWidth / 2.0, px = mainWidth / 2, py = 30) {
-            onClick {
-                println("sell")
-            }
+            onClick { initSellArea(area) }
         }
 
         // init vm
-        vm.init()
+        headerVm.init()
+        initBuyArea(area)
+    }
+
+    private fun initBuyArea(area: FixedSizeContainer) {
+        buyVm.clear()
+        area.removeChildren()
+        buyView.draw(area)
+        buyVm.init()
+        headerVm.menu("구매")
+    }
+
+    private fun initSellArea(area: FixedSizeContainer) {
+        sellVm.clear()
+        area.removeChildren()
+        sellView.draw(area)
+        sellVm.init()
+        headerVm.menu("판매")
     }
 }
-
-class MarketSellView(val vm: MarketViewModel, val changePortScene: suspend () -> PortScene)

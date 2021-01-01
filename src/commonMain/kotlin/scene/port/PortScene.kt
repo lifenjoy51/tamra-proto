@@ -9,16 +9,14 @@ import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addFixedUpdater
 import com.soywiz.korio.file.std.resourcesVfs
 import domain.BuildingType
-import domain.GameStore
 import domain.port.PortMap
 import scene.port.market.MarketScene
 import scene.port.shipyard.ShipyardScene
 import scene.world.WorldScene
-import util.SaveManager
 import util.getMovableArea
 import util.getObjectNames
 
-class PortScene(private val store: GameStore, viewModelProvider: ViewModelProvider) : Scene() {
+class PortScene(viewModelProvider: ViewModelProvider) : Scene() {
 
     private val portView = PortView(
         viewModelProvider,
@@ -39,9 +37,7 @@ class PortScene(private val store: GameStore, viewModelProvider: ViewModelProvid
         val portMap = PortMap(movableArea, tiledMap.tileheight, buildings)
 
         // save
-        SaveManager.save(store).let {
-            resourcesVfs["saved.json"].writeString(it)
-        }
+        vm.save()
 
         // draw ui
         portView.draw(this, tiledMap)

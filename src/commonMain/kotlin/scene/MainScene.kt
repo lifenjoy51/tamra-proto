@@ -8,13 +8,12 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.GameStore
 import mainHeight
 import mainWidth
 import scene.world.WorldScene
 import ui.tamraText
 
-class MainScene(val store: GameStore) : Scene() {
+class MainScene : Scene() {
     override suspend fun Container.sceneInit() {
         // background
         solidRect(mainWidth, mainHeight, Colors.LIGHTBLUE) {}

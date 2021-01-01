@@ -11,4 +11,8 @@ class LiveData<T>(var value: T?) {
     fun observe(block: (T) -> Unit) {
         callback.add(block)
     }
+
+    fun clear() {
+        callback.removeAll { true }
+    }
 }

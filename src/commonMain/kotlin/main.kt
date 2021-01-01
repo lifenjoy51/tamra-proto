@@ -8,11 +8,13 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.SizeInt
 import domain.*
+import scene.HeaderViewModel
 import scene.MainScene
 import scene.port.PortScene
 import scene.port.PortViewModel
+import scene.port.market.MarketBuyViewModel
 import scene.port.market.MarketScene
-import scene.port.market.MarketViewModel
+import scene.port.market.MarketSellViewModel
 import scene.world.FleetInfoViewModel
 import scene.world.WorldScene
 import scene.world.WorldViewModel
@@ -51,18 +53,20 @@ object TamraModule : Module() {
         mapInstance(viewModelProvider)
 
         // map scenes
-        mapPrototype { MainScene(get()) }
-        mapPrototype { WorldScene(get(), get()) }
-        mapPrototype { PortScene(get(), get()) }
-        mapPrototype { MarketScene(get(), get()) }
+        mapPrototype { MainScene() }
+        mapPrototype { WorldScene(get()) }
+        mapPrototype { PortScene(get()) }
+        mapPrototype { MarketScene(get()) }
     }
 
     private fun initViewModels(store: GameStore): ViewModelProvider {
         return ViewModelProvider(
+            HeaderViewModel(store),
             WorldViewModel(store),
             FleetInfoViewModel(store),
             PortViewModel(store),
-            MarketViewModel(store)
+            MarketBuyViewModel(store),
+            MarketSellViewModel(store)
         )
     }
 

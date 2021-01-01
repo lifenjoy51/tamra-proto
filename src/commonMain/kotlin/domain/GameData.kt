@@ -87,6 +87,12 @@ data class PurchasedProduct(
     val price: Int
 )
 
+data class GroupedPurchasedProduct(
+    val product: Product,
+    val averagePrice: Int,
+    val count: Int
+)
+
 class Market(
     // 판매상품
     val marketProducts: Map<ProductId, MarketProduct>

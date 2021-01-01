@@ -6,10 +6,9 @@ import com.soywiz.korev.Key
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addFixedUpdater
-import domain.GameStore
 import scene.port.PortScene
 
-class WorldScene(store: GameStore, viewModelProvider: ViewModelProvider) : Scene() {
+class WorldScene(viewModelProvider: ViewModelProvider) : Scene() {
 
     private val worldView = WorldView(
         viewModelProvider
