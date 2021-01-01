@@ -12,6 +12,7 @@ import domain.BuildingType
 import domain.GameStore
 import domain.port.PortMap
 import scene.port.market.MarketScene
+import scene.port.shipyard.ShipyardScene
 import scene.world.WorldScene
 import util.SaveManager
 import util.getMovableArea
@@ -22,7 +23,8 @@ class PortScene(private val store: GameStore, viewModelProvider: ViewModelProvid
     private val portView = PortView(
         viewModelProvider,
         { sceneContainer.changeTo<WorldScene>() },
-        { sceneContainer.changeTo<MarketScene>() }
+        { sceneContainer.changeTo<MarketScene>() },
+        { sceneContainer.changeTo<ShipyardScene>() },
     )
     private val vm = viewModelProvider.portViewModel
 

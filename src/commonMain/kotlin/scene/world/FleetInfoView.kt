@@ -1,8 +1,6 @@
 package scene.world
 
 import com.soywiz.korge.input.onClick
-import com.soywiz.korge.input.onOut
-import com.soywiz.korge.input.onOver
 import com.soywiz.korge.view.*
 import com.soywiz.korim.bitmap.Bitmap1
 import com.soywiz.korim.bitmap.slice
@@ -10,8 +8,11 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korim.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.rect
+import defaultMargin
 import mainHeight
 import mainWidth
+import ui.tamraButton
+import ui.tamraImage
 import ui.tamraText
 import ui.uiHorizontalScrollableArea
 import windowHeight
@@ -23,86 +24,57 @@ class FleetInfoView(
 ) {
     fun draw(container: Container) {
         container.apply {
-            val layer = this
             visible = false
-            val back = solidRect(windowWidth, windowHeight, color = RGBA(0, 187, 255, 240)) {
+
+            // 배경
+            solidRect(windowWidth, windowHeight, color = RGBA(0, 187, 255, 240)) {
                 centerOnStage()
             }
+            // 테두리
             sgraphics {
                 stroke(Colors.DIMGREY, StrokeInfo(thickness = 2.0)) {
                     rect((mainWidth - windowWidth) / 2.0, (mainHeight - windowHeight) / 2.0, windowWidth.toDouble(), windowHeight.toDouble())
                 }
             }
 
-            tamraText("X", color = Colors.BLACK, textSize = 24.0) {
-                alignX(back, 0.98, true)
-                alignY(back, 0.02, true)
-                alpha = 0.7
-                onOut { this.alpha = 0.7 }
-                onOver { this.alpha = 1.0 }
-                onClick {
-                    worldVm.toggleFleetInfo(false)
-                }
+            tamraButton(text = "X", textSize = 10.0, width = 20.0, height = 20.0, px = mainWidth - 55, py = 65) {
+                onClick { worldVm.toggleFleetInfo(false) }
             }
 
-            image(texture = Bitmap1(0, 0)) {
-                positionX(55)
-                positionY(100)
-                vm.shipImage.observe {
-                    bitmapSrc = it.slice()
-                }
+            tamraImage(texture = Bitmap1(0, 0), px = 55, py = 100) {
+                vm.shipImage.observe { bitmapSrc = it.slice() }
             }
 
-            tamraText("") {
-                positionX(55)
-                positionY(160)
+            tamraText("", px = 55, py = 160) {
                 vm.shipName.observe { text = it }
             }
 
-            tamraText("") {
-                positionX(55)
-                positionY(190)
+            tamraText("", px = 55, py = 190) {
                 vm.shipSpeed.observe { text = it }
             }
 
-            tamraText("") {
-                positionX(55)
-                positionY(220)
+            tamraText("", px = 55, py = 220) {
                 vm.shipTypeName.observe { text = it }
             }
 
-            tamraText("") {
-                positionX(mainWidth / 2)
-                positionY(100)
+            tamraText("", px = mainWidth / 2, py = 100) {
                 vm.shipCargos.observe { text = it }
             }
 
             val size = 10
             val cellWidth = windowWidth / 3.0
-            uiHorizontalScrollableArea(contentWidth = cellWidth * size) {
+            uiHorizontalScrollableArea(contentWidth = cellWidth * size, height = 70.0) {
                 this.parent?.apply {
                     positionX((mainWidth - windowWidth) / 2)
-                    positionY(windowHeight + mainHeight / 10 - height)
+                    positionY(windowHeight + mainHeight / 10 - height + defaultMargin)
                 }
 
                 vm.playerShips.observe {
                     it.forEachIndexed { i, ship ->
                         // ship info cell.
-                        fixedSizeContainer(cellWidth, height) {
-                            val cellContainer = this
-                            positionX(i * cellWidth)
-                            centerYOn(cellContainer)
-                            solidRect(cellWidth * 0.9, height * 0.9, color = Colors.CORAL) {
-                                centerOn(cellContainer)
-                            }
-                            tamraText(ship.name) {
-                                centerOn(cellContainer)
-                            }
-                            onClick {
-                                vm.selectShip(ship)
-                            }
+                        tamraButton(text = ship.name, px = (i * cellWidth).toInt()) {
+                            onClick { vm.selectShip(ship) }
                         }
-
                     }
                 }
             }

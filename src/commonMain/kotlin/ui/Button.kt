@@ -1,5 +1,7 @@
 package ui
 
+import com.soywiz.korge.input.onOut
+import com.soywiz.korge.input.onOver
 import com.soywiz.korge.ui.UIButton
 import com.soywiz.korge.ui.UISkin
 import com.soywiz.korge.ui.uiObservable
@@ -9,6 +11,7 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.paint.ColorPaint
 import com.soywiz.korma.geom.degrees
 import com.soywiz.korma.geom.vector.*
+import defaultMargin
 
 
 inline fun Container.tamraButton(
@@ -16,8 +19,20 @@ inline fun Container.tamraButton(
     height: Double = 40.0,
     text: String = "Button",
     textSize: Double = 20.0,
+    px: Int = defaultMargin,
+    py: Int = defaultMargin,
+    vc: Container? = null,  // 컨테이너 기준 수직 중앙정렬.
     block: @ViewDslMarker TamraButton.() -> Unit = {}
-): TamraButton = TamraButton(width = width, height = height, text = text, textSize = textSize).addTo(this).apply(block)
+): TamraButton = TamraButton(width = width, height = height, text = text, textSize = textSize).apply {
+    positionX(px)
+    positionY(py)
+    if (vc != null) {
+        alignY(vc, 0.5, true)
+    }
+    alpha = 1.0
+    onOut { this.alpha = 1.0 }
+    onOver { this.alpha = 0.7 }
+}.addTo(this).apply(block)
 
 open class TamraButton(
     width: Double = 80.0,

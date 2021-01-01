@@ -7,6 +7,7 @@ import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.*
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
+import defaultMargin
 import domain.GameData
 import domain.PortId
 import domain.world.WorldMap
@@ -53,8 +54,8 @@ class WorldView(
                 tiledMapView(tiledMap) {
                     addChild(viewFleet)
                 }
+                scale = viewScale
             }
-            camera.scale = viewScale
 
             // on update fleet position
             vm.playerFleet.observe {
@@ -75,41 +76,22 @@ class WorldView(
                 layerFleetInfo.visible = it
             }
 
-            tamraButton(
-                text = "항구 들어가기",
-                width = 140.0
-            ).apply {
-                alignX(background, 0.98, true)
-                alignY(background, 0.99, true)
+            tamraButton(text = "항구 들어가기", width = 140.0, px = mainWidth - 150, py = mainHeight - 50) {
                 onClick {
-                    println("click port ${vm.nearPort.value}")
                     if (!vm.nearPort.value.isNullOrEmpty()) {
                         vm.enterPort()
                         changePortScene.invoke()
                     }
                 }
-                vm.nearPort.observe {
-                    visible = !it.isNullOrEmpty()
-                }
+                vm.nearPort.observe { visible = it.isNotEmpty() }
             }
 
-            tamraText(
-                text = "", textSize = 20.0
-            ).apply {
-                alignX(background, 0.06, true)
-                alignY(background, 0.03, true)
+            tamraText(text = "", textSize = 20.0) {
                 vm.money.observe { text = it.toString() }
             }
 
-            tamraButton(
-                width = 60.0, height = 40.0, textSize = 20.0,
-                text = "정보"
-            ).apply {
-                alignX(background, 0.98, true)
-                alignY(background, 0.01, true)
-                onClick {
-                    vm.toggleFleetInfo(true)
-                }
+            tamraButton(width = 60.0, height = 40.0, textSize = 20.0, text = "정보", px = mainWidth - 60 - defaultMargin) {
+                onClick { vm.toggleFleetInfo(true) }
             }
         }
 

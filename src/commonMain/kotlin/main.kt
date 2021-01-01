@@ -22,10 +22,15 @@ import kotlin.reflect.KClass
 
 suspend fun main() = Korge(Korge.Config(module = TamraModule))
 
+const val defaultMargin = 10
+const val infoAreaHeight = 30
+const val itemAreaHeight = 60
+const val textTabSpace = 60
+
 const val mainWidth = 288
 const val mainHeight = 512
 const val windowWidth = mainWidth * 4 / 5
-const val windowHeight = mainHeight * 4 / 5
+const val windowHeight = mainHeight * 4 / 5 - defaultMargin * 2
 
 object TamraModule : Module() {
     // override val mainScene: KClass<out Scene> = MainScene::class

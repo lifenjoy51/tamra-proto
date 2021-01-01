@@ -5,7 +5,6 @@ import scene.port.PortScene
 import ui.LiveData
 
 class MarketViewModel(private val store: GameStore) {
-    lateinit var changeToPort: suspend () -> PortScene
     val money: LiveData<Int> = LiveData(null)
     val market: LiveData<Market> = LiveData(null)
     val buyCart: LiveData<MutableMap<ProductId, Int>> = LiveData(mutableMapOf())
@@ -48,7 +47,7 @@ class MarketViewModel(private val store: GameStore) {
         return cart.map { (k, v) -> market.value!!.marketProducts.getValue(k).price * v }.sum()
     }
 
-    fun buy() {
+    suspend fun buy(changePortScene: suspend () -> PortScene) {
         // 카트에 있는 상품을 배에 싣기.
         val productPriceList = buyCart.value!!.flatMap { (k, v) ->
             MutableList(v) {
@@ -74,6 +73,8 @@ class MarketViewModel(private val store: GameStore) {
         store.money -= totalPrice
 
         println("buy completed")
+        changePortScene.invoke()
+
         // TODO 물가 변동, 재고 변동 적용 필요.
     }
 }
