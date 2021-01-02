@@ -11,14 +11,14 @@ import domain.*
 import domain.market.Market
 import domain.market.MarketProduct
 import domain.market.MarketProductState
-import scene.HeaderViewModel
 import scene.MainScene
+import scene.common.FleetInfoViewModel
+import scene.common.HeaderViewModel
 import scene.port.PortScene
 import scene.port.PortViewModel
 import scene.port.market.MarketBuyViewModel
 import scene.port.market.MarketScene
 import scene.port.market.MarketSellViewModel
-import scene.world.FleetInfoViewModel
 import scene.world.WorldScene
 import scene.world.WorldViewModel
 import ui.TamraFont

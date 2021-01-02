@@ -45,4 +45,4 @@ inline fun Container.tamraImage(
     }
 }.addTo(this, callback)
 
-fun Any.pad(n: Int) = toString().padStart(n, ' ')
+fun Any.pad(n: Int) = toString().padStart(n, '_')

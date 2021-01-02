@@ -13,8 +13,6 @@ class WorldViewModel(
 ) {
     val playerFleet: LiveData<PlayerFleet> = LiveData(null)
     val nearPort: LiveData<String> = LiveData(null)
-    val toggleFleetInfo: LiveData<Boolean> = LiveData(false)
-    val money: LiveData<Int> = LiveData(null)
 
     private fun onMoveFleet(fleet: PlayerFleet) {
         playerFleet(fleet)
@@ -67,9 +65,5 @@ class WorldViewModel(
 
     fun enterPort() {
         store.fleet.port = PortId.valueOf(nearPort.value!!)
-    }
-
-    fun initMoney() {
-        money(store.fleet.balance)
     }
 }

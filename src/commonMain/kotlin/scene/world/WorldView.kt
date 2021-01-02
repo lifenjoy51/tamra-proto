@@ -13,6 +13,7 @@ import domain.PortId
 import domain.world.WorldMap
 import mainHeight
 import mainWidth
+import scene.common.FleetInfoView
 import ui.tamraButton
 import ui.tamraText
 import util.getMovableArea
@@ -27,7 +28,9 @@ class WorldView(
     private val changePortScene: suspend () -> Unit
 ) {
     private val vm: WorldViewModel = viewModelProvider.worldViewModel
-    private val fleetInfoView = FleetInfoView(viewModelProvider.fleetInfoViewModel, vm)
+    private val headerViewModel = viewModelProvider.headerViewModel
+    private val fleetInfoVm = viewModelProvider.fleetInfoViewModel
+    private val fleetInfoView = FleetInfoView(fleetInfoVm)
 
     suspend fun draw(container: Container) {
         val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
@@ -72,8 +75,13 @@ class WorldView(
             // draw layer Fleet info
             val layerFleetInfo = fixedSizeContainer(windowWidth, windowHeight)
             fleetInfoView.draw(layerFleetInfo)
-            vm.toggleFleetInfo.observe {
+            fleetInfoVm.toggleFleetInfo.observe {
                 layerFleetInfo.visible = it
+            }
+
+            // balance
+            tamraText(text = "", textSize = 20.0) {
+                headerViewModel.balance.observe { text = it.toString() }
             }
 
             tamraButton(text = "항구 들어가기", width = 140.0, px = mainWidth - 150, py = mainHeight - 50) {
@@ -86,18 +94,14 @@ class WorldView(
                 vm.nearPort.observe { visible = it.isNotEmpty() }
             }
 
-            tamraText(text = "", textSize = 20.0) {
-                vm.money.observe { text = it.toString() }
-            }
-
             tamraButton(width = 60.0, height = 40.0, textSize = 20.0, text = "정보", px = mainWidth - 60 - defaultMargin) {
-                onClick { vm.toggleFleetInfo(true) }
+                onClick { fleetInfoVm.toggleFleetInfo(true) }
             }
         }
 
         // init vm fleet
         vm.initPlayerFleet(worldMap)
-        vm.initMoney()
+        headerViewModel.init()
     }
 
 }

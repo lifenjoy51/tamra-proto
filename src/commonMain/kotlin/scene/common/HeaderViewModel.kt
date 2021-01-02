@@ -1,4 +1,4 @@
-package scene
+package scene.common
 
 import domain.GameStore
 import ui.LiveData

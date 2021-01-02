@@ -1,4 +1,4 @@
-package scene.world
+package scene.common
 
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.view.*
@@ -19,8 +19,7 @@ import windowHeight
 import windowWidth
 
 class FleetInfoView(
-    private val vm: FleetInfoViewModel,
-    private val worldVm: WorldViewModel
+    private val vm: FleetInfoViewModel
 ) {
     fun draw(container: Container) {
         container.apply {
@@ -38,7 +37,7 @@ class FleetInfoView(
             }
 
             tamraButton(text = "X", textSize = 10.0, width = 20.0, height = 20.0, px = mainWidth - 55, py = 65) {
-                onClick { worldVm.toggleFleetInfo(false) }
+                onClick { vm.toggleFleetInfo(false) }
             }
 
             tamraImage(texture = Bitmap1(0, 0), px = 55, py = 100) {

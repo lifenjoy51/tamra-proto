@@ -1,4 +1,4 @@
-package scene.world
+package scene.common
 
 import com.soywiz.korim.bitmap.Bitmap
 import com.soywiz.korim.bitmap.Bitmap32
@@ -10,10 +10,17 @@ import ui.LiveData
 class FleetInfoViewModel(
     private val store: GameStore
 ) {
+    val toggleFleetInfo: LiveData<Boolean> = LiveData(false)
+
     fun initPlayerShips() {
-        println("initPlayerShips")
         playerShips(store.fleet.ships)
         selectShip(store.fleet.ships.first())
+        shipCargos(store.fleet.cargoItems.map {
+            val name = GameData.getProduct(it.productId).name
+            val price = it.price
+            val quantity = it.quantity
+            "$name $price $quantity"
+        }.joinToString("\n"))
     }
 
     fun selectShip(ship: Ship) {

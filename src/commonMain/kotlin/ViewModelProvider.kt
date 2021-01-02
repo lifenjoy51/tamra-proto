@@ -1,8 +1,8 @@
-import scene.HeaderViewModel
+import scene.common.FleetInfoViewModel
+import scene.common.HeaderViewModel
 import scene.port.PortViewModel
 import scene.port.market.MarketBuyViewModel
 import scene.port.market.MarketSellViewModel
-import scene.world.FleetInfoViewModel
 import scene.world.WorldViewModel
 
 class ViewModelProvider(

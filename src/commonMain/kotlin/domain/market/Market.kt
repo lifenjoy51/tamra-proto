@@ -88,7 +88,7 @@ class MarketBuyCart(
     val fleet: Fleet
 ) {
     val items: MutableList<CargoItem> = mutableListOf()
-    val fee = 0.05
+    val fee = 0.1
     val totalPrice: Int get() = items.map { it.price * it.quantity * (1 + fee) }.sum().toInt()
     val totalQuantity: Int get() = items.map { it.quantity }.sum()
 
@@ -125,7 +125,7 @@ class MarketSellCart(
     val fleet: Fleet
 ) {
     val items: MutableList<CargoItem> = mutableListOf()
-    val fee = 0.1
+    val fee = 0.05
     val totalPrice: Int get() = items.map { market.price(it.productId) * it.quantity * (1 + fee) }.sum().toInt()
     val totalQuantity: Int get() = items.map { it.quantity }.sum()
 

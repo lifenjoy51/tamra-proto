@@ -26,7 +26,7 @@ class SaveManager {
             savedGame["fleet.cargoItems"] = store.fleet.cargoItems.map {
                 mapOf("productId" to it.productId, "price" to it.price, "quantity" to it.quantity)
             }
-            savedGame["fleet.money"] = store.fleet.balance
+            savedGame["fleet.balance"] = store.fleet.balance
             savedGame["fleet.port"] = store.fleet.port?.name ?: ""
             savedGame["fleet.location.x"] = store.fleet.location.x
             savedGame["fleet.location.y"] = store.fleet.location.y
@@ -72,7 +72,7 @@ class SaveManager {
                     c["quantity"].toString().toInt()
                 )
             }.toMutableList()
-            val money = saved["fleet.money"]
+            val balance = saved["fleet.balance"]
             val port = saved["fleet.port"]
             val location = XY(
                 saved["fleet.location.x"].toString().toDouble(),
@@ -105,7 +105,7 @@ class SaveManager {
             return GameStore(
                 fleet = Fleet(
                     ships = ships.toMutableList(),
-                    balance = money.toString().toInt(),
+                    balance = balance.toString().toInt(),
                     port = if (port == "") null else PortId.valueOf(port.toString()),
                     location = location,
                     cargoItems = cargoItems
