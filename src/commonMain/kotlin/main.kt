@@ -8,6 +8,9 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.SizeInt
 import domain.*
+import domain.market.Market
+import domain.market.MarketProduct
+import domain.market.MarketProductState
 import scene.HeaderViewModel
 import scene.MainScene
 import scene.port.PortScene
@@ -80,16 +83,16 @@ object TamraModule : Module() {
         val savedGameJsonString = resourcesVfs["saved.json"].readString()
         return if (savedGameJsonString.isEmpty()) {
             GameStore(
-                ships = mutableListOf(
-                    GameData.blueprints.getValue(ShipType.CHOMASUN).makeShip("첫배"),
-                    GameData.blueprints.getValue(ShipType.DOTBAE).makeShip("짐배")
-                ),
-                money = 1000,
-                port = PortId.JEJU,
-                location = XY(100.0, 70.0),
-                marketStates = GameData.ports.flatMap { (k, v) ->
-                    v.market.marketProducts.map { (id, mp) -> (k to id) to mp.marketState }
-                }.associate { it.first to it.second },
+                fleet = Fleet(
+                    ships = mutableListOf(
+                        GameData.blueprints.getValue(ShipType.CHOMASUN).makeShip("첫배"),
+                        GameData.blueprints.getValue(ShipType.DOTBAE).makeShip("짐배")
+                    ),
+                    balance = 1000,
+                    port = PortId.JEJU,
+                    location = XY(100.0, 70.0),
+                    cargoItems = mutableListOf()
+                )
             )
         } else {
             SaveManager.load(savedGameJsonString)
@@ -158,8 +161,8 @@ object TamraModule : Module() {
                     val supplyAndDemand = it.getValue("supplyAndDemand").toString().toInt()
 
                     productId to MarketProduct(
-                        product = allProducts.getValue(productId),
-                        marketState = MarketState(
+                        id = productId,
+                        state = MarketProductState(
                             marketSize = marketSize,
                             marketStock = marketSize,
                             supplyAndDemand = supplyAndDemand
@@ -167,6 +170,7 @@ object TamraModule : Module() {
                     )
                 }
             val portMarket = Market(
+                PortId.valueOf(portId),
                 products
             )
 

@@ -5,16 +5,16 @@ import ui.LiveData
 
 class HeaderViewModel(private val store: GameStore) {
 
-    val money: LiveData<Int> = LiveData(null)
+    val balance: LiveData<Int> = LiveData(null)
     val menu: LiveData<String> = LiveData(null)
 
     fun clear() {
-        money.clear()
+        balance.clear()
         menu.clear()
     }
 
     fun init() {
-        money(store.money)
+        balance(store.fleet.balance)
     }
 
 }

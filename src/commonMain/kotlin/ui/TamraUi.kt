@@ -44,3 +44,5 @@ inline fun Container.tamraImage(
         alignY(vc, 0.5, true)
     }
 }.addTo(this, callback)
+
+fun Any.pad(n: Int) = toString().padStart(n, ' ')

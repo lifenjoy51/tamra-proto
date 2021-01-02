@@ -33,7 +33,7 @@ class MarketScene(viewModelProvider: ViewModelProvider) : Scene() {
         }
 
         tamraText(text = "", color = Colors.BLACK) {
-            headerVm.money.observe { text = it.toString() }
+            headerVm.balance.observe { text = it.toString() }
         }
 
         tamraText("시장", color = Colors.BLACK, hc = background) {

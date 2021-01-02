@@ -12,8 +12,8 @@ class FleetInfoViewModel(
 ) {
     fun initPlayerShips() {
         println("initPlayerShips")
-        playerShips(store.ships)
-        selectShip(store.ships.first())
+        playerShips(store.fleet.ships)
+        selectShip(store.fleet.ships.first())
     }
 
     fun selectShip(ship: Ship) {
@@ -23,9 +23,6 @@ class FleetInfoViewModel(
         }
         shipName(ship.name)
         shipSpeed(ship.speed.toString())
-        shipCargos(ship.cargos.joinToString("\n") {
-            GameData.products[it.id]!!.name
-        })
     }
 
     val playerShips: LiveData<MutableList<Ship>> = LiveData(mutableListOf())

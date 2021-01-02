@@ -50,17 +50,19 @@ class PortViewModel(
     }
 
     fun init() {
-
-        port(GameData.ports[store.port]!!)
+        port(store.port()!!)
     }
 
     fun initPlayer(portMap: PortMap) {
-        val dockTxy = portMap.buildingMap.filterValues { it == BuildingType.DOCK }.keys.first()
-        val startXy = dockTxy.toXY(portMap.tileSize)
-        val p = Player(xy = startXy.copy(
-            x = startXy.x + portMap.tileSize / 2,
-            y = startXy.y + portMap.tileSize / 2
-        ), map = portMap)
+        val playerXy: XY = store.playerLocation?.let { it } ?: run {
+            val dockTxy = portMap.buildingMap.filterValues { it == BuildingType.DOCK }.keys.first()
+            val startXy = dockTxy.toXY(portMap.tileSize)
+            startXy.copy(
+                x = startXy.x + portMap.tileSize / 2,
+                y = startXy.y + portMap.tileSize / 2
+            )
+        }
+        val p = Player(xy = playerXy, map = portMap)
         player(p)
         onMovePlayer(p)
     }
@@ -70,6 +72,7 @@ class PortViewModel(
         val gameMap = p.map
         val txy = p.xy.toTXY(gameMap.tileSize)
         scanBuilding(txy, gameMap.buildingMap)
+        store.playerLocation = p.xy
     }
 
     private fun scanBuilding(txy: TXY, buildingMap: Map<TXY, BuildingType>) {
@@ -78,6 +81,6 @@ class PortViewModel(
     }
 
     fun leavePort() {
-        store.port = null
+        store.fleet.port = null
     }
 }

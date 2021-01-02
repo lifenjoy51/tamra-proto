@@ -21,7 +21,7 @@ class WorldViewModel(
         val gameMap = fleet.map
         val txy = fleet.xy.toTXY(gameMap.tileSize)
         scanNearPort(txy, gameMap.portPositions)
-        store.location = fleet.xy
+        store.fleet.location = fleet.xy
     }
 
     private fun scanNearPort(txy: TXY, portPositions: Map<TXY, Port?>) {
@@ -60,16 +60,16 @@ class WorldViewModel(
     }
 
     fun initPlayerFleet(gameMap: WorldMap) {
-        val fleet = PlayerFleet(xy = store.location, map = gameMap)
+        val fleet = PlayerFleet(xy = store.fleet.location, map = gameMap)
         playerFleet(fleet)
         onMoveFleet(fleet)
     }
 
     fun enterPort() {
-        store.port = PortId.valueOf(nearPort.value!!)
+        store.fleet.port = PortId.valueOf(nearPort.value!!)
     }
 
     fun initMoney() {
-        money(store.money)
+        money(store.fleet.balance)
     }
 }
