@@ -1,5 +1,6 @@
 package domain
 
+import com.soywiz.korim.bitmap.Bitmap
 import domain.port.market.CargoItem
 import domain.port.market.Market
 import domain.port.shipyard.ShipBlueprint
@@ -67,6 +68,7 @@ class Ship(
     val name: String,
 ) {
     val priceForSale get() = GameData.getBlueprint(type).price / 2
+    val sprite: Bitmap get() = GameData.getBlueprint(type).imgSprite
 }
 
 class Product(

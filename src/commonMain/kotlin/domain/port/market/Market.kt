@@ -15,7 +15,9 @@ data class CargoItem(
     val productId: ProductId,
     val price: Int,
     var quantity: Int
-)
+) {
+    val name: String get() = GameData.getProduct(productId).name
+}
 
 data class MarketProduct(
     val id: ProductId,

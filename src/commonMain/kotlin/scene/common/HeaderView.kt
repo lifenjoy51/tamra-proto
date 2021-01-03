@@ -4,6 +4,7 @@ import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.alignX
+import com.soywiz.korge.view.centerOnStage
 import com.soywiz.korge.view.fixedSizeContainer
 import defaultMargin
 import mainWidth
@@ -20,7 +21,9 @@ class HeaderView(viewModelProvider: ViewModelProvider) {
     suspend fun draw(container: Container) {
         container.apply {
             // draw layer Fleet info
-            val layerFleetInfo = fixedSizeContainer(windowWidth, windowHeight)
+            val layerFleetInfo = fixedSizeContainer(windowWidth, windowHeight) {
+                centerOnStage()
+            }
             fleetInfoView.draw(layerFleetInfo)
             fleetInfoVm.toggleFleetInfo.observe {
                 layerFleetInfo.visible = it

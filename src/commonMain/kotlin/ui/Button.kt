@@ -21,11 +21,13 @@ inline fun Container.tamraButton(
     textSize: Double = 16.0,
     px: Int = defaultMargin,
     py: Int = defaultMargin,
+    ax: Int = 0,    // 기본 간격으로 부터 x 위치 조정.
+    ay: Int = 0,    // 기본 간격으로 부터 y 위치 조정.
     vc: Container? = null,  // 컨테이너 기준 수직 중앙정렬.
     block: @ViewDslMarker TamraButton.() -> Unit = {}
 ): TamraButton = TamraButton(width = width, height = height, text = text, textSize = textSize).apply {
-    positionX(px)
-    positionY(py)
+    positionX(px + ax)
+    positionY(py + ay)
     if (vc != null) {
         alignY(vc, 0.5, true)
     }

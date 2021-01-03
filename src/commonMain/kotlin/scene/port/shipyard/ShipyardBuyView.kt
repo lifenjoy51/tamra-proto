@@ -144,27 +144,27 @@ class ShipyardBuyView(
                     alignLeftToRightOf(left)
                     positionY(height / 10)
 
-                    val textName = tamraText("") {
+                    val textName = tamraText("이") {
                         vm.selectedBlueprint.observe {
                             text = it.typeName
                         }
                     }
-                    val textCargoSize = tamraText("") {
+                    val textCargoSize = tamraText("적재량") {
+                        alignTopToBottomOf(textName, defaultMargin)
                         vm.selectedBlueprint.observe {
                             text = it.cargoSize.toString()
-                            alignTopToBottomOf(textName, defaultMargin)
                         }
                     }
-                    val textSpeed = tamraText("") {
+                    val textSpeed = tamraText("속도") {
+                        alignTopToBottomOf(textCargoSize, defaultMargin)
                         vm.selectedBlueprint.observe {
                             text = it.speed.toString()
-                            alignTopToBottomOf(textCargoSize, defaultMargin)
                         }
                     }
-                    val textPrice = tamraText("") {
+                    val textPrice = tamraText("가격") {
+                        alignTopToBottomOf(textSpeed, defaultMargin)
                         vm.selectedBlueprint.observe {
                             text = it.price.toString()
-                            alignTopToBottomOf(textSpeed, defaultMargin)
                         }
                     }
                 }
