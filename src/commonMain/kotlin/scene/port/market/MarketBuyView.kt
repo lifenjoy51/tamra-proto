@@ -6,7 +6,7 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
 import defaultMargin
 import domain.GameData
-import domain.market.MarketProduct
+import domain.port.market.MarketProduct
 import infoAreaHeight
 import itemAreaHeight
 import mainHeight
@@ -21,17 +21,20 @@ class MarketBuyView(private val vm: MarketBuyViewModel, private val changePortSc
     fun draw(container: Container) {
         container.apply {
 
-            solidRect(width = mainWidth, height = mainHeight * 6 / 10, color = Colors.CORAL)
+            solidRect(width = mainWidth, height = mainHeight * 6 / 10, color = Colors.DARKGREEN)
 
             // 선단 적재공간 영역.
             fixedSizeContainer(width = mainWidth, height = infoAreaHeight) {
                 //
-                solidRect(width = mainWidth, height = infoAreaHeight, color = Colors.CHOCOLATE) {}
+                solidRect(width = mainWidth, height = infoAreaHeight, color = Colors.DARKSLATEGREY) {}
                 positionY(-infoAreaHeight)
 
-                tamraText("000/000") {
+                tamraText("적재량")
+
+                tamraText("000/000", px = mainWidth - 90) {
                     vm.cart.observe { cart ->
-                        text = "${cart.fleet.totalCargoQuantity + cart.totalQuantity} / ${cart.fleet.totalCargoSpace}"
+                        val currentCargo = cart.fleet.totalCargoQuantity + cart.totalQuantity
+                        text = "${currentCargo.pad(3)} / ${cart.fleet.totalCargoSpace.pad(3)}"
                     }
                 }
             }
@@ -54,7 +57,7 @@ class MarketBuyView(private val vm: MarketBuyViewModel, private val changePortSc
             // 정산 영역.
             fixedSizeContainer(width = mainWidth, height = mainHeight * 2 / 10) {
                 positionY(mainHeight * 4 / 10)
-                solidRect(width = mainWidth, height = mainHeight * 2 / 10, color = Colors.CHOCOLATE) {}
+                solidRect(width = mainWidth, height = mainHeight * 2 / 10, color = Colors.DARKSLATEGREY) {}
 
                 // 계산...
                 tamraText("자산")

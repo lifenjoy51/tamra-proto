@@ -1,8 +1,9 @@
 package domain
 
-import com.soywiz.korim.bitmap.Bitmap
-import domain.market.CargoItem
-import domain.market.Market
+import domain.port.market.CargoItem
+import domain.port.market.Market
+import domain.port.shipyard.ShipBlueprint
+import domain.port.shipyard.Shipyard
 
 // static immutable game data object.
 class GameData(
@@ -29,6 +30,7 @@ class GameData(
         val blueprints get() = instance.shipBlueprints
 
         fun getProduct(id: ProductId) = products.getValue(id)
+        fun getBlueprint(type: ShipType) = blueprints.getValue(type)
     }
 }
 
@@ -51,42 +53,21 @@ class Fleet(
 
 }
 
+class Port(
+    val id: PortId,
+    val name: String,
+    val market: Market,
+    val shipYard: Shipyard,
+)
+
 class Ship(
     val type: ShipType,
     val cargoSize: Int,
     val speed: Double,
     val name: String,
-)
-
-class ShipBlueprint(
-    val type: ShipType,
-    val typeName: String,
-    val imgSprite: Bitmap,
-    val cargoSize: Int,
-    val speed: Int,
-    val price: Int,
 ) {
-    fun makeShip(name: String): Ship {
-        return Ship(
-            type = type,
-            cargoSize = cargoSize,
-            speed = speed.toDouble(),
-            name = name
-        )
-    }
+    val priceForSale get() = GameData.getBlueprint(type).price / 2
 }
-
-class Port(
-    val id: PortId,
-    val name: String,
-    val market: Market,
-    val shipYard: ShipYard,
-)
-
-
-class ShipYard(
-    val shipsOnSale: List<ShipBlueprint>,
-)
 
 class Product(
     val id: ProductId,

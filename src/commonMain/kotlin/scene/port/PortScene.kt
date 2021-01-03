@@ -43,7 +43,6 @@ class PortScene(viewModelProvider: ViewModelProvider) : Scene() {
         portView.draw(this, tiledMap)
 
         // init vm
-        vm.init()
         vm.initPlayer(portMap)
 
         // update

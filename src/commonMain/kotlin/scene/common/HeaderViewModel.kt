@@ -15,6 +15,7 @@ class HeaderViewModel(private val store: GameStore) {
 
     fun init() {
         balance(store.fleet.balance)
+        menu(store.port()?.name ?: "")
     }
 
 }

@@ -6,7 +6,7 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
 import defaultMargin
 import domain.GameData
-import domain.market.CargoItem
+import domain.port.market.CargoItem
 import infoAreaHeight
 import itemAreaHeight
 import mainHeight
@@ -29,7 +29,9 @@ class MarketSellView(private val vm: MarketSellViewModel, private val changePort
                 solidRect(width = mainWidth, height = infoAreaHeight, color = Colors.DIMGRAY) {}
                 positionY(-infoAreaHeight)
 
-                tamraText("000/000") {
+                tamraText("적재량")
+
+                tamraText("000/000", px = mainWidth - 90) {
                     vm.cart.observe { cart ->
                         text = "${cart.fleet.totalCargoQuantity - cart.totalQuantity} / ${cart.fleet.totalCargoSpace}"
                     }

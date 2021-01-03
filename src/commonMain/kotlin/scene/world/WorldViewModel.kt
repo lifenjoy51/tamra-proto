@@ -64,6 +64,6 @@ class WorldViewModel(
     }
 
     fun enterPort() {
-        store.fleet.port = PortId.valueOf(nearPort.value!!)
+        store.fleet.port = PortId.valueOf(nearPort.get())
     }
 }

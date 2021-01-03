@@ -15,10 +15,10 @@ import defaultMargin
 
 
 inline fun Container.tamraButton(
-    width: Double = 80.0,
-    height: Double = 40.0,
+    width: Double = 60.0,
+    height: Double = 30.0,
     text: String = "Button",
-    textSize: Double = 20.0,
+    textSize: Double = 16.0,
     px: Int = defaultMargin,
     py: Int = defaultMargin,
     vc: Container? = null,  // 컨테이너 기준 수직 중앙정렬.

@@ -2,16 +2,16 @@ package scene.port.market
 
 import domain.GameStore
 import domain.ProductId
-import domain.market.Market
-import domain.market.MarketBuyCart
-import domain.market.MarketProduct
+import domain.port.market.Market
+import domain.port.market.MarketBuyCart
+import domain.port.market.MarketProduct
 import scene.port.PortScene
 import ui.LiveData
 
 class MarketBuyViewModel(private val store: GameStore) {
     // init
-    lateinit var market: Market
-    lateinit var marketBuyCart: MarketBuyCart
+    private lateinit var market: Market
+    private lateinit var marketBuyCart: MarketBuyCart
 
     // live data
     val sellingProducts: LiveData<List<MarketProduct>> = LiveData(null)
@@ -45,7 +45,7 @@ class MarketBuyViewModel(private val store: GameStore) {
     }
 
     suspend fun buy(changePortScene: suspend () -> PortScene) {
-        market.buy(marketBuyCart, store.fleet)
+        market.buy(store.fleet, marketBuyCart)
         changePortScene.invoke()
     }
 }

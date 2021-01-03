@@ -2,8 +2,8 @@ package util
 
 import com.soywiz.korio.serialization.json.Json
 import domain.*
-import domain.market.CargoItem
-import domain.market.MarketProductState
+import domain.port.market.CargoItem
+import domain.port.market.MarketProductState
 
 data class PortProductId(
     val portId: PortId,

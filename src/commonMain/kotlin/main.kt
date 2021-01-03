@@ -8,9 +8,11 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.SizeInt
 import domain.*
-import domain.market.Market
-import domain.market.MarketProduct
-import domain.market.MarketProductState
+import domain.port.market.Market
+import domain.port.market.MarketProduct
+import domain.port.market.MarketProductState
+import domain.port.shipyard.ShipBlueprint
+import domain.port.shipyard.Shipyard
 import scene.MainScene
 import scene.common.FleetInfoViewModel
 import scene.common.HeaderViewModel
@@ -19,6 +21,9 @@ import scene.port.PortViewModel
 import scene.port.market.MarketBuyViewModel
 import scene.port.market.MarketScene
 import scene.port.market.MarketSellViewModel
+import scene.port.shipyard.ShipyardBuyViewModel
+import scene.port.shipyard.ShipyardScene
+import scene.port.shipyard.ShipyardSellViewModel
 import scene.world.WorldScene
 import scene.world.WorldViewModel
 import ui.TamraFont
@@ -27,7 +32,7 @@ import kotlin.reflect.KClass
 
 suspend fun main() = Korge(Korge.Config(module = TamraModule))
 
-const val defaultMargin = 10
+const val defaultMargin = 8
 const val infoAreaHeight = 30
 const val itemAreaHeight = 60
 const val textTabSpace = 60
@@ -60,6 +65,7 @@ object TamraModule : Module() {
         mapPrototype { WorldScene(get()) }
         mapPrototype { PortScene(get()) }
         mapPrototype { MarketScene(get()) }
+        mapPrototype { ShipyardScene(get()) }
     }
 
     private fun initViewModels(store: GameStore): ViewModelProvider {
@@ -69,7 +75,9 @@ object TamraModule : Module() {
             FleetInfoViewModel(store),
             PortViewModel(store),
             MarketBuyViewModel(store),
-            MarketSellViewModel(store)
+            MarketSellViewModel(store),
+            ShipyardBuyViewModel(store),
+            ShipyardSellViewModel(store)
         )
     }
 
@@ -85,8 +93,8 @@ object TamraModule : Module() {
             GameStore(
                 fleet = Fleet(
                     ships = mutableListOf(
-                        GameData.blueprints.getValue(ShipType.CHOMASUN).makeShip("첫배"),
-                        GameData.blueprints.getValue(ShipType.DOTBAE).makeShip("짐배")
+                        GameData.blueprints.getValue(ShipType.CHOMASUN).build("첫배"),
+                        GameData.blueprints.getValue(ShipType.DOTBAE).build("짐배")
                     ),
                     balance = 1000,
                     port = PortId.JEJU,
@@ -179,7 +187,8 @@ object TamraModule : Module() {
                     val shipType = ShipType.valueOf(it.getValue("shipType"))
                     allShips.getValue(shipType)
                 }
-            val portShipYard = ShipYard(
+            val portShipYard = Shipyard(
+                PortId.valueOf(portId),
                 shipsOnSale
             )
 

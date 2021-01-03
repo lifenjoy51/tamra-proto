@@ -14,8 +14,6 @@ import ui.tamraText
 
 class MarketScene(viewModelProvider: ViewModelProvider) : Scene() {
 
-    private val headerVm = viewModelProvider.headerViewModel
-
     private val buyVm = viewModelProvider.marketBuyViewModel
     private val buyView = MarketBuyView(buyVm) { sceneContainer.changeTo<PortScene>() }
 
@@ -23,25 +21,15 @@ class MarketScene(viewModelProvider: ViewModelProvider) : Scene() {
     private val sellView = MarketSellView(sellVm) { sceneContainer.changeTo<PortScene>() }
 
     override suspend fun Container.sceneInit() {
-        // clear vm
-        headerVm.clear()
 
         // draw ui..
         val background = solidRect(width = mainWidth, height = mainHeight)
+
         val area = fixedSizeContainer(mainWidth, mainHeight * 6 / 10) {
             positionY(mainHeight * 4 / 10)
         }
 
-        tamraText(text = "", color = Colors.BLACK) {
-            headerVm.balance.observe { text = it.toString() }
-        }
-
-        tamraText("시장", color = Colors.BLACK, hc = background) {
-            headerVm.menu.observe {
-                text = "시장/$it"
-                alignX(background, 0.5, true)
-            }
-        }
+        tamraText("시장", color = Colors.BLACK)
 
         tamraButton(text = "X", textSize = 10.0, width = 20.0, height = 20.0, px = mainWidth - 25, py = defaultMargin / 2) {
             onClick { sceneContainer.changeTo<PortScene>() }
@@ -56,7 +44,6 @@ class MarketScene(viewModelProvider: ViewModelProvider) : Scene() {
         }
 
         // init vm
-        headerVm.init()
         initBuyArea(area)
     }
 
@@ -65,7 +52,6 @@ class MarketScene(viewModelProvider: ViewModelProvider) : Scene() {
         area.removeChildren()
         buyView.draw(area)
         buyVm.init()
-        headerVm.menu("구매")
     }
 
     private fun initSellArea(area: FixedSizeContainer) {
@@ -73,6 +59,5 @@ class MarketScene(viewModelProvider: ViewModelProvider) : Scene() {
         area.removeChildren()
         sellView.draw(area)
         sellVm.init()
-        headerVm.menu("판매")
     }
 }

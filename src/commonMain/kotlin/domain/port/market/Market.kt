@@ -1,4 +1,4 @@
-package domain.market
+package domain.port.market
 
 import domain.Fleet
 import domain.GameData
@@ -48,7 +48,7 @@ class Market(
         return marketProducts.getValue(id).marketPrice
     }
 
-    fun buy(cart: MarketBuyCart, fleet: Fleet) {
+    fun buy(fleet: Fleet, cart: MarketBuyCart) {
         // 카트에 있는 상품을 배에 싣기.
         val items = (fleet.cargoItems + cart.items)
             .groupBy { it.productId to it.price }
@@ -68,7 +68,7 @@ class Market(
         }
     }
 
-    fun sell(cart: MarketSellCart, fleet: Fleet) {
+    fun sell(fleet: Fleet, cart: MarketSellCart) {
         // 배에 있는 물건을 팔자..
         cart.items.forEach { cartItem ->
             fleet.cargoItems.first { cargo -> cartItem.productId == cargo.productId && cartItem.price == cargo.price }
@@ -96,8 +96,8 @@ class MarketBuyCart(
 
     fun addItem(productId: ProductId) {
         if (totalQuantity >= fleet.availableCargoSpace) return
-        if (totalPrice >= fleet.balance) return
         val price = market.price(productId)
+        if (totalPrice + price >= fleet.balance) return
         items.firstOrNull { it.productId == productId && it.price == price }
             ?.let { it.quantity += 1 }
             ?: items.add(
@@ -125,8 +125,8 @@ class MarketSellCart(
     val fleet: Fleet
 ) {
     val items: MutableList<CargoItem> = mutableListOf()
-    val fee = 0.05
-    val totalPrice: Int get() = items.map { market.price(it.productId) * it.quantity * (1 + fee) }.sum().toInt()
+    val fee = 0.1
+    val totalPrice: Int get() = items.map { market.price(it.productId) * it.quantity * (1 - fee) }.sum().toInt()
     val totalQuantity: Int get() = items.map { it.quantity }.sum()
 
     fun getProductQuantity(item: CargoItem): Int = items.firstOrNull { it.productId == item.productId && it.price == item.price }?.quantity

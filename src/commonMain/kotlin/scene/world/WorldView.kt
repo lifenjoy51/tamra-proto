@@ -4,22 +4,21 @@ import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.tiled.tiledMapView
-import com.soywiz.korge.view.*
+import com.soywiz.korge.view.Container
+import com.soywiz.korge.view.SolidRect
+import com.soywiz.korge.view.camera
+import com.soywiz.korge.view.sprite
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import defaultMargin
 import domain.GameData
 import domain.PortId
 import domain.world.WorldMap
 import mainHeight
 import mainWidth
-import scene.common.FleetInfoView
+import scene.common.HeaderView
 import ui.tamraButton
-import ui.tamraText
 import util.getMovableArea
 import util.getObjectNames
-import windowHeight
-import windowWidth
 
 const val viewScale = 4.0
 
@@ -28,9 +27,7 @@ class WorldView(
     private val changePortScene: suspend () -> Unit
 ) {
     private val vm: WorldViewModel = viewModelProvider.worldViewModel
-    private val headerViewModel = viewModelProvider.headerViewModel
-    private val fleetInfoVm = viewModelProvider.fleetInfoViewModel
-    private val fleetInfoView = FleetInfoView(fleetInfoVm)
+    private val headerView = HeaderView(viewModelProvider)
 
     suspend fun draw(container: Container) {
         val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
@@ -72,19 +69,11 @@ class WorldView(
 
             val background = SolidRect(width = mainWidth, height = mainHeight)
 
-            // draw layer Fleet info
-            val layerFleetInfo = fixedSizeContainer(windowWidth, windowHeight)
-            fleetInfoView.draw(layerFleetInfo)
-            fleetInfoVm.toggleFleetInfo.observe {
-                layerFleetInfo.visible = it
-            }
 
-            // balance
-            tamraText(text = "", textSize = 20.0) {
-                headerViewModel.balance.observe { text = it.toString() }
-            }
+            // draw header
+            headerView.draw(container)
 
-            tamraButton(text = "항구 들어가기", width = 140.0, px = mainWidth - 150, py = mainHeight - 50) {
+            tamraButton(text = "항구 들어가기", width = 120.0, px = mainWidth - 130, py = mainHeight - 40) {
                 onClick {
                     if (!vm.nearPort.value.isNullOrEmpty()) {
                         vm.enterPort()
@@ -93,15 +82,10 @@ class WorldView(
                 }
                 vm.nearPort.observe { visible = it.isNotEmpty() }
             }
-
-            tamraButton(width = 60.0, height = 40.0, textSize = 20.0, text = "정보", px = mainWidth - 60 - defaultMargin) {
-                onClick { fleetInfoVm.toggleFleetInfo(true) }
-            }
         }
 
         // init vm fleet
         vm.initPlayerFleet(worldMap)
-        headerViewModel.init()
     }
 
 }

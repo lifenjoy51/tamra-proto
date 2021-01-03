@@ -15,4 +15,6 @@ class LiveData<T>(var value: T?) {
     fun clear() {
         callback.removeAll { true }
     }
+
+    fun get() = value!!
 }

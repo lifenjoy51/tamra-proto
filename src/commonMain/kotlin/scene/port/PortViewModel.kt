@@ -1,7 +1,10 @@
 package scene.port
 
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.*
+import domain.BuildingType
+import domain.GameStore
+import domain.TXY
+import domain.XY
 import domain.port.Player
 import domain.port.PortMap
 import ui.LiveData
@@ -12,7 +15,6 @@ class PortViewModel(
 ) {
     val player: LiveData<Player> = LiveData(null)
     val currentBuilding: LiveData<String> = LiveData(null)
-    val port: LiveData<Port> = LiveData(null)
 
     fun up() {
         player.value?.let {
@@ -47,10 +49,6 @@ class PortViewModel(
         SaveManager.save(store).let {
             resourcesVfs["saved.json"].writeString(it)
         }
-    }
-
-    fun init() {
-        port(store.port()!!)
     }
 
     fun initPlayer(portMap: PortMap) {
