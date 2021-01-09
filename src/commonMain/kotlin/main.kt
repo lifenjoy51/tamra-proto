@@ -8,6 +8,7 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.SizeInt
 import domain.*
+import domain.event.*
 import domain.port.market.Market
 import domain.port.market.MarketProduct
 import domain.port.market.MarketProductState
@@ -114,11 +115,69 @@ object TamraModule : Module() {
         val products = loadProducts(data)
         val shipBlueprints = loadShipBlueprints(data)
         val ports = loadPorts(data, products, shipBlueprints)
+        val conditions = loadConditions(data)
+        val contents = loadContents(data)
+        val events = loadEvents(data, conditions, contents)
         GameData.init(
             products = products,
             ports = ports,
-            shipBlueprints = shipBlueprints
+            shipBlueprints = shipBlueprints,
+            conditions = conditions,
+            events = events
         )
+    }
+
+    private fun loadConditions(data: Map<String, MutableList<Map<String, String>>>): Map<String, EventCondition> {
+        return data.getValue("eventConditions").associate { conditionData ->
+            val id = conditionData.getValue("id")
+            val x = conditionData.getValue("x").let(Subject.Companion::parse)
+            val op = Op.valueOf(conditionData.getValue("op"))
+            val y = conditionData.getValue("y").let(Subject.Companion::parse)
+            id to EventCondition(
+                id = id,
+                x = x,
+                op = op,
+                y = y
+            )
+        }
+    }
+
+    private fun loadContents(data: Map<String, MutableList<Map<String, String>>>): Map<String, List<EventContent>> {
+        return data.getValue("eventContents").map { contentData ->
+            val type = ContentType.valueOf(contentData.getValue("type"))
+            val eventId = contentData.getValue("eventId")
+            val position = contentData["position"]?.let { ContentPosition.valueOf(it) } ?: ContentPosition.C
+            val speaker = contentData["speaker"] ?: ""
+            val lines = contentData.getValue("lines")
+            when (type) {
+                ContentType.N -> Narration(
+                    eventId = eventId,
+                    position = position,
+                    lines = lines
+                )
+                ContentType.C -> Conversation(
+                    eventId = eventId,
+                    position = position,
+                    speaker = speaker,
+                    lines = lines
+                )
+            }.apply { Unit }
+        }.groupBy { it.eventId }
+    }
+
+    private fun loadEvents(data: Map<String, MutableList<Map<String, String>>>, conditions: Map<String, EventCondition>, contents: Map<String, List<EventContent>>): Map<String, GameEvent> {
+        return data.getValue("events").associate { eventData ->
+            val eventId = eventData.getValue("id")
+            val location = EventLocation.valueOf(eventData.getValue("location"))
+            val conditionId = eventData.getValue("conditionId")
+
+            eventId to GameEvent(
+                id = eventId,
+                location = location,
+                condition = conditions.getValue(conditionId),
+                contents = contents.getValue(eventId)
+            )
+        }
     }
 
     private fun loadProducts(data: Map<String, MutableList<Map<String, String>>>): Map<ProductId, Product> {

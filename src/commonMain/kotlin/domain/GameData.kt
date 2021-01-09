@@ -1,6 +1,8 @@
 package domain
 
 import com.soywiz.korim.bitmap.Bitmap
+import domain.event.EventCondition
+import domain.event.GameEvent
 import domain.port.market.CargoItem
 import domain.port.market.Market
 import domain.port.shipyard.ShipBlueprint
@@ -10,28 +12,37 @@ import domain.port.shipyard.Shipyard
 class GameData(
     private val ports: Map<PortId, Port>,
     private val products: Map<ProductId, Product>,
-    private val shipBlueprints: Map<ShipType, ShipBlueprint>
+    private val shipBlueprints: Map<ShipType, ShipBlueprint>,
+    private val conditions: Map<String, EventCondition>,
+    private val events: Map<String, GameEvent>
 ) {
     companion object {
         private lateinit var instance: GameData
         fun init(
             ports: Map<PortId, Port>,
             products: Map<ProductId, Product>,
-            shipBlueprints: Map<ShipType, ShipBlueprint>
+            shipBlueprints: Map<ShipType, ShipBlueprint>,
+            conditions: Map<String, EventCondition>,
+            events: Map<String, GameEvent>
         ) {
             instance = GameData(
                 products = products,
                 ports = ports,
-                shipBlueprints = shipBlueprints
+                shipBlueprints = shipBlueprints,
+                conditions = conditions,
+                events = events
             )
         }
 
         val ports get() = instance.ports
         val products get() = instance.products
         val blueprints get() = instance.shipBlueprints
+        val conditions get() = instance.conditions
+        val events get() = instance.events
 
         fun getProduct(id: ProductId) = products.getValue(id)
         fun getBlueprint(type: ShipType) = blueprints.getValue(type)
+        fun getCondition(id: String): EventCondition = conditions.getValue(id)
     }
 }
 

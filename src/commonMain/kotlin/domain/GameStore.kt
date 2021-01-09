@@ -6,4 +6,5 @@ data class GameStore(
 ) {
     var playerLocation: XY? = null
     fun port(): Port? = fleet.port?.let { GameData.ports[it] }
+
 }
