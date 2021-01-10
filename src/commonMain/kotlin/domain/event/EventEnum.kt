@@ -14,10 +14,10 @@ enum class ContentType(val kClass: KClass<out EventContent>) {
     C(Conversation::class)   // Conversation
 }
 
-enum class ContentPosition {
-    C, // Center
-    L,  // Left
-    R   // Right
+enum class ContentPosition(val x: Double) {
+    C(0.5), // Center
+    L(0.05),  // Left
+    R(0.9)   // Right
 }
 
 enum class Type {

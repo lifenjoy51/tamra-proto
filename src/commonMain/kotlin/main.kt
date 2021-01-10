@@ -17,6 +17,7 @@ import domain.port.shipyard.Shipyard
 import scene.MainScene
 import scene.common.FleetInfoViewModel
 import scene.common.HeaderViewModel
+import scene.event.EventViewModel
 import scene.port.PortScene
 import scene.port.PortViewModel
 import scene.port.market.MarketBuyViewModel
@@ -78,7 +79,8 @@ object TamraModule : Module() {
             MarketBuyViewModel(store),
             MarketSellViewModel(store),
             ShipyardBuyViewModel(store),
-            ShipyardSellViewModel(store)
+            ShipyardSellViewModel(store),
+            EventViewModel(store)
         )
     }
 

@@ -46,6 +46,6 @@ class MarketBuyViewModel(private val store: GameStore) {
 
     suspend fun buy(changePortScene: suspend () -> PortScene) {
         market.buy(store.fleet, marketBuyCart)
-        changePortScene.invoke()
+        changePortScene()
     }
 }

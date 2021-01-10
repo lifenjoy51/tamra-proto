@@ -1,6 +1,6 @@
 package domain.event
 
-class GameEvent(
+data class GameEvent(
     val id: String,
     val location: EventLocation,
     val condition: EventCondition,
@@ -15,14 +15,14 @@ abstract class EventContent {
     abstract val lines: String
 }
 
-class Conversation(
+data class Conversation(
     override val eventId: String,
     override val position: ContentPosition,
     override val speaker: String,
     override val lines: String,
 ) : EventContent()
 
-class Narration(
+data class Narration(
     override val eventId: String,
     override val position: ContentPosition,
     override val speaker: String = "",
@@ -37,7 +37,7 @@ class Narration(
 // PORT@JEJU
 // PRODUCT@SSAL#PRICE
 // VALUE@51
-class Subject(
+data class Subject(
     val type: Type,
     val id: String? = null,
     val prop: Prop? = null
@@ -56,7 +56,7 @@ class Subject(
     }
 }
 
-class EventCondition(
+data class EventCondition(
     val id: String,
     val x: Subject,
     val op: Op,

@@ -1,22 +1,22 @@
 package scene.port
 
 import ViewModelProvider
-import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.Key
+import com.soywiz.korge.input.keys
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.addFixedUpdater
 import com.soywiz.korio.file.std.resourcesVfs
 import domain.BuildingType
 import domain.port.PortMap
+import scene.event.EventView
 import scene.port.market.MarketScene
 import scene.port.shipyard.ShipyardScene
 import scene.world.WorldScene
 import util.getMovableArea
 import util.getObjectNames
 
-class PortScene(viewModelProvider: ViewModelProvider) : Scene() {
+class PortScene(val viewModelProvider: ViewModelProvider) : Scene() {
 
     private val portView = PortView(
         viewModelProvider,
@@ -25,6 +25,9 @@ class PortScene(viewModelProvider: ViewModelProvider) : Scene() {
         { sceneContainer.changeTo<ShipyardScene>() },
     )
     private val vm = viewModelProvider.portViewModel
+
+    private val eventView = EventView(viewModelProvider)
+    private val eventVm = viewModelProvider.eventViewModel
 
     override suspend fun Container.sceneInit() {
         // load tiledMap
@@ -43,20 +46,19 @@ class PortScene(viewModelProvider: ViewModelProvider) : Scene() {
         portView.draw(this, tiledMap)
 
         // init vm
-        vm.initPlayer(portMap)
+        vm.init(portMap)
 
-        // update
-        addFixedUpdater(TimeSpan(100.0)) {
-            onKeyInput()
-        }
-    }
+        // init eventView
+        eventView.draw(this)
 
-    private fun onKeyInput() {
-        when {
-            views.input.keys[Key.RIGHT] -> vm.right()
-            views.input.keys[Key.LEFT] -> vm.left()
-            views.input.keys[Key.UP] -> vm.up()
-            views.input.keys[Key.DOWN] -> vm.down()
+        // input
+        keys.down {
+            when (it.key) {
+                Key.RIGHT -> vm.right()
+                Key.LEFT -> vm.left()
+                Key.UP -> vm.up()
+                Key.DOWN -> vm.down()
+            }
         }
     }
 }

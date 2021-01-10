@@ -51,7 +51,11 @@ class PortViewModel(
         }
     }
 
-    fun initPlayer(portMap: PortMap) {
+    fun init(portMap: PortMap) {
+        initPlayer(portMap)
+    }
+
+    private fun initPlayer(portMap: PortMap) {
         val playerXy: XY = store.playerLocation?.let { it } ?: run {
             val dockTxy = portMap.buildingMap.filterValues { it == BuildingType.DOCK }.keys.first()
             val startXy = dockTxy.toXY(portMap.tileSize)
@@ -63,6 +67,7 @@ class PortViewModel(
         val p = Player(xy = playerXy, map = portMap)
         player(p)
         onMovePlayer(p)
+
     }
 
     private fun onMovePlayer(p: Player) {
