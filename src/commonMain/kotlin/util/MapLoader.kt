@@ -1,8 +1,9 @@
 package util
 
 import com.soywiz.korge.tiled.TiledMap
+import com.soywiz.korma.geom.Point
 import domain.TXY
-import domain.XY
+import domain.toTXY
 
 /**
  * 특정 타입의 타일을 레이어에서 로드한다.
@@ -15,24 +16,24 @@ fun <T> TiledMap.loadTiles(layerName: String, types: Map<Int, T>): Map<TXY, T> {
     return allPoints.associateWith { p -> layer[p.x, p.y].let { types[it] }!! }
 }
 
-fun TiledMap.getMovableArea(): List<List<Pair<XY, XY>>> {
+fun TiledMap.getMovableArea(): List<List<Pair<Point, Point>>> {
     val objLayer = objectLayers.find { it.name == "area" }!!
     val movablePolygon = objLayer.objects.map {
         (it.objectType as TiledMap.Object.Type.Polygon).points.map { p ->
-            XY(p.x + it.bounds.left, p.y + it.bounds.top)
+            Point(p.x + it.bounds.left, p.y + it.bounds.top)
         }
     }
     return movablePolygon.map { list ->
-        list.mapIndexed { i: Int, xy: XY ->
+        list.mapIndexed { i: Int, point: Point ->
             var t = if (i == 0) list.size - 1 else i - 1
-            xy to list[t]
+            point to list[t]
         }
     }
 }
 
 fun TiledMap.getObjectNames(layerName: String): Map<TXY, String> {
     return objectLayers.find { it.name == layerName }!!.objects.associate {
-        val txy = XY(it.bounds.x, it.bounds.y).toTXY(tilewidth)
+        val txy = Point(it.bounds.x, it.bounds.y).toTXY(tilewidth)
         val objName = it.name
         txy to objName
     }

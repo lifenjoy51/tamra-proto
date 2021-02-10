@@ -1,12 +1,12 @@
 package domain.landing
 
+import com.soywiz.korma.geom.Point
 import domain.GameMap
 import domain.SiteId
 import domain.TXY
-import domain.XY
 
 class LandingMap(
-    override val movableArea: List<List<Pair<XY, XY>>>,
+    override val movableArea: List<List<Pair<Point, Point>>>,
     val tileSize: Int,
     val sites: Map<TXY, SiteId>
 ) : GameMap()

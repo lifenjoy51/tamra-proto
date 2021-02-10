@@ -6,6 +6,7 @@ import com.soywiz.korim.format.readBitmap
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
+import com.soywiz.korma.geom.Point
 import com.soywiz.korma.geom.SizeInt
 import domain.*
 import domain.event.*
@@ -48,8 +49,9 @@ const val windowHeight = mainHeight * 4 / 5 - defaultMargin * 2
 
 object TamraModule : Module() {
     // override val mainScene: KClass<out Scene> = MainScene::class
-    // override val mainScene: KClass<out Scene> = WorldScene::class
-    override val mainScene: KClass<out Scene> = PortScene::class
+    override val mainScene: KClass<out Scene> = WorldScene::class
+
+    // override val mainScene: KClass<out Scene> = PortScene::class
     override val size: SizeInt = SizeInt(mainWidth, mainHeight)
 
     override suspend fun AsyncInjector.configure() {
@@ -105,7 +107,7 @@ object TamraModule : Module() {
                     ),
                     balance = 1000,
                     port = PortId.JEJU,
-                    location = XY(100.0, 70.0),
+                    location = Point(100.0, 70.0),
                     cargoItems = mutableListOf()
                 )
             )

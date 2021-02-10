@@ -1,12 +1,13 @@
 package scene.landing
 
 import com.soywiz.korio.file.std.resourcesVfs
+import com.soywiz.korma.geom.Point
 import domain.GameStore
 import domain.SiteId
 import domain.TXY
-import domain.XY
 import domain.landing.LandingMap
 import domain.landing.LandingPlayer
+import domain.toTXY
 import ui.LiveData
 import util.SaveManager
 
@@ -56,7 +57,7 @@ class LandingViewModel(
     }
 
     private fun initPlayer(landingMap: LandingMap) {
-        val playerXy: XY = store.playerLocation?.let { it } ?: run {
+        val playerPoint: Point = store.playerLocation?.let { it } ?: run {
             val exitTxy = landingMap.sites.filterValues { it == SiteId.EXIT }.keys.first()
             val startXy = exitTxy.toXY(landingMap.tileSize)
             startXy.copy(
@@ -64,7 +65,7 @@ class LandingViewModel(
                 y = startXy.y + landingMap.tileSize / 2
             )
         }
-        val p = LandingPlayer(xy = playerXy, map = landingMap)
+        val p = LandingPlayer(point = playerPoint, map = landingMap)
         player(p)
         onMovePlayer(p)
 
@@ -73,9 +74,9 @@ class LandingViewModel(
     private fun onMovePlayer(p: LandingPlayer) {
         player(p)
         val gameMap = p.map
-        val txy = p.xy.toTXY(gameMap.tileSize)
+        val txy = p.point.toTXY(gameMap.tileSize)
         scanBuilding(txy, gameMap.sites)
-        store.playerLocation = p.xy
+        store.playerLocation = p.point
     }
 
     private fun scanBuilding(txy: TXY, buildingMap: Map<TXY, SiteId>) {

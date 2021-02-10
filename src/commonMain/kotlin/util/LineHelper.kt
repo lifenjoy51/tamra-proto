@@ -1,14 +1,14 @@
 package util
 
+import com.soywiz.korma.geom.Point
 import com.soywiz.korui.layout.MathEx
-import domain.XY
 
 // https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 class LineHelper {
     companion object {
         // Given three colinear points p, q, r, the function checks if
         // point q lies on line segment 'pr'
-        private fun onSegment(p: XY, q: XY, r: XY): Boolean {
+        private fun onSegment(p: Point, q: Point, r: Point): Boolean {
             return q.x <= MathEx.max(p.x, r.x) &&
                 q.x >= MathEx.min(p.x, r.x) &&
                 q.y <= MathEx.max(p.y, r.y) &&
@@ -20,7 +20,7 @@ class LineHelper {
         // 0 --> p, q and r are colinear
         // 1 --> Clockwise
         // 2 --> Counterclockwise
-        private fun orientation(p: XY, q: XY, r: XY): Int {
+        private fun orientation(p: Point, q: Point, r: Point): Int {
             // See https://www.geeksforgeeks.org/orientation-3-ordered-points/
             // for details of below formula.
             val v = (q.y - p.y) * (r.x - q.x) -
@@ -31,11 +31,11 @@ class LineHelper {
 
         // The main function that returns true if line segment 'p1q1'
         // and 'p2q2' intersect.
-        fun doIntersect(line1: Pair<XY, XY>, line2: Pair<XY, XY>): Boolean {
-            val p1: XY = line1.first
-            val q1: XY = line1.second
-            val p2: XY = line2.first
-            val q2: XY = line2.second
+        fun doIntersect(line1: Pair<Point, Point>, line2: Pair<Point, Point>): Boolean {
+            val p1: Point = line1.first
+            val q1: Point = line1.second
+            val p2: Point = line2.first
+            val q2: Point = line2.second
 
             // Find the four orientations needed for general and
             // special cases

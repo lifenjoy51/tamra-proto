@@ -25,16 +25,17 @@ class WorldScene(viewModelProvider: ViewModelProvider) : Scene() {
         // update
         addFixedUpdater(TimeSpan(100.0)) {
             onKeyInput()
+            vm.move()
         }
 
     }
 
     private fun onKeyInput() {
         when {
-            views.input.keys[Key.RIGHT] -> vm.right()
-            views.input.keys[Key.LEFT] -> vm.left()
-            views.input.keys[Key.UP] -> vm.up()
-            views.input.keys[Key.DOWN] -> vm.down()
+            views.input.keys[Key.RIGHT] -> vm.turnRight()
+            views.input.keys[Key.LEFT] -> vm.turnLeft()
+            views.input.keys[Key.UP] -> vm.speedUp()
+            views.input.keys[Key.DOWN] -> vm.speedDown()
         }
     }
 }

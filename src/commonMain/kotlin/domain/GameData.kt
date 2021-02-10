@@ -1,6 +1,7 @@
 package domain
 
 import com.soywiz.korim.bitmap.Bitmap
+import com.soywiz.korma.geom.Point
 import domain.event.EventCondition
 import domain.event.GameEvent
 import domain.port.market.CargoItem
@@ -51,7 +52,7 @@ class Fleet(
     var balance: Int,
     var port: PortId? = null,  // 현재 정박중인 항구.
     var landing: LandingId? = null, // 현재  상륙지점.
-    var location: XY,    // 현재 위치.
+    var location: Point,    // 현재 위치.
     var cargoItems: MutableList<CargoItem>
 ) {
     val totalCargoSpace: Int get() = ships.sumOf { it.cargoSize }

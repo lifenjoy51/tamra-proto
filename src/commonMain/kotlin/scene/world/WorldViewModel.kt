@@ -1,5 +1,7 @@
 package scene.world
 
+import com.soywiz.korma.geom.Angle
+import com.soywiz.korma.geom.plus
 import domain.*
 import domain.world.PlayerFleet
 import domain.world.WorldMap
@@ -15,10 +17,10 @@ class WorldViewModel(
     private fun onMoveFleet(fleet: PlayerFleet) {
         playerFleet(fleet)
         val gameMap = fleet.map
-        val txy = fleet.xy.toTXY(gameMap.tileSize)
+        val txy = fleet.point.toTXY(gameMap.tileSize)
         scanNearPort(txy, gameMap.portPositions)
         scanNearLanding(txy, gameMap.landingPositions)
-        store.fleet.location = fleet.xy
+        store.fleet.location = fleet.point
     }
 
     private fun scanNearPort(txy: TXY, portPositions: Map<TXY, Port?>) {
@@ -64,7 +66,7 @@ class WorldViewModel(
     }
 
     fun initPlayerFleet(gameMap: WorldMap) {
-        val fleet = PlayerFleet(xy = store.fleet.location, map = gameMap)
+        val fleet = PlayerFleet(point = store.fleet.location, map = gameMap)
         playerFleet(fleet)
         onMoveFleet(fleet)
     }
@@ -75,5 +77,40 @@ class WorldViewModel(
 
     fun enterLanding() {
         store.fleet.landing = LandingId.valueOf(nearLanding.get())
+    }
+
+    fun speedDown() {
+        playerFleet.value?.let {
+            it.v = it.v * 0.95
+            onMoveFleet(it)
+        }
+    }
+
+    fun speedUp() {
+        playerFleet.value?.let {
+            it.v = it.v * 1.05
+            onMoveFleet(it)
+        }
+    }
+
+    fun turnLeft() {
+        playerFleet.value?.let {
+            it.angle = it.angle.plus(Angle.Companion.fromDegrees(10))
+            onMoveFleet(it)
+        }
+    }
+
+    fun turnRight() {
+        playerFleet.value?.let {
+            it.angle = it.angle.plus(Angle.Companion.fromDegrees(-10))
+            onMoveFleet(it)
+        }
+    }
+
+    fun move() {
+        playerFleet.value?.let {
+            it.move()
+            onMoveFleet(it)
+        }
     }
 }

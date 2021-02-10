@@ -4,12 +4,13 @@ import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.tiled.tiledMapView
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.SolidRect
-import com.soywiz.korge.view.camera
-import com.soywiz.korge.view.sprite
+import com.soywiz.korge.view.*
+import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
+import com.soywiz.korma.geom.Matrix
+import com.soywiz.korma.geom.Point
+import com.soywiz.korma.geom.unaryMinus
 import domain.GameData
 import domain.LandingId
 import domain.PortId
@@ -18,10 +19,11 @@ import mainHeight
 import mainWidth
 import scene.common.HeaderView
 import ui.tamraButton
+import ui.tamraRect
 import util.getMovableArea
 import util.getObjectNames
 
-const val viewScale = 4.0
+const val viewScale = 3.0
 
 class WorldView(
     viewModelProvider: ViewModelProvider,
@@ -52,28 +54,53 @@ class WorldView(
         }
         val worldMap = WorldMap(tiledMap.getMovableArea(), tiledMap.tileheight, portPositions, landingPositions)
 
-        container.apply {
+        container.fixedSizeContainer(mainWidth, mainWidth, clip = true) {
+            positionY(100)
+            tamraRect(width = width, height = height, color = Colors.SKYBLUE)
+
             // TODO change texture..
-            val viewFleet = sprite(texture = resourcesVfs["S100.png"].readBitmap())
-            val camera = camera {
-                tiledMapView(tiledMap) {
-                    addChild(viewFleet)
-                }
+            val fleetView = sprite(texture = resourcesVfs["S100.png"].readBitmap())
+            val tileMapView = tiledMapView(tiledMap) {
+                addChild(fleetView)
                 scale = viewScale
             }
+            //addChild(tileMapView)
 
             // on update fleet position
-            vm.playerFleet.observe {
+            vm.playerFleet.observe { fleet ->
+
                 // move fleet view
-                viewFleet.x = it.xy.x - viewFleet.width / 2
-                viewFleet.y = it.xy.y - viewFleet.height / 2
+                with(fleetView) {
+                    rotation(fleet.angle.unaryMinus())
+                    Point(width, height)
+                        .rotate(fleet.angle.unaryMinus())
+                        .let { p ->
+                            x = fleet.point.x - p.x / 2
+                            y = fleet.point.y - p.y / 2
+                        }
+                }
+
                 // centering camera
-                camera.x = (camera.containerRoot.width / 2) - (it.xy.x * viewScale)
-                camera.y = (camera.containerRoot.height / 2) - (it.xy.y * viewScale)
+                with(tileMapView) {
+                    val rotatedPoint = fleet.point
+                        .rotate(fleet.angle)
+                        .mul(viewScale)
+                    setTransform(Matrix.Transform(
+                        x = width / 2 - rotatedPoint.x,
+                        y = height / 2 - rotatedPoint.y,
+                        scaleX = viewScale,
+                        scaleY = viewScale,
+                        rotation = fleet.angle
+                    ))
+                }
+
             }
+        }
+
+        // ui
+        container.apply {
 
             val background = SolidRect(width = mainWidth, height = mainHeight)
-
 
             // draw header
             headerView.draw(container)

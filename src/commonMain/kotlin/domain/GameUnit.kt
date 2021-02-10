@@ -1,31 +1,39 @@
 package domain
 
+import com.soywiz.korma.geom.Point
+
 abstract class GameUnit {
-    abstract var xy: XY
+    abstract var point: Point
     abstract var v: Double
-    abstract var size: XY
+    abstract var size: Point
     abstract val map: GameMap
 
-    private fun isMovable(xy: XY) = map.isMovable(xy)
+    private fun isMovable(point: Point) = map.isMovable(point)
 
     fun moveUp() {
-        val newXy = XY(xy.x, xy.y - v)
-        if (isMovable(newXy)) xy = newXy
+        val newXy = Point(point.x, point.y - v)
+        if (isMovable(newXy)) point = newXy
     }
 
     fun moveDown() {
-        val newXy = XY(xy.x, xy.y + v)
-        if (isMovable(newXy)) xy = newXy
+        val newXy = Point(point.x, point.y + v)
+        if (isMovable(newXy)) point = newXy
     }
 
     fun moveLeft() {
-        val newXy = XY(xy.x - v, xy.y)
-        if (isMovable(newXy)) xy = newXy
+        val newXy = Point(point.x - v, point.y)
+        if (isMovable(newXy)) point = newXy
     }
 
     fun moveRight() {
-        val newXy = XY(xy.x + v, xy.y)
-        if (isMovable(newXy)) xy = newXy
+        val newXy = Point(point.x + v, point.y)
+        if (isMovable(newXy)) point = newXy
+    }
+
+    fun move(dx: Double, dy: Double) {
+        val newXy = Point(point.x + dx, point.y + dy)
+        //println("$point $newXy")
+        if (isMovable(newXy)) point = newXy
     }
 
 }
