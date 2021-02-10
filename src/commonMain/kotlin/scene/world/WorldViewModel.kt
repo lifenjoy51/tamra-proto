@@ -1,9 +1,6 @@
 package scene.world
 
-import domain.GameStore
-import domain.Port
-import domain.PortId
-import domain.TXY
+import domain.*
 import domain.world.PlayerFleet
 import domain.world.WorldMap
 import ui.LiveData
@@ -13,12 +10,14 @@ class WorldViewModel(
 ) {
     val playerFleet: LiveData<PlayerFleet> = LiveData(null)
     val nearPort: LiveData<String> = LiveData(null)
+    val nearLanding: LiveData<String> = LiveData(null)
 
     private fun onMoveFleet(fleet: PlayerFleet) {
         playerFleet(fleet)
         val gameMap = fleet.map
         val txy = fleet.xy.toTXY(gameMap.tileSize)
         scanNearPort(txy, gameMap.portPositions)
+        scanNearLanding(txy, gameMap.landingPositions)
         store.fleet.location = fleet.xy
     }
 
@@ -27,6 +26,13 @@ class WorldViewModel(
         val portIds = txy.crossXY.mapNotNull { txy -> portPositions[txy]?.id }
         val portIdString = portIds.firstOrNull()?.name ?: ""
         nearPort(portIdString)
+    }
+
+    private fun scanNearLanding(txy: TXY, landingPositions: Map<TXY, LandingId?>) {
+        // 상륙지가 있으면 표시.
+        val landingIds = txy.crossXY.mapNotNull { txy -> landingPositions[txy] }
+        val landingIdString = landingIds.firstOrNull()?.name ?: ""
+        nearLanding(landingIdString)
     }
 
     fun up() {
@@ -65,5 +71,9 @@ class WorldViewModel(
 
     fun enterPort() {
         store.fleet.port = PortId.valueOf(nearPort.get())
+    }
+
+    fun enterLanding() {
+        store.fleet.landing = LandingId.valueOf(nearLanding.get())
     }
 }

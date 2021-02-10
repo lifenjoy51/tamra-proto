@@ -1,6 +1,7 @@
 import scene.common.FleetInfoViewModel
 import scene.common.HeaderViewModel
 import scene.event.EventViewModel
+import scene.landing.LandingViewModel
 import scene.port.PortViewModel
 import scene.port.market.MarketBuyViewModel
 import scene.port.market.MarketSellViewModel
@@ -18,4 +19,5 @@ class ViewModelProvider(
     val shipyardBuyViewModel: ShipyardBuyViewModel,
     val shipyardSellViewModel: ShipyardSellViewModel,
     val eventViewModel: EventViewModel,
+    val landingViewModel: LandingViewModel,
 )

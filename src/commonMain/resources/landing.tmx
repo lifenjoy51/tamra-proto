@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="5" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="4">
+ <tileset firstgid="1" source="landing-tileset.tsx"/>
+ <tileset firstgid="5" source="world-tileset.tsx"/>
+ <layer id="1" name="terrain" width="5" height="10">
+  <data encoding="csv">
+1,1,1,1,1,
+1,1,2,2,2,
+2,2,2,4,4,
+4,2,4,4,4,
+4,2,2,2,4,
+4,4,2,4,4,
+4,2,2,4,4,
+4,2,4,4,4,
+4,2,2,2,2,
+4,4,4,4,4
+</data>
+ </layer>
+ <layer id="3" name="overlay" width="5" height="10">
+  <data encoding="csv">
+0,0,0,0,0,
+0,0,0,0,0,
+7,0,0,0,0,
+0,0,0,0,0,
+0,0,0,0,0,
+0,0,0,0,0,
+0,0,0,0,0,
+0,0,0,0,0,
+0,0,0,0,8,
+0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="4" name="area" visible="0">
+  <object id="3" x="1.6793" y="45.341">
+   <polygon points="0,0 16.1632,0 16.3731,31.9066 32.7463,31.9066 32.3265,51.8483 16.1632,52.6879 16.1632,96.5595 75.3584,96.9794 74.9386,85.2243 28.3381,84.5946 28.3381,63.6034 44.0815,64.0232 44.5014,31.4868 59.615,31.9066 59.4051,20.7813 28.548,20.7813 28.3381,0.629736 43.8716,0.209912 44.2914,-15.1137 76.6179,-15.1137 76.6179,-28.1282 32.3265,-27.2886 31.6967,-12.3848 -0.419824,-12.1749"/>
+  </object>
+ </objectgroup>
+ <objectgroup id="2" name="sites">
+  <object id="1" name="EXIT" x="7.76675" y="38.4139">
+   <point/>
+  </object>
+  <object id="2" name="ILCHOOLBONG" x="71.58" y="135.183">
+   <point/>
+  </object>
+ </objectgroup>
+</map>

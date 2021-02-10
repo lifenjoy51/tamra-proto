@@ -32,3 +32,12 @@ enum class ProductId {
     MAL,
     GAMGYUL
 }
+
+enum class LandingId {
+    SUNGSAN
+}
+
+enum class SiteId {
+    EXIT,
+    ILCHOOLBONG,
+}

@@ -18,6 +18,8 @@ import scene.MainScene
 import scene.common.FleetInfoViewModel
 import scene.common.HeaderViewModel
 import scene.event.EventViewModel
+import scene.landing.LandingScene
+import scene.landing.LandingViewModel
 import scene.port.PortScene
 import scene.port.PortViewModel
 import scene.port.market.MarketBuyViewModel
@@ -68,6 +70,7 @@ object TamraModule : Module() {
         mapPrototype { PortScene(get()) }
         mapPrototype { MarketScene(get()) }
         mapPrototype { ShipyardScene(get()) }
+        mapPrototype { LandingScene(get()) }
     }
 
     private fun initViewModels(store: GameStore): ViewModelProvider {
@@ -80,7 +83,8 @@ object TamraModule : Module() {
             MarketSellViewModel(store),
             ShipyardBuyViewModel(store),
             ShipyardSellViewModel(store),
-            EventViewModel(store)
+            EventViewModel(store),
+            LandingViewModel(store)
         )
     }
 

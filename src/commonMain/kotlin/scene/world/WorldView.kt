@@ -11,6 +11,7 @@ import com.soywiz.korge.view.sprite
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
 import domain.GameData
+import domain.LandingId
 import domain.PortId
 import domain.world.WorldMap
 import mainHeight
@@ -24,7 +25,8 @@ const val viewScale = 4.0
 
 class WorldView(
     viewModelProvider: ViewModelProvider,
-    private val changePortScene: suspend () -> Unit
+    private val changePortScene: suspend () -> Unit,
+    private val changeLandingScene: suspend () -> Unit
 ) {
     private val vm: WorldViewModel = viewModelProvider.worldViewModel
     private val headerView = HeaderView(viewModelProvider)
@@ -40,12 +42,15 @@ class WorldView(
         } + mapOf(0 to WorldTile.EMPTY)
 
         val terrains = tiledMap.loadTiles("terrain", tileTypeMap)
-        val sites = tiledMap.loadTiles("site", tileTypeMap)
+        val overlays = tiledMap.loadTiles("overlay", tileTypeMap)
         */
         val portPositions = tiledMap.getObjectNames("ports").mapValues { (k, v) ->
             GameData.ports[PortId.valueOf(v)]
         }
-        val worldMap = WorldMap(tiledMap.getMovableArea(), tiledMap.tileheight, portPositions)
+        val landingPositions = tiledMap.getObjectNames("landings").mapValues { (k, v) ->
+            LandingId.valueOf(v)
+        }
+        val worldMap = WorldMap(tiledMap.getMovableArea(), tiledMap.tileheight, portPositions, landingPositions)
 
         container.apply {
             // TODO change texture..
@@ -81,6 +86,16 @@ class WorldView(
                     }
                 }
                 vm.nearPort.observe { visible = it.isNotEmpty() }
+            }
+
+            tamraButton(text = "상륙하기", width = 120.0, px = mainWidth - 130, py = mainHeight - 40) {
+                onClick {
+                    if (!vm.nearLanding.value.isNullOrEmpty()) {
+                        vm.enterLanding()
+                        changeLandingScene.invoke()
+                    }
+                }
+                vm.nearLanding.observe { visible = it.isNotEmpty() }
             }
         }
 

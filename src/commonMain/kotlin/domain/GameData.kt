@@ -49,7 +49,8 @@ class GameData(
 class Fleet(
     val ships: MutableList<Ship>,   // 플레이어의 배 목록
     var balance: Int,
-    var port: PortId?,  // 현재 정박중인 항구.
+    var port: PortId? = null,  // 현재 정박중인 항구.
+    var landing: LandingId? = null, // 현재  상륙지점.
     var location: XY,    // 현재 위치.
     var cargoItems: MutableList<CargoItem>
 ) {
@@ -87,4 +88,10 @@ class Product(
     val type: ProductType,
     val name: String,
     val price: Int,
+)
+
+class Site(
+    val id: SiteId,
+    val name: String,
+    val subtitle: String,
 )
