@@ -11,6 +11,8 @@ class WorldViewModel(
     private val store: GameStore
 ) {
     val playerFleet: LiveData<PlayerFleet> = LiveData(null)
+    val windDirection: LiveData<Angle> = LiveData(null)
+    val windSpeed: LiveData<Double> = LiveData(null)
     val nearPort: LiveData<String> = LiveData(null)
     val nearLanding: LiveData<String> = LiveData(null)
 
@@ -20,6 +22,9 @@ class WorldViewModel(
         val txy = fleet.point.toTXY(gameMap.tileSize)
         scanNearPort(txy, gameMap.portPositions)
         scanNearLanding(txy, gameMap.landingPositions)
+        // FIXME 바람 데이터는 어디서?
+        windDirection(Angle.ZERO)
+        windSpeed(1.0)
         store.fleet.location = fleet.point
     }
 
@@ -109,7 +114,7 @@ class WorldViewModel(
 
     fun move() {
         playerFleet.value?.let {
-            it.move()
+            it.move(windDirection.value ?: Angle.ZERO, windSpeed.value ?: 0.0)
             onMoveFleet(it)
         }
     }

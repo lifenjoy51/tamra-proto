@@ -23,7 +23,7 @@ class WorldScene(viewModelProvider: ViewModelProvider) : Scene() {
         worldView.draw(this)
 
         // update
-        addFixedUpdater(TimeSpan(100.0)) {
+        addFixedUpdater(TimeSpan(200.0)) {
             onKeyInput()
             vm.move()
         }

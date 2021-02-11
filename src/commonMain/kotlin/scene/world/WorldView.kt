@@ -8,9 +8,8 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import com.soywiz.korma.geom.Matrix
-import com.soywiz.korma.geom.Point
-import com.soywiz.korma.geom.unaryMinus
+import com.soywiz.korma.geom.*
+import com.soywiz.korma.math.roundDecimalPlaces
 import domain.GameData
 import domain.LandingId
 import domain.PortId
@@ -20,6 +19,7 @@ import mainWidth
 import scene.common.HeaderView
 import ui.tamraButton
 import ui.tamraRect
+import ui.tamraText
 import util.getMovableArea
 import util.getObjectNames
 
@@ -54,8 +54,11 @@ class WorldView(
         }
         val worldMap = WorldMap(tiledMap.getMovableArea(), tiledMap.tileheight, portPositions, landingPositions)
 
+        // background
+        container.tamraRect(width = mainWidth.toDouble(), height = mainHeight.toDouble(), color = Colors.DIMGREY)
+
         container.fixedSizeContainer(mainWidth, mainWidth, clip = true) {
-            positionY(100)
+            positionY(32)
             tamraRect(width = width, height = height, color = Colors.SKYBLUE)
 
             // TODO change texture..
@@ -64,7 +67,6 @@ class WorldView(
                 addChild(fleetView)
                 scale = viewScale
             }
-            //addChild(tileMapView)
 
             // on update fleet position
             vm.playerFleet.observe { fleet ->
@@ -100,12 +102,51 @@ class WorldView(
         // ui
         container.apply {
 
-            val background = SolidRect(width = mainWidth, height = mainHeight)
-
             // draw header
             headerView.draw(container)
 
-            tamraButton(text = "항구 들어가기", width = 120.0, px = mainWidth - 130, py = mainHeight - 40) {
+            // controls
+            tamraText(text = "시속", px = 10, py = mainHeight - 170)
+            tamraText(text = "", px = 50, py = mainHeight - 170) {
+                vm.playerFleet.observe {
+                    setText("${it.v.roundDecimalPlaces(2)}")
+                }
+            }
+
+            // 풍향을 어떻게 표시할까?
+            fixedSizeContainer(width = 90, height = 90) {
+                positionX(10)
+                positionY(mainHeight - 140)
+                tamraRect(width = width, height = height, color = Colors.SKYBLUE)
+                sprite(resourcesVfs["arrow.png"].readBitmap(), anchorX = 0.5, anchorY = 0.5) {
+                    alpha(0.3)
+                    positionX(45)
+                    positionY(45)
+                    // 풍향이 바뀌거나... or 배의 방향이 바뀌면 달라져야하는데 -_ -
+                    vm.playerFleet.observe {
+                        rotation(it.angle.plus(vm.windDirection.value ?: Angle.ZERO))
+                    }
+                    vm.windDirection.observe {
+                        rotation(it.plus(vm.playerFleet.value?.angle ?: Angle.ZERO))
+                    }
+
+                }
+            }
+
+
+            tamraButton(text = "<<", width = 40.0, px = 10, py = mainHeight - 40) {
+            }
+            tamraButton(text = ">>", width = 40.0, px = 60, py = mainHeight - 40) {
+            }
+
+            tamraButton(text = "정박", width = 50.0, px = mainWidth - 120, py = mainHeight - 40) {
+
+            }
+            tamraButton(text = "펼침", width = 50.0, px = mainWidth - 60, py = mainHeight - 40) {
+
+            }
+
+            tamraButton(text = "항구 들어가기", width = 120.0, px = mainWidth - 130, py = mainHeight - 170) {
                 onClick {
                     if (!vm.nearPort.value.isNullOrEmpty()) {
                         vm.enterPort()
@@ -115,7 +156,7 @@ class WorldView(
                 vm.nearPort.observe { visible = it.isNotEmpty() }
             }
 
-            tamraButton(text = "상륙하기", width = 120.0, px = mainWidth - 130, py = mainHeight - 40) {
+            tamraButton(text = "상륙하기", width = 120.0, px = mainWidth - 130, py = mainHeight - 170) {
                 onClick {
                     if (!vm.nearLanding.value.isNullOrEmpty()) {
                         vm.enterLanding()
