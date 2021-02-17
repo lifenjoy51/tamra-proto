@@ -107,7 +107,7 @@ object TamraModule : Module() {
                     ),
                     balance = 1000,
                     port = PortId.JEJU,
-                    location = Point(100.0, 70.0),
+                    location = Point(330.0, 60.0),
                     cargoItems = mutableListOf()
                 )
             )

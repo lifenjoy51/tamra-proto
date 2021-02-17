@@ -25,6 +25,7 @@ class WorldViewModel(
         // FIXME 바람 데이터는 어디서?
         windDirection(Angle.ZERO)
         windSpeed(1.0)
+        // save current location.
         store.fleet.location = fleet.point
     }
 
@@ -42,34 +43,6 @@ class WorldViewModel(
         nearLanding(landingIdString)
     }
 
-    fun up() {
-        playerFleet.value?.let {
-            it.moveUp()
-            onMoveFleet(it)
-        }
-    }
-
-    fun down() {
-        playerFleet.value?.let {
-            it.moveDown()
-            onMoveFleet(it)
-        }
-    }
-
-    fun left() {
-        playerFleet.value?.let {
-            it.moveLeft()
-            onMoveFleet(it)
-        }
-    }
-
-    fun right() {
-        playerFleet.value?.let {
-            it.moveRight()
-            onMoveFleet(it)
-        }
-    }
-
     fun initPlayerFleet(gameMap: WorldMap) {
         val fleet = PlayerFleet(point = store.fleet.location, map = gameMap)
         playerFleet(fleet)
@@ -84,30 +57,16 @@ class WorldViewModel(
         store.fleet.landing = LandingId.valueOf(nearLanding.get())
     }
 
-    fun speedDown() {
-        playerFleet.value?.let {
-            it.v = it.v * 0.95
-            onMoveFleet(it)
-        }
-    }
-
-    fun speedUp() {
-        playerFleet.value?.let {
-            it.v = it.v * 1.05
-            onMoveFleet(it)
-        }
-    }
-
     fun turnLeft() {
         playerFleet.value?.let {
-            it.angle = it.angle.plus(Angle.Companion.fromDegrees(10))
+            it.angle = it.angle.plus(Angle.Companion.fromDegrees(2))
             onMoveFleet(it)
         }
     }
 
     fun turnRight() {
         playerFleet.value?.let {
-            it.angle = it.angle.plus(Angle.Companion.fromDegrees(-10))
+            it.angle = it.angle.plus(Angle.Companion.fromDegrees(-2))
             onMoveFleet(it)
         }
     }
@@ -115,6 +74,20 @@ class WorldViewModel(
     fun move() {
         playerFleet.value?.let {
             it.move(windDirection.value ?: Angle.ZERO, windSpeed.value ?: 0.0)
+            onMoveFleet(it)
+        }
+    }
+
+    fun stop() {
+        playerFleet.value?.let {
+            it.stop()
+            onMoveFleet(it)
+        }
+    }
+
+    fun controlSail() {
+        playerFleet.value?.let {
+            it.controlSail()
             onMoveFleet(it)
         }
     }

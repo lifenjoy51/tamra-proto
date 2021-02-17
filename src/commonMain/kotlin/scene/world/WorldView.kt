@@ -8,11 +8,15 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import com.soywiz.korma.geom.*
+import com.soywiz.korma.geom.Angle
+import com.soywiz.korma.geom.Matrix
+import com.soywiz.korma.geom.plus
+import com.soywiz.korma.geom.unaryMinus
 import com.soywiz.korma.math.roundDecimalPlaces
 import domain.GameData
 import domain.LandingId
 import domain.PortId
+import domain.world.PlayerFleet
 import domain.world.WorldMap
 import mainHeight
 import mainWidth
@@ -23,7 +27,8 @@ import ui.tamraText
 import util.getMovableArea
 import util.getObjectNames
 
-const val viewScale = 3.0
+const val viewScale = 4.0
+const val fleetScale = viewScale / 8
 
 class WorldView(
     viewModelProvider: ViewModelProvider,
@@ -34,7 +39,8 @@ class WorldView(
     private val headerView = HeaderView(viewModelProvider)
 
     suspend fun draw(container: Container) {
-        val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
+        // val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
+        val tiledMap = resourcesVfs["jeju.tmx"].readTiledMap()
         /*
         val tileSize = tiledMap.tilewidth
         val tileSet = tiledMap.tilesets.first().data    // 타일셋이 하나일 때.
@@ -57,15 +63,19 @@ class WorldView(
         // background
         container.tamraRect(width = mainWidth.toDouble(), height = mainHeight.toDouble(), color = Colors.DIMGREY)
 
+        val mainSize = mainWidth.toDouble()
         container.fixedSizeContainer(mainWidth, mainWidth, clip = true) {
             positionY(32)
-            tamraRect(width = width, height = height, color = Colors.SKYBLUE)
+            tamraRect(width = mainSize, height = mainSize, color = Colors["#9aa9af"])
 
             // TODO change texture..
-            val fleetView = sprite(texture = resourcesVfs["S100.png"].readBitmap())
+            val fleetView = sprite(texture = resourcesVfs["S100.png"].readBitmap()) {
+                scale = fleetScale
+                center()
+            }
             val tileMapView = tiledMapView(tiledMap) {
                 addChild(fleetView)
-                scale = viewScale
+                //scale = viewScale
             }
 
             // on update fleet position
@@ -74,22 +84,18 @@ class WorldView(
                 // move fleet view
                 with(fleetView) {
                     rotation(fleet.angle.unaryMinus())
-                    Point(width, height)
-                        .rotate(fleet.angle.unaryMinus())
-                        .let { p ->
-                            x = fleet.point.x - p.x / 2
-                            y = fleet.point.y - p.y / 2
-                        }
+                    x = fleet.point.x
+                    y = fleet.point.y
                 }
 
                 // centering camera
                 with(tileMapView) {
-                    val rotatedPoint = fleet.point
+                    val rotatedPoint = fleetView.pos
                         .rotate(fleet.angle)
                         .mul(viewScale)
                     setTransform(Matrix.Transform(
-                        x = width / 2 - rotatedPoint.x,
-                        y = height / 2 - rotatedPoint.y,
+                        x = mainSize / 2 - rotatedPoint.x,
+                        y = mainSize / 2 - rotatedPoint.y,
                         scaleX = viewScale,
                         scaleY = viewScale,
                         rotation = fleet.angle
@@ -103,13 +109,23 @@ class WorldView(
         container.apply {
 
             // draw header
-            headerView.draw(container)
+            val header = headerView.draw(container)
 
             // controls
             tamraText(text = "시속", px = 10, py = mainHeight - 170)
             tamraText(text = "", px = 50, py = mainHeight - 170) {
                 vm.playerFleet.observe {
                     setText("${it.v.roundDecimalPlaces(2)}")
+                }
+            }
+            tamraText(text = "", px = 100, py = mainHeight - 170) {
+                vm.playerFleet.observe {
+                    val state = when (it.sailState) {
+                        PlayerFleet.SaleState.FULL_SALE -> "펼침"
+                        PlayerFleet.SaleState.CLOSE_SALE -> "접힘"
+                        PlayerFleet.SaleState.STOP -> "정박"
+                    }
+                    setText("$state")
                 }
             }
 
@@ -135,15 +151,33 @@ class WorldView(
 
 
             tamraButton(text = "<<", width = 40.0, px = 10, py = mainHeight - 40) {
+                onClick {
+                    vm.turnLeft()
+                }
             }
             tamraButton(text = ">>", width = 40.0, px = 60, py = mainHeight - 40) {
+                onClick {
+                    vm.turnRight()
+                }
             }
 
             tamraButton(text = "정박", width = 50.0, px = mainWidth - 120, py = mainHeight - 40) {
-
+                onClick {
+                    vm.stop()
+                }
             }
             tamraButton(text = "펼침", width = 50.0, px = mainWidth - 60, py = mainHeight - 40) {
-
+                onClick {
+                    vm.controlSail()
+                }
+                vm.playerFleet.observe {
+                    val state = when (it.sailState) {
+                        PlayerFleet.SaleState.FULL_SALE -> "접기"
+                        PlayerFleet.SaleState.CLOSE_SALE -> "펴기"
+                        PlayerFleet.SaleState.STOP -> "이동"
+                    }
+                    setText("$state")
+                }
             }
 
             tamraButton(text = "항구 들어가기", width = 120.0, px = mainWidth - 130, py = mainHeight - 170) {
@@ -165,6 +199,8 @@ class WorldView(
                 }
                 vm.nearLanding.observe { visible = it.isNotEmpty() }
             }
+
+            sendChildToFront(header)
         }
 
         // init vm fleet

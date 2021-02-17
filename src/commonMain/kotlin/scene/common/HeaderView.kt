@@ -2,10 +2,7 @@ package scene.common
 
 import ViewModelProvider
 import com.soywiz.korge.input.onClick
-import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.alignX
-import com.soywiz.korge.view.centerOnStage
-import com.soywiz.korge.view.fixedSizeContainer
+import com.soywiz.korge.view.*
 import defaultMargin
 import mainWidth
 import ui.tamraButton
@@ -18,8 +15,8 @@ class HeaderView(viewModelProvider: ViewModelProvider) {
     private val fleetInfoVm = viewModelProvider.fleetInfoViewModel
     private val fleetInfoView = FleetInfoView(fleetInfoVm)
 
-    suspend fun draw(container: Container) {
-        container.apply {
+    fun draw(container: Container): FixedSizeContainer {
+        return container.fixedSizeContainer(windowWidth, windowHeight) {
             // draw layer Fleet info
             val layerFleetInfo = fixedSizeContainer(windowWidth, windowHeight) {
                 centerOnStage()
@@ -46,7 +43,8 @@ class HeaderView(viewModelProvider: ViewModelProvider) {
             tamraButton(text = "정보", textSize = 14.0, width = 40.0, height = 24.0, px = mainWidth - 40 - defaultMargin / 2, py = defaultMargin / 2) {
                 onClick { fleetInfoVm.toggleFleetInfo(true) }
             }
+
+            vm.init()
         }
-        vm.init()
     }
 }

@@ -23,7 +23,7 @@ class WorldScene(viewModelProvider: ViewModelProvider) : Scene() {
         worldView.draw(this)
 
         // update
-        addFixedUpdater(TimeSpan(200.0)) {
+        addFixedUpdater(TimeSpan(100.0)) {
             onKeyInput()
             vm.move()
         }
@@ -34,8 +34,8 @@ class WorldScene(viewModelProvider: ViewModelProvider) : Scene() {
         when {
             views.input.keys[Key.RIGHT] -> vm.turnRight()
             views.input.keys[Key.LEFT] -> vm.turnLeft()
-            views.input.keys[Key.UP] -> vm.speedUp()
-            views.input.keys[Key.DOWN] -> vm.speedDown()
+            views.input.keys[Key.UP] -> vm.controlSail()
+            views.input.keys[Key.DOWN] -> vm.stop()
         }
     }
 }

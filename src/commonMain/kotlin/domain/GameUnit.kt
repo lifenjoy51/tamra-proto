@@ -30,10 +30,11 @@ abstract class GameUnit {
         if (isMovable(newXy)) point = newXy
     }
 
-    fun move(dx: Double, dy: Double) {
+    fun move(dx: Double, dy: Double): Boolean {
         val newXy = Point(point.x + dx, point.y + dy)
-        //println("$point $newXy")
-        if (isMovable(newXy)) point = newXy
+        val moved = isMovable(newXy)
+        if (moved) point = newXy
+        return moved
     }
 
 }
