@@ -4,7 +4,7 @@ import com.soywiz.kmem.umod
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korma.geom.*
 import domain.GameUnit
-import domain.toTXY
+import domain.toTileXY
 import tileSize
 import util.LineHelper
 
@@ -45,14 +45,17 @@ data class PlayerFleet(
         }
 
         // FIXME 최대속도 제한.
-        if (v > 5) v = 5.0
+        if (v > 2) v = 2.0
         if (v < -1) v = originVelocity
+
+        // FIXME test
+        v = 1.0
 
         // 0도 기준으로 위아래로 움직이는게 cosine, 좌우로 움직이는게 sine이다.
         val dx = -angle.sine * v
         val dy = -angle.cosine * v
         if (!this.moved(dx, dy) || originVelocity == 0.0) {
-            v = originVelocity
+            v = originVelocity * 0.5
         }
     }
 
@@ -64,7 +67,7 @@ data class PlayerFleet(
     }
 
     fun isMovable(point: Point): Boolean {
-        val txy = point.toTXY()
+        val txy = point.toTileXY()
         try {
             val obj = map.tileCollision[map.tiles[txy.x, txy.y]]
             //txy == Point(it.bounds.x, it.bounds.y).toTXY(map.tileSize)
@@ -87,7 +90,8 @@ data class PlayerFleet(
                 }.sum() % 2 == 1
             }
         } catch (e: Exception) {
-            return true
+            e.printStackTrace()
+            return false
         }
     }
 

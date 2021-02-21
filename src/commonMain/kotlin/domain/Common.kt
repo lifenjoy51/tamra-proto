@@ -1,5 +1,6 @@
 package domain
 
+import baseCoord
 import com.soywiz.korma.geom.Point
 import tileSize
 import tilesPerX
@@ -14,7 +15,7 @@ data class TileXY(
     fun toXY(): Point = Point((x * tileSize).toDouble(), (y * tileSize).toDouble())
 }
 
-fun Point.toTXY(): TileXY = TileXY((x / tileSize).toInt(), (y / tileSize).toInt())
+fun Point.toTileXY(): TileXY = TileXY((x - baseCoord.point.x).toInt() / tileSize, (y - baseCoord.point.y).toInt() / tileSize)
 
 operator fun Point.plus(other: Point) = Point(this.x + other.x, this.y + other.y)
 
@@ -25,4 +26,5 @@ data class Coord(
     val y: Double
 ) {
     val point: Point get() = Point(x * tileSize * tilesPerX, y * tileSize * tilesPerY)
+    val tileXy: TileXY get() = point.toTileXY()
 }

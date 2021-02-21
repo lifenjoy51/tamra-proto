@@ -7,7 +7,7 @@ import domain.GameStore
 import domain.TileXY
 import domain.port.Player
 import domain.port.PortMap
-import domain.toTXY
+import domain.toTileXY
 import tileSize
 import ui.LiveData
 import util.SaveManager
@@ -75,7 +75,7 @@ class PortViewModel(
     private fun onMovePlayer(p: Player) {
         player(p)
         val gameMap = p.map
-        val txy = p.point.toTXY()
+        val txy = p.point.toTileXY()
         scanBuilding(txy, gameMap.buildingMap)
         store.playerLocation = p.point
     }

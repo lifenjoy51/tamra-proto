@@ -28,9 +28,6 @@ import ui.tamraText
 import util.getMovableArea
 import util.getObjectNames
 
-const val viewScale = 2.0
-const val fleetScale = viewScale / 2
-
 class WorldView(
     viewModelProvider: ViewModelProvider,
     private val changePortScene: suspend () -> Unit,
@@ -53,6 +50,7 @@ class WorldView(
         val terrains = tiledMap.loadTiles("terrain", tileTypeMap)
         val overlays = tiledMap.loadTiles("overlay", tileTypeMap)
         */
+
         val portPositions = tiledMap.getObjectNames("ports").mapValues { (k, v) ->
             GameData.ports[PortId.valueOf(v)]
         }
@@ -71,8 +69,8 @@ class WorldView(
             tamraRect(width = mainSize, height = mainSize, color = Colors["#336699"])
 
             // TODO change texture..
-            val fleetView = sprite(texture = resourcesVfs["S100.png"].readBitmap()) {
-                scale = fleetScale
+            val fleetView = sprite(texture = resourcesVfs["S200.png"].readBitmap()) {
+                scale = 1.0 / vm.viewScale.get()
                 center()
             }
             // pos = tile * size.
@@ -83,7 +81,6 @@ class WorldView(
 
             // on update fleet position
             vm.playerFleet.observe { fleet ->
-                println("${fleet.point} ${fleetView.pos} ${tileMapView.pos}")
                 // move fleet view
                 with(fleetView) {
                     rotation(fleet.angle.unaryMinus())
@@ -95,12 +92,12 @@ class WorldView(
                 with(tileMapView) {
                     val rotatedPoint = fleetView.pos
                         .rotate(fleet.angle)
-                        .mul(viewScale)
+                        .mul(vm.viewScale.get())
                     setTransform(Matrix.Transform(
                         x = mainSize / 2 - rotatedPoint.x,
                         y = mainSize / 2 - rotatedPoint.y,
-                        scaleX = viewScale,
-                        scaleY = viewScale,
+                        scaleX = vm.viewScale.get(),
+                        scaleY = vm.viewScale.get(),
                         rotation = fleet.angle
                     ))
                 }

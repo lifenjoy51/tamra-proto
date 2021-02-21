@@ -3,7 +3,7 @@ package util
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korma.geom.Point
 import domain.TileXY
-import domain.toTXY
+import domain.toTileXY
 
 /**
  * 특정 타입의 타일을 레이어에서 로드한다.
@@ -36,7 +36,7 @@ fun TiledMap.getMovableArea(): List<List<Pair<Point, Point>>> {
 
 fun TiledMap.getObjectNames(layerName: String): Map<TileXY, String> {
     return objectLayers.find { it.name == layerName }!!.objects.associate {
-        val txy = Point(it.bounds.x, it.bounds.y).toTXY()
+        val txy = Point(it.bounds.x, it.bounds.y).toTileXY()
         val objName = it.name
         txy to objName
     }

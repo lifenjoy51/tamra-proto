@@ -10,6 +10,8 @@ import ui.LiveData
 class WorldViewModel(
     private val store: GameStore
 ) {
+    // 가시범위.
+    val viewScale: LiveData<Double> = LiveData(2.0)
     val playerFleet: LiveData<PlayerFleet> = LiveData(null)
     val windDirection: LiveData<Angle> = LiveData(null)
     val windSpeed: LiveData<Double> = LiveData(null)
@@ -19,7 +21,7 @@ class WorldViewModel(
     private fun onMoveFleet(fleet: PlayerFleet) {
         playerFleet(fleet)
         val worldMap = fleet.map
-        val txy = fleet.point.toTXY()
+        val txy = fleet.point.toTileXY()
         scanNearPort(txy, worldMap.portPositions)
         scanNearLanding(txy, worldMap.landingPositions)
         // FIXME 바람 데이터는 어디서?
@@ -59,6 +61,7 @@ class WorldViewModel(
 
     fun turnLeft() {
         playerFleet.value?.let {
+            // FIXME 조타 능력에 따라 각도가 바뀌어야 한다. 속도에도 괜계가 있나?
             it.angle = it.angle.plus(Angle.Companion.fromDegrees(2))
             onMoveFleet(it)
         }

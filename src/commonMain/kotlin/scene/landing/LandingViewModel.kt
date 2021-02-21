@@ -7,7 +7,7 @@ import domain.SiteId
 import domain.TileXY
 import domain.landing.LandingMap
 import domain.landing.LandingPlayer
-import domain.toTXY
+import domain.toTileXY
 import tileSize
 import ui.LiveData
 import util.SaveManager
@@ -75,7 +75,7 @@ class LandingViewModel(
     private fun onMovePlayer(p: LandingPlayer) {
         player(p)
         val gameMap = p.map
-        val txy = p.point.toTXY()
+        val txy = p.point.toTileXY()
         scanBuilding(txy, gameMap.sites)
         store.playerLocation = p.point
     }
