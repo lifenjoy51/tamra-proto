@@ -1,6 +1,8 @@
 import com.soywiz.korge.Korge
 import com.soywiz.korge.scene.Module
 import com.soywiz.korge.scene.Scene
+import com.soywiz.korim.bitmap.BmpSlice
+import com.soywiz.korim.bitmap.slice
 import com.soywiz.korim.font.readTtfFont
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korinject.AsyncInjector
@@ -36,10 +38,6 @@ import kotlin.reflect.KClass
 
 suspend fun main() = Korge(Korge.Config(module = TamraModule))
 
-val baseCoord = Coord(126.1, -34.05)
-val tileSize = 8
-val tilesPerY = 120
-val tilesPerX = 100
 
 const val defaultMargin = 8
 const val infoAreaHeight = 30
@@ -51,6 +49,9 @@ const val mainHeight = 512
 const val windowWidth = mainWidth * 4 / 5
 const val windowHeight = mainHeight * 4 / 5 - defaultMargin * 2
 
+// image loading...
+val spriteMap: MutableMap<String, BmpSlice> = mutableMapOf()
+
 object TamraModule : Module() {
     // override val mainScene: KClass<out Scene> = MainScene::class
     override val mainScene: KClass<out Scene> = WorldScene::class
@@ -61,6 +62,7 @@ object TamraModule : Module() {
     override suspend fun AsyncInjector.configure() {
         // loading..
         loadFont()
+        loadSprite()
         loadGameData()
 
         //
@@ -77,6 +79,16 @@ object TamraModule : Module() {
         mapPrototype { MarketScene(get()) }
         mapPrototype { ShipyardScene(get()) }
         mapPrototype { LandingScene(get()) }
+    }
+
+    private suspend fun loadSprite() {
+
+        /*resourcesVfs.listNames().filter {
+            it.endsWith(".png")
+        }*/
+        listOf("L200.png", "M200.png", "S200.png").forEach {
+            spriteMap[it] = resourcesVfs[it].readBitmap().slice()
+        }
     }
 
     private fun initViewModels(store: GameStore): ViewModelProvider {
@@ -212,14 +224,13 @@ object TamraModule : Module() {
         return data.getValue("ships").associate { shipData ->
             val shipType = ShipType.valueOf(shipData.getValue("shipType"))
             val imgName = shipData.getValue("imgName")
-            val imgSprite = resourcesVfs[imgName].readBitmap()
             val shipTypeName = shipData.getValue("typeName")
             val cargoSize = shipData.getValue("cargoSize").toInt()
             val speed = shipData.getValue("speed").toInt()
             val price = shipData.getValue("price").toInt()
 
             shipType to ShipBlueprint(
-                shipType, shipTypeName, imgSprite, cargoSize, speed, price
+                shipType, shipTypeName, imgName, cargoSize, speed, price
             )
         }
     }

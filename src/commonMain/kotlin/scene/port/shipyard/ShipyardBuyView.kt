@@ -4,7 +4,6 @@ import com.soywiz.korge.input.onClick
 import com.soywiz.korge.input.onOut
 import com.soywiz.korge.input.onOver
 import com.soywiz.korge.view.*
-import com.soywiz.korim.bitmap.slice
 import com.soywiz.korim.color.Colors
 import defaultMargin
 import domain.port.shipyard.maxShipSpace
@@ -13,6 +12,7 @@ import itemAreaHeight
 import mainHeight
 import mainWidth
 import scene.port.PortScene
+import spriteMap
 import textTabSpace
 import ui.tamraButton
 import ui.tamraRect
@@ -120,7 +120,7 @@ class ShipyardBuyView(
                 tamraRect(width, height, color = Colors.MIDNIGHTBLUE)
                 sprite {
                     vm.selectedBlueprint.observe {
-                        bitmap = it.imgSprite.slice()
+                        bitmap = spriteMap.getValue(it.imgName)
                         positionX((topWidth - bitmap.width) / 2)
                         positionY((topHeight - bitmap.height) / 2)
                     }

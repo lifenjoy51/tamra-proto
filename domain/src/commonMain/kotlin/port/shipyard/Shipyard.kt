@@ -1,12 +1,11 @@
 package domain.port.shipyard
 
-import com.soywiz.korim.bitmap.Bitmap
 import domain.*
 
 class ShipBlueprint(
     val type: ShipType,
     val typeName: String,
-    val imgSprite: Bitmap,
+    val imgName: String,
     val cargoSize: Int,
     val speed: Int,
     val price: Int,

@@ -1,18 +1,17 @@
-package util
-
-import com.soywiz.korma.geom.Point
-import com.soywiz.korui.layout.MathEx
+import domain.LocationXY
+import kotlin.math.max
+import kotlin.math.min
 
 // https://www.geeksforgeeks.org/check-if-two-given-line-segments-intersect/
 class LineHelper {
     companion object {
         // Given three colinear points p, q, r, the function checks if
         // point q lies on line segment 'pr'
-        private fun onSegment(p: Point, q: Point, r: Point): Boolean {
-            return q.x <= MathEx.max(p.x, r.x) &&
-                q.x >= MathEx.min(p.x, r.x) &&
-                q.y <= MathEx.max(p.y, r.y) &&
-                q.y >= MathEx.min(p.y, r.y)
+        private fun onSegment(p: LocationXY, q: LocationXY, r: LocationXY): Boolean {
+            return q.x <= max(p.x, r.x) &&
+                q.x >= min(p.x, r.x) &&
+                q.y <= max(p.y, r.y) &&
+                q.y >= min(p.y, r.y)
         }
 
         // To find orientation of ordered triplet (p, q, r).
@@ -20,7 +19,7 @@ class LineHelper {
         // 0 --> p, q and r are colinear
         // 1 --> Clockwise
         // 2 --> Counterclockwise
-        private fun orientation(p: Point, q: Point, r: Point): Int {
+        private fun orientation(p: LocationXY, q: LocationXY, r: LocationXY): Int {
             // See https://www.geeksforgeeks.org/orientation-3-ordered-points/
             // for details of below formula.
             val v = (q.y - p.y) * (r.x - q.x) -
@@ -31,11 +30,11 @@ class LineHelper {
 
         // The main function that returns true if line segment 'p1q1'
         // and 'p2q2' intersect.
-        fun doIntersect(line1: Pair<Point, Point>, line2: Pair<Point, Point>): Boolean {
-            val p1: Point = line1.first
-            val q1: Point = line1.second
-            val p2: Point = line2.first
-            val q2: Point = line2.second
+        fun doIntersect(line1: Pair<LocationXY, LocationXY>, line2: Pair<LocationXY, LocationXY>): Boolean {
+            val p1: LocationXY = line1.first
+            val q1: LocationXY = line1.second
+            val p2: LocationXY = line2.first
+            val q2: LocationXY = line2.second
 
             // Find the four orientations needed for general and
             // special cases
@@ -63,3 +62,5 @@ class LineHelper {
         }
     }
 }
+
+fun LocationXY.toLocationXY() = LocationXY(x, y)

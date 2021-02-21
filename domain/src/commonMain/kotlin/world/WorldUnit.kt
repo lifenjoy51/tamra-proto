@@ -1,18 +1,17 @@
 package domain.world
 
-import com.soywiz.kmem.umod
-import com.soywiz.korge.tiled.TiledMap
+import LineHelper
 import com.soywiz.korma.geom.*
 import domain.GameUnit
+import domain.LocationXY
+import domain.tileSize
 import domain.toTileXY
-import tileSize
-import util.LineHelper
 
 data class PlayerFleet(
-    override var point: Point,
+    override var point: LocationXY,
     override var v: Double = 0.1,
-    override var size: Point = Point(8.0, 8.0),
-    override val map: WorldMap,
+    override var size: LocationXY = LocationXY(8.0, 8.0),
+    val map: WorldMap,
     var angle: Angle = Angle.ZERO,
     var sailState: SaleState = SaleState.CLOSE_SALE
 // 정박/반개/전개
@@ -60,39 +59,23 @@ data class PlayerFleet(
     }
 
     fun moved(dx: Double, dy: Double): Boolean {
-        val newXy = Point(point.x + dx, point.y + dy)
+        val newXy = LocationXY(point.x + dx, point.y + dy)
         val moved = isMovable(newXy)
         if (moved) point = newXy
         return moved
     }
 
-    fun isMovable(point: Point): Boolean {
+    fun isMovable(point: LocationXY): Boolean {
         val txy = point.toTileXY()
-        try {
-            val obj = map.tileCollision[map.tiles[txy.x, txy.y]]
-            //txy == Point(it.bounds.x, it.bounds.y).toTXY(map.tileSize)
-            val p = obj?.objects?.map {
-                (it.objectType as TiledMap.Object.Type.Polygon).points.map { p ->
-                    Point(p.x + it.bounds.left, p.y + it.bounds.top)
-                }
-            }?.map { list ->
-                list.mapIndexed { i: Int, point: Point ->
-                    var t = if (i == 0) list.size - 1 else i - 1
-                    point to list[t]
-                }
-            } ?: emptyList()
-            val base = (point.mod(tileSize) to Point(0.0, point.y).mod(tileSize))
-            // 교점의 수가 홀수이면 안에 위치.
-            // https://en.wikipedia.org/wiki/Point_in_polygon
-            return !p.any { area ->
-                area.map {
-                    if (LineHelper.doIntersect(base, it)) 1 else 0
-                }.sum() % 2 == 1
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
-        }
+        val p = map.tileCollisions[map.tiles[txy]]
+        val base = (point.mod(tileSize) to LocationXY(0.0, point.y).mod(tileSize))
+        // 교점의 수가 홀수이면 안에 위치.
+        // https://en.wikipedia.org/wiki/LocationXY_in_polygon
+        return !(p?.any { area ->
+            area.map {
+                if (LineHelper.doIntersect(base, it)) 1 else 0
+            }.sum() % 2 == 1
+        } ?: true)
     }
 
     fun controlSail() {
@@ -108,8 +91,8 @@ data class PlayerFleet(
     }
 }
 
-private fun Point.mod(tileSize: Int): Point {
-    val x = this.x.umod(tileSize.toDouble())
-    val y = this.y.umod(tileSize.toDouble())
-    return Point(x, y)
+private fun LocationXY.mod(tileSize: Int): LocationXY {
+    val x = this.x % tileSize.toDouble()
+    val y = this.y % tileSize.toDouble()
+    return LocationXY(x, y)
 }

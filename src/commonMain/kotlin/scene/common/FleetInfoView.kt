@@ -2,12 +2,12 @@ package scene.common
 
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.view.*
-import com.soywiz.korim.bitmap.slice
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.rectHole
 import defaultMargin
 import domain.port.shipyard.maxShipSpace
+import spriteMap
 import ui.tamraButton
 import ui.tamraRect
 import ui.tamraText
@@ -98,7 +98,7 @@ class FleetInfoView(
                     val leftAreaHeight = height
                     sprite {
                         vm.selectedShip.observe {
-                            bitmap = it.sprite.slice()
+                            bitmap = spriteMap.getValue(it.imgName)
                             positionX((leftAreaWidth - bitmap.width) / 2)
                             positionY((leftAreaHeight - bitmap.height) / 2)
                         }

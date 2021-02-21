@@ -33,7 +33,7 @@ class LandingScene(val viewModelProvider: ViewModelProvider) : Scene() {
             SiteId.valueOf(it.value)
         }
 
-        val landingMap = LandingMap(movableArea, sites)
+        val landingMap = LandingMap(sites)
 
         // save
         vm.save()

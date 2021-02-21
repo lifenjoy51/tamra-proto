@@ -1,14 +1,9 @@
 package scene.port
 
 import com.soywiz.korio.file.std.resourcesVfs
-import com.soywiz.korma.geom.Point
-import domain.BuildingType
-import domain.GameStore
-import domain.TileXY
+import domain.*
 import domain.port.Player
 import domain.port.PortMap
-import domain.toTileXY
-import tileSize
 import ui.LiveData
 import util.SaveManager
 
@@ -20,28 +15,28 @@ class PortViewModel(
 
     fun up() {
         player.value?.let {
-            it.moveUp()
+            //it.moveUp()
             onMovePlayer(it)
         }
     }
 
     fun down() {
         player.value?.let {
-            it.moveDown()
+            //it.moveDown()
             onMovePlayer(it)
         }
     }
 
     fun left() {
         player.value?.let {
-            it.moveLeft()
+            //it.moveLeft()
             onMovePlayer(it)
         }
     }
 
     fun right() {
         player.value?.let {
-            it.moveRight()
+            //it.moveRight()
             onMovePlayer(it)
         }
     }
@@ -58,9 +53,9 @@ class PortViewModel(
     }
 
     private fun initPlayer(portMap: PortMap) {
-        val playerPoint: Point = store.playerLocation?.let { it } ?: run {
+        val playerPoint = store.playerLocation?.let { it } ?: run {
             val dockTxy = portMap.buildingMap.filterValues { it == BuildingType.DOCK }.keys.first()
-            val startXy = dockTxy.toXY()
+            val startXy = dockTxy.toLocationXY()
             startXy.copy(
                 x = startXy.x + tileSize / 2,
                 y = startXy.y + tileSize / 2

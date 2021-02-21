@@ -1,8 +1,8 @@
 package scene.world
 
 import ViewModelProvider
-import baseCoord
 import com.soywiz.korge.input.onClick
+import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.*
@@ -14,9 +14,7 @@ import com.soywiz.korma.geom.Matrix
 import com.soywiz.korma.geom.plus
 import com.soywiz.korma.geom.unaryMinus
 import com.soywiz.korma.math.roundDecimalPlaces
-import domain.GameData
-import domain.LandingId
-import domain.PortId
+import domain.*
 import domain.world.PlayerFleet
 import domain.world.WorldMap
 import mainHeight
@@ -25,7 +23,6 @@ import scene.common.HeaderView
 import ui.tamraButton
 import ui.tamraRect
 import ui.tamraText
-import util.getMovableArea
 import util.getObjectNames
 
 class WorldView(
@@ -41,7 +38,6 @@ class WorldView(
         val tileSet = tiledMap.tilesets.first().data    // 타일셋이 하나일 때.
         // tile마다 컬리전 정보를 갖고있다.
         val tileCollision = tileSet.tiles.associate { it.id + 1 to it.objectGroup }
-        val tiles = tiledMap.data.tileLayers.find { it.name == "terrain" }!!
         /*
         val tileTypeMap = tileSet.tiles.associate { (id, type) ->
             // 0은 없음을 나타냄. 그러므로 맵 데이터는 각 id+1.
@@ -57,7 +53,30 @@ class WorldView(
         val landingPositions = tiledMap.getObjectNames("landings").mapValues { (k, v) ->
             LandingId.valueOf(v)
         }
-        val worldMap = WorldMap(tiledMap.getMovableArea(), portPositions, landingPositions, tiles, tileCollision)
+        val tiles: Map<TileXY, Int> = tiledMap.data.tileLayers.find { it.name == "terrain" }!!.let {
+            val m: MutableMap<TileXY, Int> = mutableMapOf()
+            for (x in 0 until it.width) {
+                for (y in 0 until it.height) {
+                    m[TileXY(x, y)] = it.get(x, y)
+                }
+            }
+            m
+        }
+        val tileCollisions = tileSet.tiles.associate { tileData ->
+            val list = tileData.objectGroup?.objects?.map {
+                (it.objectType as TiledMap.Object.Type.Polygon).points.map { p ->
+                    LocationXY(p.x + it.bounds.left, p.y + it.bounds.top)
+                }
+            }?.map { list ->
+                list.mapIndexed { i: Int, point: LocationXY ->
+                    var t = if (i == 0) list.size - 1 else i - 1
+                    point to list[t]
+                }
+            } ?: emptyList()
+            tileData.id + 1 to list
+        }
+
+        val worldMap = WorldMap(portPositions, landingPositions, tiles, tileCollisions)
 
         // background
         container.tamraRect(width = mainWidth.toDouble(), height = mainHeight.toDouble(), color = Colors.DIMGREY)

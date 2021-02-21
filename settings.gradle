@@ -1,3 +1,5 @@
 enableFeaturePreview("GRADLE_METADATA")
+rootProject.name = "tamra"
 
 include(":resource-downloader")
+include(":domain")

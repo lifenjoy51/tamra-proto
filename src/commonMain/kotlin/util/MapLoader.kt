@@ -2,6 +2,7 @@ package util
 
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korma.geom.Point
+import domain.LocationXY
 import domain.TileXY
 import domain.toTileXY
 
@@ -36,7 +37,7 @@ fun TiledMap.getMovableArea(): List<List<Pair<Point, Point>>> {
 
 fun TiledMap.getObjectNames(layerName: String): Map<TileXY, String> {
     return objectLayers.find { it.name == layerName }!!.objects.associate {
-        val txy = Point(it.bounds.x, it.bounds.y).toTileXY()
+        val txy = LocationXY(it.bounds.x, it.bounds.y).toTileXY()
         val objName = it.name
         txy to objName
     }

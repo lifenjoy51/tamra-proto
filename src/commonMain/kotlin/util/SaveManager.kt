@@ -1,7 +1,6 @@
 package util
 
 import com.soywiz.korio.serialization.json.Json
-import com.soywiz.korma.geom.Point
 import domain.*
 import domain.port.market.CargoItem
 import domain.port.market.MarketProductState
@@ -75,7 +74,7 @@ class SaveManager {
             }.toMutableList()
             val balance = saved["fleet.balance"]
             val port = saved["fleet.port"]
-            val location = Point(
+            val location = LocationXY(
                 saved["fleet.location.x"].toString().toDouble(),
                 saved["fleet.location.y"].toString().toDouble()
             )

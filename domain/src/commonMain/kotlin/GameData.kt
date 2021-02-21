@@ -1,16 +1,11 @@
 package domain
 
-import com.soywiz.korim.bitmap.Bitmap
-import com.soywiz.korma.geom.Point
 import domain.event.EventCondition
 import domain.event.GameEvent
 import domain.port.market.CargoItem
 import domain.port.market.Market
 import domain.port.shipyard.ShipBlueprint
 import domain.port.shipyard.Shipyard
-import tileSize
-import tilesPerX
-import tilesPerY
 
 // static immutable game data object.
 class GameData(
@@ -55,7 +50,7 @@ class Fleet(
     var balance: Int,
     var port: PortId? = null,  // 현재 정박중인 항구.
     var landing: LandingId? = null, // 현재  상륙지점.
-    var location: Point,    // 현재 위치.
+    var location: LocationXY,    // 현재 위치.
     var cargoItems: MutableList<CargoItem>
 ) {
     val totalCargoSpace: Int get() = ships.sumOf { it.cargoSize }
@@ -88,7 +83,7 @@ class Ship(
     val name: String,
 ) {
     val priceForSale get() = GameData.getBlueprint(type).price / 2
-    val sprite: Bitmap get() = GameData.getBlueprint(type).imgSprite
+    val imgName: String get() = GameData.getBlueprint(type).imgName
 }
 
 class Product(

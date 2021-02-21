@@ -1,14 +1,9 @@
 package scene.landing
 
 import com.soywiz.korio.file.std.resourcesVfs
-import com.soywiz.korma.geom.Point
-import domain.GameStore
-import domain.SiteId
-import domain.TileXY
+import domain.*
 import domain.landing.LandingMap
 import domain.landing.LandingPlayer
-import domain.toTileXY
-import tileSize
 import ui.LiveData
 import util.SaveManager
 
@@ -20,28 +15,28 @@ class LandingViewModel(
 
     fun up() {
         player.value?.let {
-            it.moveUp()
+            //it.moveUp()
             onMovePlayer(it)
         }
     }
 
     fun down() {
         player.value?.let {
-            it.moveDown()
+            //it.moveDown()
             onMovePlayer(it)
         }
     }
 
     fun left() {
         player.value?.let {
-            it.moveLeft()
+            //it.moveLeft()
             onMovePlayer(it)
         }
     }
 
     fun right() {
         player.value?.let {
-            it.moveRight()
+            //it.moveRight()
             onMovePlayer(it)
         }
     }
@@ -58,9 +53,9 @@ class LandingViewModel(
     }
 
     private fun initPlayer(landingMap: LandingMap) {
-        val playerPoint: Point = store.playerLocation?.let { it } ?: run {
+        val playerPoint = store.playerLocation?.let { it } ?: run {
             val exitTxy = landingMap.sites.filterValues { it == SiteId.EXIT }.keys.first()
-            val startXy = exitTxy.toXY()
+            val startXy = exitTxy.toLocationXY()
             startXy.copy(
                 x = startXy.x + tileSize / 2,
                 y = startXy.y + tileSize / 2
