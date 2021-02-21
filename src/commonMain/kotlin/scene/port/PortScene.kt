@@ -37,7 +37,7 @@ class PortScene(val viewModelProvider: ViewModelProvider) : Scene() {
             BuildingType.valueOf(it.value)
         }
 
-        val portMap = PortMap(movableArea, tiledMap.tileheight, buildings)
+        val portMap = PortMap(movableArea, buildings)
 
         // save
         vm.save()

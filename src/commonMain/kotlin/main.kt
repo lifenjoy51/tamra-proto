@@ -6,7 +6,6 @@ import com.soywiz.korim.format.readBitmap
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
-import com.soywiz.korma.geom.Point
 import com.soywiz.korma.geom.SizeInt
 import domain.*
 import domain.event.*
@@ -36,6 +35,11 @@ import util.SaveManager
 import kotlin.reflect.KClass
 
 suspend fun main() = Korge(Korge.Config(module = TamraModule))
+
+val baseCoord = Coord(126.1, -34.05)
+val tileSize = 8
+val tilesPerY = 120
+val tilesPerX = 100
 
 const val defaultMargin = 8
 const val infoAreaHeight = 30
@@ -107,7 +111,7 @@ object TamraModule : Module() {
                     ),
                     balance = 1000,
                     port = PortId.JEJU,
-                    location = Point(330.0, 60.0),
+                    location = Coord(126.52, -33.53).point,
                     cargoItems = mutableListOf()
                 )
             )

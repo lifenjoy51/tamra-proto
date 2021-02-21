@@ -1,7 +1,12 @@
 package domain.world
 
+import com.soywiz.kmem.umod
+import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korma.geom.*
 import domain.GameUnit
+import domain.toTXY
+import tileSize
+import util.LineHelper
 
 data class PlayerFleet(
     override var point: Point,
@@ -46,8 +51,43 @@ data class PlayerFleet(
         // 0도 기준으로 위아래로 움직이는게 cosine, 좌우로 움직이는게 sine이다.
         val dx = -angle.sine * v
         val dy = -angle.cosine * v
-        if (!move(dx, dy) || originVelocity == 0.0) {
+        if (!this.moved(dx, dy) || originVelocity == 0.0) {
             v = originVelocity
+        }
+    }
+
+    fun moved(dx: Double, dy: Double): Boolean {
+        val newXy = Point(point.x + dx, point.y + dy)
+        val moved = isMovable(newXy)
+        if (moved) point = newXy
+        return moved
+    }
+
+    fun isMovable(point: Point): Boolean {
+        val txy = point.toTXY()
+        try {
+            val obj = map.tileCollision[map.tiles[txy.x, txy.y]]
+            //txy == Point(it.bounds.x, it.bounds.y).toTXY(map.tileSize)
+            val p = obj?.objects?.map {
+                (it.objectType as TiledMap.Object.Type.Polygon).points.map { p ->
+                    Point(p.x + it.bounds.left, p.y + it.bounds.top)
+                }
+            }?.map { list ->
+                list.mapIndexed { i: Int, point: Point ->
+                    var t = if (i == 0) list.size - 1 else i - 1
+                    point to list[t]
+                }
+            } ?: emptyList()
+            val base = (point.mod(tileSize) to Point(0.0, point.y).mod(tileSize))
+            // 교점의 수가 홀수이면 안에 위치.
+            // https://en.wikipedia.org/wiki/Point_in_polygon
+            return !p.any { area ->
+                area.map {
+                    if (LineHelper.doIntersect(base, it)) 1 else 0
+                }.sum() % 2 == 1
+            }
+        } catch (e: Exception) {
+            return true
         }
     }
 
@@ -62,4 +102,10 @@ data class PlayerFleet(
     fun stop() {
         sailState = SaleState.STOP
     }
+}
+
+private fun Point.mod(tileSize: Int): Point {
+    val x = this.x.umod(tileSize.toDouble())
+    val y = this.y.umod(tileSize.toDouble())
+    return Point(x, y)
 }

@@ -4,10 +4,11 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.Point
 import domain.GameStore
 import domain.SiteId
-import domain.TXY
+import domain.TileXY
 import domain.landing.LandingMap
 import domain.landing.LandingPlayer
 import domain.toTXY
+import tileSize
 import ui.LiveData
 import util.SaveManager
 
@@ -59,10 +60,10 @@ class LandingViewModel(
     private fun initPlayer(landingMap: LandingMap) {
         val playerPoint: Point = store.playerLocation?.let { it } ?: run {
             val exitTxy = landingMap.sites.filterValues { it == SiteId.EXIT }.keys.first()
-            val startXy = exitTxy.toXY(landingMap.tileSize)
+            val startXy = exitTxy.toXY()
             startXy.copy(
-                x = startXy.x + landingMap.tileSize / 2,
-                y = startXy.y + landingMap.tileSize / 2
+                x = startXy.x + tileSize / 2,
+                y = startXy.y + tileSize / 2
             )
         }
         val p = LandingPlayer(point = playerPoint, map = landingMap)
@@ -74,13 +75,13 @@ class LandingViewModel(
     private fun onMovePlayer(p: LandingPlayer) {
         player(p)
         val gameMap = p.map
-        val txy = p.point.toTXY(gameMap.tileSize)
+        val txy = p.point.toTXY()
         scanBuilding(txy, gameMap.sites)
         store.playerLocation = p.point
     }
 
-    private fun scanBuilding(txy: TXY, buildingMap: Map<TXY, SiteId>) {
-        val buildingName = buildingMap[txy]?.let { it.name } ?: ""
+    private fun scanBuilding(tileXY: TileXY, buildingMap: Map<TileXY, SiteId>) {
+        val buildingName = buildingMap[tileXY]?.let { it.name } ?: ""
         currentSite(buildingName)
     }
 

@@ -4,10 +4,11 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.Point
 import domain.BuildingType
 import domain.GameStore
-import domain.TXY
+import domain.TileXY
 import domain.port.Player
 import domain.port.PortMap
 import domain.toTXY
+import tileSize
 import ui.LiveData
 import util.SaveManager
 
@@ -59,10 +60,10 @@ class PortViewModel(
     private fun initPlayer(portMap: PortMap) {
         val playerPoint: Point = store.playerLocation?.let { it } ?: run {
             val dockTxy = portMap.buildingMap.filterValues { it == BuildingType.DOCK }.keys.first()
-            val startXy = dockTxy.toXY(portMap.tileSize)
+            val startXy = dockTxy.toXY()
             startXy.copy(
-                x = startXy.x + portMap.tileSize / 2,
-                y = startXy.y + portMap.tileSize / 2
+                x = startXy.x + tileSize / 2,
+                y = startXy.y + tileSize / 2
             )
         }
         val p = Player(point = playerPoint, map = portMap)
@@ -74,13 +75,13 @@ class PortViewModel(
     private fun onMovePlayer(p: Player) {
         player(p)
         val gameMap = p.map
-        val txy = p.point.toTXY(gameMap.tileSize)
+        val txy = p.point.toTXY()
         scanBuilding(txy, gameMap.buildingMap)
         store.playerLocation = p.point
     }
 
-    private fun scanBuilding(txy: TXY, buildingMap: Map<TXY, BuildingType>) {
-        val buildingName = buildingMap[txy]?.let { it.name } ?: ""
+    private fun scanBuilding(tileXY: TileXY, buildingMap: Map<TileXY, BuildingType>) {
+        val buildingName = buildingMap[tileXY]?.let { it.name } ?: ""
         currentBuilding(buildingName)
     }
 

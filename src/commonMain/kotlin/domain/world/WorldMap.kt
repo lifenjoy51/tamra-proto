@@ -1,14 +1,16 @@
 package domain.world
 
+import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korma.geom.Point
 import domain.GameMap
 import domain.LandingId
 import domain.Port
-import domain.TXY
+import domain.TileXY
 
 class WorldMap(
     override val movableArea: List<List<Pair<Point, Point>>>,
-    val tileSize: Int,
-    val portPositions: Map<TXY, Port?>,
-    val landingPositions: Map<TXY, LandingId?>
+    val portPositions: Map<TileXY, Port?>,
+    val landingPositions: Map<TileXY, LandingId?>,
+    val tiles: TiledMap.Layer.Tiles,
+    val tileCollision: Map<Int, TiledMap.Layer.Objects?>
 ) : GameMap()

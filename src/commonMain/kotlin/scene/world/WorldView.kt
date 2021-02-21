@@ -1,6 +1,7 @@
 package scene.world
 
 import ViewModelProvider
+import baseCoord
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.tiled.tiledMapView
@@ -27,8 +28,8 @@ import ui.tamraText
 import util.getMovableArea
 import util.getObjectNames
 
-const val viewScale = 4.0
-const val fleetScale = viewScale / 8
+const val viewScale = 2.0
+const val fleetScale = viewScale / 2
 
 class WorldView(
     viewModelProvider: ViewModelProvider,
@@ -39,16 +40,16 @@ class WorldView(
     private val headerView = HeaderView(viewModelProvider)
 
     suspend fun draw(container: Container) {
-        // val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
-        val tiledMap = resourcesVfs["jeju.tmx"].readTiledMap()
-        /*
-        val tileSize = tiledMap.tilewidth
+        val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
         val tileSet = tiledMap.tilesets.first().data    // 타일셋이 하나일 때.
+        // tile마다 컬리전 정보를 갖고있다.
+        val tileCollision = tileSet.tiles.associate { it.id + 1 to it.objectGroup }
+        val tiles = tiledMap.data.tileLayers.find { it.name == "terrain" }!!
+        /*
         val tileTypeMap = tileSet.tiles.associate { (id, type) ->
             // 0은 없음을 나타냄. 그러므로 맵 데이터는 각 id+1.
             (id + 1) to WorldTile.fromType(type)
         } + mapOf(0 to WorldTile.EMPTY)
-
         val terrains = tiledMap.loadTiles("terrain", tileTypeMap)
         val overlays = tiledMap.loadTiles("overlay", tileTypeMap)
         */
@@ -58,7 +59,7 @@ class WorldView(
         val landingPositions = tiledMap.getObjectNames("landings").mapValues { (k, v) ->
             LandingId.valueOf(v)
         }
-        val worldMap = WorldMap(tiledMap.getMovableArea(), tiledMap.tileheight, portPositions, landingPositions)
+        val worldMap = WorldMap(tiledMap.getMovableArea(), portPositions, landingPositions, tiles, tileCollision)
 
         // background
         container.tamraRect(width = mainWidth.toDouble(), height = mainHeight.toDouble(), color = Colors.DIMGREY)
@@ -66,26 +67,28 @@ class WorldView(
         val mainSize = mainWidth.toDouble()
         container.fixedSizeContainer(mainWidth, mainWidth, clip = true) {
             positionY(32)
-            tamraRect(width = mainSize, height = mainSize, color = Colors["#9aa9af"])
+            //tamraRect(width = mainSize, height = mainSize, color = Colors["#9aa9af"])
+            tamraRect(width = mainSize, height = mainSize, color = Colors["#336699"])
 
             // TODO change texture..
             val fleetView = sprite(texture = resourcesVfs["S100.png"].readBitmap()) {
                 scale = fleetScale
                 center()
             }
+            // pos = tile * size.
             val tileMapView = tiledMapView(tiledMap) {
+                pos
                 addChild(fleetView)
-                //scale = viewScale
             }
 
             // on update fleet position
             vm.playerFleet.observe { fleet ->
-
+                println("${fleet.point} ${fleetView.pos} ${tileMapView.pos}")
                 // move fleet view
                 with(fleetView) {
                     rotation(fleet.angle.unaryMinus())
-                    x = fleet.point.x
-                    y = fleet.point.y
+                    x = fleet.point.x - baseCoord.point.x
+                    y = fleet.point.y - baseCoord.point.y
                 }
 
                 // centering camera

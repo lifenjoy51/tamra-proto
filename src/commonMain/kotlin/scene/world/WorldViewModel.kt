@@ -18,10 +18,10 @@ class WorldViewModel(
 
     private fun onMoveFleet(fleet: PlayerFleet) {
         playerFleet(fleet)
-        val gameMap = fleet.map
-        val txy = fleet.point.toTXY(gameMap.tileSize)
-        scanNearPort(txy, gameMap.portPositions)
-        scanNearLanding(txy, gameMap.landingPositions)
+        val worldMap = fleet.map
+        val txy = fleet.point.toTXY()
+        scanNearPort(txy, worldMap.portPositions)
+        scanNearLanding(txy, worldMap.landingPositions)
         // FIXME 바람 데이터는 어디서?
         windDirection(Angle.ZERO)
         windSpeed(1.0)
@@ -29,16 +29,16 @@ class WorldViewModel(
         store.fleet.location = fleet.point
     }
 
-    private fun scanNearPort(txy: TXY, portPositions: Map<TXY, Port?>) {
+    private fun scanNearPort(tileXY: TileXY, portPositions: Map<TileXY, Port?>) {
         // 항구가 있으면 입항 표시.
-        val portIds = txy.crossXY.mapNotNull { txy -> portPositions[txy]?.id }
+        val portIds = tileXY.crossXY.mapNotNull { txy -> portPositions[txy]?.id }
         val portIdString = portIds.firstOrNull()?.name ?: ""
         nearPort(portIdString)
     }
 
-    private fun scanNearLanding(txy: TXY, landingPositions: Map<TXY, LandingId?>) {
+    private fun scanNearLanding(tileXY: TileXY, landingPositions: Map<TileXY, LandingId?>) {
         // 상륙지가 있으면 표시.
-        val landingIds = txy.crossXY.mapNotNull { txy -> landingPositions[txy] }
+        val landingIds = tileXY.crossXY.mapNotNull { txy -> landingPositions[txy] }
         val landingIdString = landingIds.firstOrNull()?.name ?: ""
         nearLanding(landingIdString)
     }

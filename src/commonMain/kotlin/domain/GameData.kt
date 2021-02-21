@@ -8,6 +8,9 @@ import domain.port.market.CargoItem
 import domain.port.market.Market
 import domain.port.shipyard.ShipBlueprint
 import domain.port.shipyard.Shipyard
+import tileSize
+import tilesPerX
+import tilesPerY
 
 // static immutable game data object.
 class GameData(
@@ -59,11 +62,15 @@ class Fleet(
     val totalCargoQuantity: Int get() = cargoItems.sumOf { it.quantity }
     val availableCargoSpace: Int get() = totalCargoSpace - totalCargoQuantity
 
+    // +E/-W +S/-N 좌표를 나타낸다.
+    val getCoord: Coord get() = Coord(location.x / tileSize / tilesPerX, location.y / tileSize / tilesPerY)
+
     fun getCargos(productId: ProductId): List<CargoItem> = cargoItems.filter { it.productId == productId }
 
     fun getCargos(productId: ProductId, price: Int): List<CargoItem> = getCargos(productId).filter { it.price == price }
 
     fun getCargosQuantity(productId: ProductId, price: Int): Int = getCargos(productId, price).sumOf { it.quantity }
+
 
 }
 
