@@ -61,7 +61,7 @@ class PortViewModel(
                 y = startXy.y + tileSize / 2
             )
         }
-        val p = Player(point = playerPoint, map = portMap)
+        val p = Player(location = playerPoint, map = portMap)
         player(p)
         onMovePlayer(p)
 
@@ -70,9 +70,9 @@ class PortViewModel(
     private fun onMovePlayer(p: Player) {
         player(p)
         val gameMap = p.map
-        val txy = p.point.toTileXY()
+        val txy = p.location.toTileXY()
         scanBuilding(txy, gameMap.buildingMap)
-        store.playerLocation = p.point
+        store.playerLocation = p.location
     }
 
     private fun scanBuilding(tileXY: TileXY, buildingMap: Map<TileXY, BuildingType>) {

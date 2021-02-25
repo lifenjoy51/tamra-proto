@@ -38,11 +38,11 @@ class LandingView(
 
             // on update player position
             vm.player.observe {
-                viewPlayer.x = it.point.x - viewPlayer.width / 2
-                viewPlayer.y = it.point.y - viewPlayer.height / 2
+                viewPlayer.x = it.location.x - viewPlayer.width / 2
+                viewPlayer.y = it.location.y - viewPlayer.height / 2
                 // centering camera
-                camera.x = (camera.containerRoot.width / 2) - (it.point.x * landingViewScale)
-                camera.y = (camera.containerRoot.height / 2) - (it.point.y * landingViewScale)
+                camera.x = (camera.containerRoot.width / 2) - (it.location.x * landingViewScale)
+                camera.y = (camera.containerRoot.height / 2) - (it.location.y * landingViewScale)
             }
 
             val background = SolidRect(width = mainWidth, height = mainHeight)

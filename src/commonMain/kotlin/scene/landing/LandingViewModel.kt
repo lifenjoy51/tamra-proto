@@ -61,7 +61,7 @@ class LandingViewModel(
                 y = startXy.y + tileSize / 2
             )
         }
-        val p = LandingPlayer(point = playerPoint, map = landingMap)
+        val p = LandingPlayer(location = playerPoint, map = landingMap)
         player(p)
         onMovePlayer(p)
 
@@ -70,9 +70,9 @@ class LandingViewModel(
     private fun onMovePlayer(p: LandingPlayer) {
         player(p)
         val gameMap = p.map
-        val txy = p.point.toTileXY()
+        val txy = p.location.toTileXY()
         scanBuilding(txy, gameMap.sites)
-        store.playerLocation = p.point
+        store.playerLocation = p.location
     }
 
     private fun scanBuilding(tileXY: TileXY, buildingMap: Map<TileXY, SiteId>) {

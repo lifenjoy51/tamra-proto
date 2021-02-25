@@ -36,8 +36,8 @@ class PortView(
 
             // on update player position
             vm.player.observe {
-                viewPlayer.x = it.point.x - viewPlayer.width / 2
-                viewPlayer.y = it.point.y - viewPlayer.height / 2
+                viewPlayer.x = it.location.x - viewPlayer.width / 2
+                viewPlayer.y = it.location.y - viewPlayer.height / 2
             }
 
             val background = SolidRect(width = mainWidth, height = mainHeight)

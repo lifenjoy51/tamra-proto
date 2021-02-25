@@ -8,9 +8,8 @@ import domain.tileSize
 import domain.toTileXY
 
 data class PlayerFleet(
-    override var point: LocationXY,
-    override var v: Double = 0.1,
-    override var size: LocationXY = LocationXY(8.0, 8.0),
+    override var location: LocationXY,
+    override var velocity: Double = 0.1,
     val map: WorldMap,
     var angle: Angle = Angle.ZERO,
     var sailState: SaleState = SaleState.CLOSE_SALE
@@ -36,32 +35,32 @@ data class PlayerFleet(
         val a = ((180 - angleDiff.degrees) / 180)
 
         // 가속도를 속도에 반영한다.
-        val originVelocity = v
-        v = when (sailState) {
-            SaleState.FULL_SALE -> v + (((a - 0.5) * 3 * windSpeed - 0.03) / 30)
-            SaleState.CLOSE_SALE -> v + (((a * 0.3) * windSpeed - 0.03) / 30)
-            SaleState.STOP -> v * 0.5
+        val originVelocity = velocity
+        velocity = when (sailState) {
+            SaleState.FULL_SALE -> velocity + (((a - 0.5) * 3 * windSpeed - 0.03) / 30)
+            SaleState.CLOSE_SALE -> velocity + (((a * 0.3) * windSpeed - 0.03) / 30)
+            SaleState.STOP -> velocity * 0.5
         }
 
         // FIXME 최대속도 제한.
-        if (v > 2) v = 2.0
-        if (v < -1) v = originVelocity
+        if (velocity > 2) velocity = 2.0
+        if (velocity < -1) velocity = originVelocity
 
         // FIXME test
-        v = 1.0
+        //velocity = -0.5
 
         // 0도 기준으로 위아래로 움직이는게 cosine, 좌우로 움직이는게 sine이다.
-        val dx = -angle.sine * v
-        val dy = -angle.cosine * v
+        val dx = -angle.sine * velocity
+        val dy = -angle.cosine * velocity
         if (!this.moved(dx, dy) || originVelocity == 0.0) {
-            v = originVelocity * 0.5
+            velocity = originVelocity * 0.5
         }
     }
 
     fun moved(dx: Double, dy: Double): Boolean {
-        val newXy = LocationXY(point.x + dx, point.y + dy)
+        val newXy = LocationXY(location.x + dx, location.y + dy)
         val moved = isMovable(newXy)
-        if (moved) point = newXy
+        if (moved) location = newXy
         return moved
     }
 

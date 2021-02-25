@@ -20,10 +20,12 @@ import domain.world.WorldMap
 import mainHeight
 import mainWidth
 import scene.common.HeaderView
+import ui.Pseudo3DFilter
 import ui.tamraButton
 import ui.tamraRect
 import ui.tamraText
 import util.getObjectNames
+import util.toPoint
 
 class WorldView(
     viewModelProvider: ViewModelProvider,
@@ -84,41 +86,42 @@ class WorldView(
         val mainSize = mainWidth.toDouble()
         container.fixedSizeContainer(mainWidth, mainWidth, clip = true) {
             positionY(32)
-            //tamraRect(width = mainSize, height = mainSize, color = Colors["#9aa9af"])
-            tamraRect(width = mainSize, height = mainSize, color = Colors["#336699"])
 
-            // TODO change texture..
-            val fleetView = sprite(texture = resourcesVfs["S200.png"].readBitmap()) {
-                scale = 1.0 / vm.viewScale.get()
-                center()
-            }
+            tamraRect(width = mainSize, height = mainSize, color = Colors["#e8f1f4"])
+
             // pos = tile * size.
             val tileMapView = tiledMapView(tiledMap) {
-                pos
-                addChild(fleetView)
+                addFilter(Pseudo3DFilter(mainWidth.toDouble(), mainWidth.toDouble(), Angle.ZERO))
+            }
+
+            sprite(texture = resourcesVfs["sky.png"].readBitmap()) {
+                width = mainSize
+                height = mainSize / 2
+            }
+
+            // TODO change texture..
+            sprite(texture = resourcesVfs["S200.png"].readBitmap()) {
+                scale = 4.0 / vm.viewScale.get()
+                center()
+                position(mainWidth / 2, mainWidth - 40)
             }
 
             // on update fleet position
             vm.playerFleet.observe { fleet ->
-                // move fleet view
-                with(fleetView) {
-                    rotation(fleet.angle.unaryMinus())
-                    x = fleet.point.x - baseCoord.point.x
-                    y = fleet.point.y - baseCoord.point.y
-                }
 
-                // centering camera
+                // 하단 중앙을 기점으로 한다.
                 with(tileMapView) {
-                    val rotatedPoint = fleetView.pos
-                        .rotate(fleet.angle)
+                    val rotatedPoint = (fleet.location.toPoint() - baseCoord.point.toPoint())
+                        .rotate(fleet.angle.unaryMinus())
                         .mul(vm.viewScale.get())
-                    setTransform(Matrix.Transform(
-                        x = mainSize / 2 - rotatedPoint.x,
-                        y = mainSize / 2 - rotatedPoint.y,
+                    val t = Matrix.Transform(
+                        x = -rotatedPoint.x + mainWidth / 2,
+                        y = -rotatedPoint.y + mainWidth,
                         scaleX = vm.viewScale.get(),
                         scaleY = vm.viewScale.get(),
-                        rotation = fleet.angle
-                    ))
+                        rotation = fleet.angle.unaryMinus()
+                    )
+                    setTransform(t)
                 }
 
             }
@@ -134,7 +137,7 @@ class WorldView(
             tamraText(text = "시속", px = 10, py = mainHeight - 170)
             tamraText(text = "", px = 50, py = mainHeight - 170) {
                 vm.playerFleet.observe {
-                    setText("${it.v.roundDecimalPlaces(2)}")
+                    setText("${it.velocity.roundDecimalPlaces(2)}")
                 }
             }
             tamraText(text = "", px = 100, py = mainHeight - 170) {

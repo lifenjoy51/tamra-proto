@@ -21,14 +21,14 @@ class WorldViewModel(
     private fun onMoveFleet(fleet: PlayerFleet) {
         playerFleet(fleet)
         val worldMap = fleet.map
-        val txy = fleet.point.toTileXY()
+        val txy = fleet.location.toTileXY()
         scanNearPort(txy, worldMap.portPositions)
         scanNearLanding(txy, worldMap.landingPositions)
         // FIXME 바람 데이터는 어디서?
-        windDirection(Angle.ZERO)
+        windDirection(Angle.fromDegrees(0))
         windSpeed(1.0)
         // save current location.
-        store.fleet.location = fleet.point
+        store.fleet.location = fleet.location
     }
 
     private fun scanNearPort(tileXY: TileXY, portPositions: Map<TileXY, Port?>) {
@@ -46,7 +46,7 @@ class WorldViewModel(
     }
 
     fun initPlayerFleet(gameMap: WorldMap) {
-        val fleet = PlayerFleet(point = store.fleet.location, map = gameMap)
+        val fleet = PlayerFleet(location = store.fleet.location, map = gameMap)
         playerFleet(fleet)
         onMoveFleet(fleet)
     }

@@ -1,7 +1,6 @@
 package domain
 
 abstract class GameUnit {
-    abstract var point: LocationXY
-    abstract var v: Double
-    abstract var size: LocationXY
+    abstract var location: LocationXY
+    abstract var velocity: Double
 }
