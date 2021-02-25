@@ -62,14 +62,14 @@ class WorldViewModel(
     fun turnLeft() {
         playerFleet.value?.let {
             // FIXME 조타 능력에 따라 각도가 바뀌어야 한다. 속도에도 괜계가 있나?
-            it.angle = it.angle.plus(Angle.Companion.fromDegrees(2))
+            it.angle = it.angle.plus(Angle.fromDegrees(5))
             onMoveFleet(it)
         }
     }
 
     fun turnRight() {
         playerFleet.value?.let {
-            it.angle = it.angle.plus(Angle.Companion.fromDegrees(-2))
+            it.angle = it.angle.plus(Angle.fromDegrees(-5))
             onMoveFleet(it)
         }
     }

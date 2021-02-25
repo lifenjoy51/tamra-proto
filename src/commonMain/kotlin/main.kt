@@ -123,7 +123,7 @@ object TamraModule : Module() {
                     ),
                     balance = 1000,
                     port = PortId.JEJU,
-                    location = Coord(126.545, -33.521).point,
+                    location = Coord(126.545, -33.531).point,
                     //location = TileXY(44,63).toLocationXY(),
                     cargoItems = mutableListOf()
                 )

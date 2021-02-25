@@ -12,7 +12,6 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korma.geom.Angle
 import com.soywiz.korma.geom.Matrix
 import com.soywiz.korma.geom.plus
-import com.soywiz.korma.geom.unaryMinus
 import com.soywiz.korma.math.roundDecimalPlaces
 import domain.*
 import domain.world.PlayerFleet
@@ -39,7 +38,7 @@ class WorldView(
         val tiledMap = resourcesVfs["world.tmx"].readTiledMap()
         val tileSet = tiledMap.tilesets.first().data    // 타일셋이 하나일 때.
         // tile마다 컬리전 정보를 갖고있다.
-        val tileCollision = tileSet.tiles.associate { it.id + 1 to it.objectGroup }
+        //val tileCollision = tileSet.tiles.associate { it.id + 1 to it.objectGroup }
         /*
         val tileTypeMap = tileSet.tiles.associate { (id, type) ->
             // 0은 없음을 나타냄. 그러므로 맵 데이터는 각 id+1.
@@ -87,6 +86,7 @@ class WorldView(
         container.fixedSizeContainer(mainWidth, mainWidth, clip = true) {
             positionY(32)
 
+            // 배경
             tamraRect(width = mainSize, height = mainSize, color = Colors["#e8f1f4"])
 
             // pos = tile * size.
@@ -94,9 +94,10 @@ class WorldView(
                 addFilter(Pseudo3DFilter(mainWidth.toDouble(), mainWidth.toDouble(), Angle.ZERO))
             }
 
+            // 하늘
             sprite(texture = resourcesVfs["sky.png"].readBitmap()) {
                 width = mainSize
-                height = mainSize / 2
+                height = mainSize / 3
             }
 
             // TODO change texture..
@@ -108,18 +109,18 @@ class WorldView(
 
             // on update fleet position
             vm.playerFleet.observe { fleet ->
-
+                println(fleet.location)
                 // 하단 중앙을 기점으로 한다.
                 with(tileMapView) {
                     val rotatedPoint = (fleet.location.toPoint() - baseCoord.point.toPoint())
-                        .rotate(fleet.angle.unaryMinus())
+                        .rotate(fleet.angle)
                         .mul(vm.viewScale.get())
                     val t = Matrix.Transform(
                         x = -rotatedPoint.x + mainWidth / 2,
-                        y = -rotatedPoint.y + mainWidth,
+                        y = -rotatedPoint.y + mainWidth * 8 / 10,
                         scaleX = vm.viewScale.get(),
                         scaleY = vm.viewScale.get(),
-                        rotation = fleet.angle.unaryMinus()
+                        rotation = fleet.angle
                     )
                     setTransform(t)
                 }

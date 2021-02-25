@@ -11,7 +11,7 @@ data class PlayerFleet(
     override var location: LocationXY,
     override var velocity: Double = 0.1,
     val map: WorldMap,
-    var angle: Angle = Angle.ZERO,
+    var angle: Angle = Angle.fromDegrees(90),
     var sailState: SaleState = SaleState.CLOSE_SALE
 // 정박/반개/전개
 // 풍향?
@@ -37,17 +37,17 @@ data class PlayerFleet(
         // 가속도를 속도에 반영한다.
         val originVelocity = velocity
         velocity = when (sailState) {
-            SaleState.FULL_SALE -> velocity + (((a - 0.5) * 3 * windSpeed - 0.03) / 30)
-            SaleState.CLOSE_SALE -> velocity + (((a * 0.3) * windSpeed - 0.03) / 30)
+            SaleState.FULL_SALE -> velocity + (((a - 0.5) * 3 * windSpeed - 0.03) / 50)
+            SaleState.CLOSE_SALE -> velocity + (((a * 0.3) * windSpeed - 0.03) / 50)
             SaleState.STOP -> velocity * 0.5
         }
 
         // FIXME 최대속도 제한.
-        if (velocity > 2) velocity = 2.0
+        if (velocity > 1) velocity = 1.0
         if (velocity < -1) velocity = originVelocity
 
         // FIXME test
-        //velocity = -0.5
+        //velocity = 0.5
 
         // 0도 기준으로 위아래로 움직이는게 cosine, 좌우로 움직이는게 sine이다.
         val dx = -angle.sine * velocity
@@ -57,20 +57,22 @@ data class PlayerFleet(
         }
     }
 
-    fun moved(dx: Double, dy: Double): Boolean {
+    private fun moved(dx: Double, dy: Double): Boolean {
         val newXy = LocationXY(location.x + dx, location.y + dy)
         val moved = isMovable(newXy)
         if (moved) location = newXy
         return moved
     }
 
-    fun isMovable(point: LocationXY): Boolean {
-        val txy = point.toTileXY()
-        val p = map.tileCollisions[map.tiles[txy]]
-        val base = (point.mod(tileSize) to LocationXY(0.0, point.y).mod(tileSize))
+    private fun isMovable(location: LocationXY): Boolean {
+        val txy = location.toTileXY()
+        val collisions = map.tileCollisions[map.tiles[txy]]
+        val p1 = location.abs().mod(tileSize)
+        val p2 = LocationXY(0.0, location.y).abs().mod(tileSize)
+        val base = p1 to p2
         // 교점의 수가 홀수이면 안에 위치.
         // https://en.wikipedia.org/wiki/LocationXY_in_polygon
-        return !(p?.any { area ->
+        return !(collisions?.any { area ->
             area.map {
                 if (LineHelper.doIntersect(base, it)) 1 else 0
             }.sum() % 2 == 1

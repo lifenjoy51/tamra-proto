@@ -1,5 +1,7 @@
 package domain
 
+import kotlin.math.absoluteValue
+
 val baseCoord = Coord(126.1, -34.05)
 val tileSize = 8
 val tilesPerY = 120
@@ -32,4 +34,9 @@ data class Coord(
 data class LocationXY(
     val x: Double,
     val y: Double
-)
+) {
+    fun abs(): LocationXY = LocationXY(
+        x.absoluteValue,
+        y.absoluteValue
+    )
+}
