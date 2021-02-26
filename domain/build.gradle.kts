@@ -4,7 +4,7 @@ plugins {
     kotlin("multiplatform")
 }
 
-val kormaVersion = "2.0.7"
+val kormaVersion = "2.0.6"
 
 group = "me.lifenjoy51.tamra"
 version "0.0.1"
