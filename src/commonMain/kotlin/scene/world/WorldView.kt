@@ -1,6 +1,7 @@
 package scene.world
 
 import ViewModelProvider
+import com.soywiz.korge.component.onStageResized
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.readTiledMap
@@ -85,19 +86,20 @@ class WorldView(
         val mainSize = mainWidth.toDouble()
         container.fixedSizeContainer(mainWidth, mainWidth, clip = true) {
             positionY(32)
-
             // 배경
             tamraRect(width = mainSize, height = mainSize, color = Colors["#e8f1f4"])
-
             // pos = tile * size.
             val tileMapView = tiledMapView(tiledMap) {
-                addFilter(Pseudo3DFilter(mainWidth.toDouble(), mainWidth.toDouble(), Angle.ZERO))
+                onStageResized { width, height ->
+                    println("$width $height")
+                    filter = Pseudo3DFilter(width.toDouble(), height.toDouble())
+                }
             }
 
             // 하늘
             sprite(texture = resourcesVfs["sky.png"].readBitmap()) {
-                width = mainSize
-                height = mainSize / 3
+                scaledWidth = mainSize
+                scaledHeight = mainSize / 3
             }
 
             // TODO change texture..
@@ -109,7 +111,7 @@ class WorldView(
 
             // on update fleet position
             vm.playerFleet.observe { fleet ->
-                println(fleet.location)
+                //println(fleet.location)
                 // 하단 중앙을 기점으로 한다.
                 with(tileMapView) {
                     val rotatedPoint = (fleet.location.toPoint() - baseCoord.point.toPoint())
@@ -228,6 +230,9 @@ class WorldView(
 
         // init vm fleet
         vm.initPlayerFleet(worldMap)
+
+        // 리사이즈를 해줘야 맵이 정상적으로 보임... 원인불명.
+        views().resized()
     }
 
 }
