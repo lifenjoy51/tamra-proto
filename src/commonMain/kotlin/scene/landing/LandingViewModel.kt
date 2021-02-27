@@ -11,33 +11,38 @@ class LandingViewModel(
     private val store: GameStore
 ) {
     val player: LiveData<LandingPlayer> = LiveData(null)
+    val playerDirection: LiveData<Direction> = LiveData(Direction.DOWN)
     val currentSite: LiveData<String> = LiveData(null)
-
-    fun up() {
-        player.value?.let {
-            //it.moveUp()
-            onMovePlayer(it)
-        }
-    }
 
     fun down() {
         player.value?.let {
-            //it.moveDown()
+            it.moveDown()
             onMovePlayer(it)
+            playerDirection(Direction.DOWN)
         }
     }
 
-    fun left() {
+    fun up() {
         player.value?.let {
-            //it.moveLeft()
+            it.moveUp()
             onMovePlayer(it)
+            playerDirection(Direction.UP)
         }
     }
 
     fun right() {
         player.value?.let {
-            //it.moveRight()
+            it.moveRight()
             onMovePlayer(it)
+            playerDirection(Direction.RIGHT)
+        }
+    }
+
+    fun left() {
+        player.value?.let {
+            it.moveLeft()
+            onMovePlayer(it)
+            playerDirection(Direction.LEFT)
         }
     }
 

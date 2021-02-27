@@ -34,10 +34,10 @@ enum class ProductId {
 }
 
 enum class LandingId {
-    SUNGSAN
+    YONGYEON
 }
 
 enum class SiteId {
     EXIT,
-    ILCHOOLBONG,
+    YONGYEON,
 }

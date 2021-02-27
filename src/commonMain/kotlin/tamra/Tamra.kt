@@ -52,7 +52,7 @@ const val windowHeight = mainHeight * 4 / 5 - defaultMargin * 2
 val spriteMap: MutableMap<String, BmpSlice> = mutableMapOf()
 
 object TamraModule : Module() {
-    // override val mainScene: KClass<out Scene> = MainScene::class
+    //override val mainScene: KClass<out Scene> = MainScene::class
     override val mainScene: KClass<out Scene> = WorldScene::class
     //override val mainScene: KClass<out Scene> = PortScene::class
 

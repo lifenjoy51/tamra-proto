@@ -5,12 +5,17 @@ import com.soywiz.korge.input.keys
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.view.Container
+import com.soywiz.korge.view.fixedSizeContainer
+import com.soywiz.korge.view.positionY
+import com.soywiz.korim.color.Colors
 import com.soywiz.korio.file.std.resourcesVfs
 import scene.event.EventView
 import scene.world.WorldScene
 import tamra.ViewModelProvider
 import tamra.common.SiteId
 import tamra.landing.LandingMap
+import tamra.mainWidth
+import ui.tamraRect
 import util.getCollisions
 import util.getObjectNames
 import util.getTiles
@@ -40,7 +45,12 @@ class LandingScene(val viewModelProvider: ViewModelProvider) : Scene() {
         vm.save()
 
         // draw ui
-        landingView.draw(this, tiledMap)
+        fixedSizeContainer(mainWidth, mainWidth, clip = true) {
+            positionY(32)
+            tamraRect(width = width, height = height, color = Colors["#e8f1f4"])
+            landingView.draw(this, tiledMap)
+        }
+
 
         // init vm
         vm.init(landingMap)

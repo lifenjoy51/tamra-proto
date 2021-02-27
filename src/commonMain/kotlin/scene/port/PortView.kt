@@ -1,5 +1,6 @@
 package scene.port
 
+import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.tiledMapView
@@ -13,8 +14,10 @@ import com.soywiz.korio.file.std.resourcesVfs
 import scene.common.HeaderView
 import tamra.ViewModelProvider
 import tamra.common.BuildingType
+import tamra.common.Direction
 import tamra.mainHeight
 import tamra.mainWidth
+import ui.getDirectionSprites
 import ui.tamraButton
 import ui.tamraRect
 
@@ -27,13 +30,16 @@ class PortView(
     private val vm = viewModelProvider.portViewModel
     private val headerView = HeaderView(viewModelProvider)
 
+
     suspend fun draw(container: Container, tiledMap: TiledMap) {
 
         //
         container.apply {
             tamraRect(width = width, height = height, color = Colors["#e8f1f4"])
 
-            val viewPlayer = sprite(resourcesVfs["player.png"].readBitmap()) {
+            val playerSprites = resourcesVfs["player.png"].readBitmap()
+                .getDirectionSprites()
+            val viewPlayer = sprite(playerSprites.getValue(Direction.DOWN)) {
                 center()
             }
 
@@ -48,6 +54,10 @@ class PortView(
             vm.player.observe {
                 viewPlayer.x = it.location.x
                 viewPlayer.y = it.location.y
+            }
+            vm.playerDirection.observe {
+                val sprite = playerSprites.getValue(it)
+                viewPlayer.playAnimation(sprite, spriteDisplayTime = TimeSpan(200.0))
             }
 
             // draw header

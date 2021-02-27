@@ -27,3 +27,10 @@ abstract class GameUnit {
         } ?: true).xor(map.onWater)
     }
 }
+
+enum class Direction {
+    DOWN,
+    UP,
+    RIGHT,
+    LEFT,
+}

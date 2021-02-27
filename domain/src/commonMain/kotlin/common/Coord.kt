@@ -46,8 +46,10 @@ data class LocationXY(
         val ax = (x % tileSize)
         val ay = (y % tileSize)
         return PointXY(
-            if (ax > 0) ax else tileSize - ax.absoluteValue,
-            if (ay > 0) ay else tileSize - ay.absoluteValue
+            //if (ax > 0) ax else tileSize - ax.absoluteValue,
+            //if (ay > 0) ay else tileSize - ay.absoluteValue
+            ax.absoluteValue,
+            ay.absoluteValue
         )
     }
 

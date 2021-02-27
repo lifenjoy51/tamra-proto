@@ -11,12 +11,14 @@ class PortViewModel(
     private val store: GameStore
 ) {
     val player: LiveData<Player> = LiveData(null)
+    val playerDirection: LiveData<Direction> = LiveData(Direction.DOWN)
     val currentBuilding: LiveData<String> = LiveData(null)
 
     fun up() {
         player.value?.let {
             it.moveUp()
             onMovePlayer(it)
+            playerDirection(Direction.UP)
         }
     }
 
@@ -24,6 +26,7 @@ class PortViewModel(
         player.value?.let {
             it.moveDown()
             onMovePlayer(it)
+            playerDirection(Direction.DOWN)
         }
     }
 
@@ -31,6 +34,7 @@ class PortViewModel(
         player.value?.let {
             it.moveLeft()
             onMovePlayer(it)
+            playerDirection(Direction.LEFT)
         }
     }
 
@@ -38,6 +42,7 @@ class PortViewModel(
         player.value?.let {
             it.moveRight()
             onMovePlayer(it)
+            playerDirection(Direction.RIGHT)
         }
     }
 
