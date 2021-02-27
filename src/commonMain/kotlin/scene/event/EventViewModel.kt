@@ -1,11 +1,11 @@
 package scene.event
 
-import domain.GameData
-import domain.GameStore
-import domain.event.DecisionMaker
-import domain.event.EventContent
-import domain.event.EventLocation
-import domain.event.GameEvent
+import tamra.common.GameData
+import tamra.common.GameStore
+import tamra.event.DecisionMaker
+import tamra.event.EventContent
+import tamra.event.EventLocation
+import tamra.event.GameEvent
 import ui.LiveData
 
 class EventViewModel(

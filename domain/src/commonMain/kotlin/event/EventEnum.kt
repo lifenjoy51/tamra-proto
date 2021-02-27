@@ -1,4 +1,4 @@
-package domain.event
+package tamra.event
 
 import kotlin.reflect.KClass
 

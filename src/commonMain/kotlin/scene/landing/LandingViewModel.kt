@@ -1,9 +1,9 @@
 package scene.landing
 
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.*
-import domain.landing.LandingMap
-import domain.landing.LandingPlayer
+import tamra.common.*
+import tamra.landing.LandingMap
+import tamra.landing.LandingPlayer
 import ui.LiveData
 import util.SaveManager
 
@@ -70,7 +70,7 @@ class LandingViewModel(
     private fun onMovePlayer(p: LandingPlayer) {
         player(p)
         val gameMap = p.map
-        val txy = p.location.toTileXY()
+        val txy = p.location.toWorldTileXY()
         scanBuilding(txy, gameMap.sites)
         store.playerLocation = p.location
     }

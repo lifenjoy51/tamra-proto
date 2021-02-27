@@ -1,4 +1,5 @@
-import domain.LocationXY
+package tamra.common
+
 import kotlin.math.max
 import kotlin.math.min
 
@@ -7,7 +8,7 @@ class LineHelper {
     companion object {
         // Given three colinear points p, q, r, the function checks if
         // point q lies on line segment 'pr'
-        private fun onSegment(p: LocationXY, q: LocationXY, r: LocationXY): Boolean {
+        private fun onSegment(p: PointXY, q: PointXY, r: PointXY): Boolean {
             return q.x <= max(p.x, r.x) &&
                 q.x >= min(p.x, r.x) &&
                 q.y <= max(p.y, r.y) &&
@@ -19,7 +20,7 @@ class LineHelper {
         // 0 --> p, q and r are colinear
         // 1 --> Clockwise
         // 2 --> Counterclockwise
-        private fun orientation(p: LocationXY, q: LocationXY, r: LocationXY): Int {
+        private fun orientation(p: PointXY, q: PointXY, r: PointXY): Int {
             // See https://www.geeksforgeeks.org/orientation-3-ordered-points/
             // for details of below formula.
             val v = (q.y - p.y) * (r.x - q.x) -
@@ -30,11 +31,11 @@ class LineHelper {
 
         // The main function that returns true if line segment 'p1q1'
         // and 'p2q2' intersect.
-        fun doIntersect(line1: Pair<LocationXY, LocationXY>, line2: Pair<LocationXY, LocationXY>): Boolean {
-            val p1: LocationXY = line1.first
-            val q1: LocationXY = line1.second
-            val p2: LocationXY = line2.first
-            val q2: LocationXY = line2.second
+        fun doIntersect(line1: PointLine, line2: PointLine): Boolean {
+            val p1: PointXY = line1.from
+            val q1: PointXY = line1.to
+            val p2: PointXY = line2.from
+            val q2: PointXY = line2.to
 
             // Find the four orientations needed for general and
             // special cases
@@ -62,5 +63,3 @@ class LineHelper {
         }
     }
 }
-
-fun LocationXY.toLocationXY() = LocationXY(x, y)

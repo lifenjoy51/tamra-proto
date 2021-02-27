@@ -1,6 +1,6 @@
 package scene.common
 
-import domain.GameStore
+import tamra.common.GameStore
 import ui.LiveData
 
 class HeaderViewModel(private val store: GameStore) {

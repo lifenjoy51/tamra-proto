@@ -1,14 +1,14 @@
 package scene.event
 
-import ViewModelProvider
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import defaultMargin
-import domain.event.Conversation
-import domain.event.Narration
-import mainHeight
+import tamra.ViewModelProvider
+import tamra.defaultMargin
+import tamra.event.Conversation
+import tamra.event.Narration
+import tamra.mainHeight
 import ui.tamraRect
 import ui.tamraText
 

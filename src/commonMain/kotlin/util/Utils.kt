@@ -1,6 +1,6 @@
 package util
 
 import com.soywiz.korma.geom.Point
-import domain.LocationXY
+import tamra.common.LocationXY
 
 fun LocationXY.toPoint() = Point(this.x, this.y)

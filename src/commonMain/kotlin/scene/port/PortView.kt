@@ -1,19 +1,22 @@
 package scene.port
 
-import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.SolidRect
+import com.soywiz.korge.view.center
+import com.soywiz.korge.view.positionY
 import com.soywiz.korge.view.sprite
+import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.BuildingType
-import mainHeight
-import mainWidth
 import scene.common.HeaderView
+import tamra.ViewModelProvider
+import tamra.common.BuildingType
+import tamra.mainHeight
+import tamra.mainWidth
 import ui.tamraButton
+import ui.tamraRect
 
 class PortView(
     viewModelProvider: ViewModelProvider,
@@ -28,19 +31,24 @@ class PortView(
 
         //
         container.apply {
-            val viewPlayer = sprite(resourcesVfs["player.png"].readBitmap())
+            tamraRect(width = width, height = height, color = Colors["#e8f1f4"])
+
+            val viewPlayer = sprite(resourcesVfs["player.png"].readBitmap()) {
+                center()
+            }
+
             tiledMapView(tiledMap) {
+                positionY(32)
                 addChild(viewPlayer)
-                scale = 6.0
+                scaledWidth = mainWidth.toDouble()
+                scaledHeight = mainWidth.toDouble()
             }
 
             // on update player position
             vm.player.observe {
-                viewPlayer.x = it.location.x - viewPlayer.width / 2
-                viewPlayer.y = it.location.y - viewPlayer.height / 2
+                viewPlayer.x = it.location.x
+                viewPlayer.y = it.location.y
             }
-
-            val background = SolidRect(width = mainWidth, height = mainHeight)
 
             // draw header
             headerView.draw(container)

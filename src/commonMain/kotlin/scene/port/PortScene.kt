@@ -1,20 +1,21 @@
 package scene.port
 
-import ViewModelProvider
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.view.Container
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.BuildingType
-import domain.port.PortMap
 import scene.event.EventView
 import scene.port.market.MarketScene
 import scene.port.shipyard.ShipyardScene
 import scene.world.WorldScene
-import util.getMovableArea
+import tamra.ViewModelProvider
+import tamra.common.BuildingType
+import tamra.port.PortMap
+import util.getCollisions
 import util.getObjectNames
+import util.getTiles
 
 class PortScene(val viewModelProvider: ViewModelProvider) : Scene() {
 
@@ -32,12 +33,12 @@ class PortScene(val viewModelProvider: ViewModelProvider) : Scene() {
     override suspend fun Container.sceneInit() {
         // load tiledMap
         val tiledMap = resourcesVfs["port.tmx"].readTiledMap()
-        val movableArea = tiledMap.getMovableArea()
-        val buildings = tiledMap.getObjectNames("buildings").mapValues {
-            BuildingType.valueOf(it.value)
-        }
+        val buildings = tiledMap.getObjectNames("buildings")
+            .mapValues { BuildingType.valueOf(it.value) }
 
-        val portMap = PortMap(buildings)
+        val tiles = tiledMap.getTiles()
+        val collisions = tiledMap.getCollisions()
+        val portMap = PortMap(buildings, tiles, collisions)
 
         // save
         vm.save()

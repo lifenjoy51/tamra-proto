@@ -1,4 +1,4 @@
-package domain.world
+package tamra.world
 
 enum class WorldTile(val type: Int) {
     EMPTY(0),

@@ -11,7 +11,7 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.paint.ColorPaint
 import com.soywiz.korma.geom.degrees
 import com.soywiz.korma.geom.vector.*
-import defaultMargin
+import tamra.defaultMargin
 
 
 inline fun Container.tamraButton(

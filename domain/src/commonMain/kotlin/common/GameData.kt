@@ -1,11 +1,11 @@
-package domain
+package tamra.common
 
-import domain.event.EventCondition
-import domain.event.GameEvent
-import domain.port.market.CargoItem
-import domain.port.market.Market
-import domain.port.shipyard.ShipBlueprint
-import domain.port.shipyard.Shipyard
+import tamra.event.EventCondition
+import tamra.event.GameEvent
+import tamra.port.market.CargoItem
+import tamra.port.market.Market
+import tamra.port.shipyard.ShipBlueprint
+import tamra.port.shipyard.Shipyard
 
 // static immutable game data object.
 class GameData(

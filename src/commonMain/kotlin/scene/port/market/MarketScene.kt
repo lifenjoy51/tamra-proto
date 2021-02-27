@@ -1,14 +1,14 @@
 package scene.port.market
 
-import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import defaultMargin
-import mainHeight
-import mainWidth
 import scene.port.PortScene
+import tamra.ViewModelProvider
+import tamra.defaultMargin
+import tamra.mainHeight
+import tamra.mainWidth
 import ui.tamraButton
 import ui.tamraText
 

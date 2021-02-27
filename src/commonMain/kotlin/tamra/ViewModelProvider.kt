@@ -1,3 +1,5 @@
+package tamra
+
 import scene.common.FleetInfoViewModel
 import scene.common.HeaderViewModel
 import scene.event.EventViewModel

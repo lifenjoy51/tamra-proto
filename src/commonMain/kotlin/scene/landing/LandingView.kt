@@ -1,6 +1,5 @@
 package scene.landing
 
-import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.tiledMapView
@@ -10,10 +9,11 @@ import com.soywiz.korge.view.camera
 import com.soywiz.korge.view.sprite
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.SiteId
-import mainHeight
-import mainWidth
 import scene.common.HeaderView
+import tamra.ViewModelProvider
+import tamra.common.SiteId
+import tamra.mainHeight
+import tamra.mainWidth
 import ui.tamraButton
 
 class LandingView(

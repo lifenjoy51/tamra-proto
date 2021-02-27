@@ -2,7 +2,7 @@ package ui
 
 import com.soywiz.korge.ui.*
 import com.soywiz.korge.view.*
-import windowWidth
+import tamra.windowWidth
 
 inline fun Container.uiHorizontalScrollableArea(
     width: Double = windowWidth.toDouble(),

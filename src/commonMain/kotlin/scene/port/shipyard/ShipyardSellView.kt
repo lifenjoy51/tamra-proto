@@ -5,14 +5,9 @@ import com.soywiz.korge.input.onOut
 import com.soywiz.korge.input.onOver
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import defaultMargin
-import domain.port.shipyard.maxShipSpace
-import infoAreaHeight
-import itemAreaHeight
-import mainHeight
-import mainWidth
 import scene.port.PortScene
-import textTabSpace
+import tamra.*
+import tamra.port.shipyard.maxShipSpace
 import ui.tamraButton
 import ui.tamraText
 

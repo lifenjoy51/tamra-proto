@@ -8,9 +8,9 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.format.readBitmap
 import com.soywiz.korio.file.std.resourcesVfs
-import mainHeight
-import mainWidth
 import scene.world.WorldScene
+import tamra.mainHeight
+import tamra.mainWidth
 import ui.tamraText
 
 class MainScene : Scene() {

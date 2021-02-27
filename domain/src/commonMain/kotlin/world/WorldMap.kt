@@ -1,13 +1,15 @@
-package domain.world
+package tamra.world
 
-import domain.LandingId
-import domain.LocationXY
-import domain.Port
-import domain.TileXY
+import tamra.common.*
 
 class WorldMap(
-    val portPositions: Map<TileXY, Port?>,
+    val portPositions: Map<TileXY, PortId?>,
     val landingPositions: Map<TileXY, LandingId?>,
-    val tiles: Map<TileXY, Int>,
-    val tileCollisions: Map<Int, List<List<Pair<LocationXY, LocationXY>>>>
-)
+    override val tiles: Map<TileXY, TileId>,
+    override val collisions: Map<TileId, List<PointArea>>
+) : GameMap() {
+    override val onWater: Boolean = true
+    override fun getTileXY(locationXY: LocationXY): TileXY {
+        return locationXY.toWorldTileXY()
+    }
+}

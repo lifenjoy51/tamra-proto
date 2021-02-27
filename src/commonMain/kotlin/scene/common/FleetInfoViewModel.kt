@@ -1,8 +1,8 @@
 package scene.common
 
-import domain.Fleet
-import domain.GameStore
-import domain.Ship
+import tamra.common.Fleet
+import tamra.common.GameStore
+import tamra.common.Ship
 import ui.LiveData
 
 class FleetInfoViewModel(

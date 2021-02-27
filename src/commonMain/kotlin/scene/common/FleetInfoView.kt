@@ -5,15 +5,15 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.rectHole
-import defaultMargin
-import domain.port.shipyard.maxShipSpace
-import spriteMap
+import tamra.defaultMargin
+import tamra.port.shipyard.maxShipSpace
+import tamra.spriteMap
+import tamra.windowHeight
+import tamra.windowWidth
 import ui.tamraButton
 import ui.tamraRect
 import ui.tamraText
 import ui.uiHorizontalScrollableArea
-import windowHeight
-import windowWidth
 
 class FleetInfoView(
     private val vm: FleetInfoViewModel

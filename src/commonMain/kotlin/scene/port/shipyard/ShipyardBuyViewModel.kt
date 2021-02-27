@@ -1,10 +1,10 @@
 package scene.port.shipyard
 
-import domain.Fleet
-import domain.GameStore
-import domain.port.shipyard.ShipBlueprint
-import domain.port.shipyard.Shipyard
 import scene.port.PortScene
+import tamra.common.Fleet
+import tamra.common.GameStore
+import tamra.port.shipyard.ShipBlueprint
+import tamra.port.shipyard.Shipyard
 import ui.LiveData
 
 class ShipyardBuyViewModel(private val store: GameStore) {

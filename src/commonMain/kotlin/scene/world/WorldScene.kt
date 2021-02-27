@@ -1,6 +1,5 @@
 package scene.world
 
-import ViewModelProvider
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.Key
 import com.soywiz.korge.scene.Scene
@@ -8,6 +7,7 @@ import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.addFixedUpdater
 import scene.landing.LandingScene
 import scene.port.PortScene
+import tamra.ViewModelProvider
 
 class WorldScene(viewModelProvider: ViewModelProvider) : Scene() {
 

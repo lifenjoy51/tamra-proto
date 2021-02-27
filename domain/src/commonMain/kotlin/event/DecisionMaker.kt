@@ -1,7 +1,7 @@
-package domain.event
+package tamra.event
 
-import domain.GameData
-import domain.GameStore
+import tamra.common.GameData
+import tamra.common.GameStore
 
 class DecisionMaker(
     val store: GameStore

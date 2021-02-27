@@ -7,7 +7,7 @@ import com.soywiz.korim.font.TtfFont
 import com.soywiz.korim.text.DefaultStringTextRenderer
 import com.soywiz.korim.text.TextAlignment
 import com.soywiz.korim.text.TextRenderer
-import defaultMargin
+import tamra.defaultMargin
 
 class TamraFont(
     val font: TtfFont

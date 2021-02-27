@@ -1,4 +1,4 @@
-package domain.event
+package tamra.event
 
 data class GameEvent(
     val id: String,

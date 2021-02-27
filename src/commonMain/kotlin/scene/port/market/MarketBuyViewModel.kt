@@ -1,11 +1,11 @@
 package scene.port.market
 
-import domain.GameStore
-import domain.ProductId
-import domain.port.market.Market
-import domain.port.market.MarketBuyCart
-import domain.port.market.MarketProduct
 import scene.port.PortScene
+import tamra.common.GameStore
+import tamra.common.ProductId
+import tamra.port.market.Market
+import tamra.port.market.MarketBuyCart
+import tamra.port.market.MarketProduct
 import ui.LiveData
 
 class MarketBuyViewModel(private val store: GameStore) {

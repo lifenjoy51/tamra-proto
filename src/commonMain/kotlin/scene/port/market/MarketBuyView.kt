@@ -4,15 +4,10 @@ import com.soywiz.korge.input.onClick
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
-import defaultMargin
-import domain.GameData
-import domain.port.market.MarketProduct
-import infoAreaHeight
-import itemAreaHeight
-import mainHeight
-import mainWidth
 import scene.port.PortScene
-import textTabSpace
+import tamra.*
+import tamra.common.GameData
+import tamra.port.market.MarketProduct
 import ui.*
 
 class MarketBuyView(private val vm: MarketBuyViewModel, private val changePortScene: suspend () -> PortScene) {

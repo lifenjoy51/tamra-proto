@@ -1,4 +1,4 @@
-package domain
+package tamra.common
 
 // FIXME 컨텍스트의 정체를 명확히 해야한다.
 data class GameStore(

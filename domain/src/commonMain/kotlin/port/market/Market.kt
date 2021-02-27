@@ -1,9 +1,9 @@
-package domain.port.market
+package tamra.port.market
 
-import domain.Fleet
-import domain.GameData
-import domain.PortId
-import domain.ProductId
+import tamra.common.Fleet
+import tamra.common.GameData
+import tamra.common.PortId
+import tamra.common.ProductId
 
 data class MarketProductState(
     val marketSize: Int,

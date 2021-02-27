@@ -1,9 +1,9 @@
 package scene.port
 
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.*
-import domain.port.Player
-import domain.port.PortMap
+import tamra.common.*
+import tamra.port.Player
+import tamra.port.PortMap
 import ui.LiveData
 import util.SaveManager
 
@@ -15,28 +15,28 @@ class PortViewModel(
 
     fun up() {
         player.value?.let {
-            //it.moveUp()
+            it.moveUp()
             onMovePlayer(it)
         }
     }
 
     fun down() {
         player.value?.let {
-            //it.moveDown()
+            it.moveDown()
             onMovePlayer(it)
         }
     }
 
     fun left() {
         player.value?.let {
-            //it.moveLeft()
+            it.moveLeft()
             onMovePlayer(it)
         }
     }
 
     fun right() {
         player.value?.let {
-            //it.moveRight()
+            it.moveRight()
             onMovePlayer(it)
         }
     }
@@ -70,7 +70,7 @@ class PortViewModel(
     private fun onMovePlayer(p: Player) {
         player(p)
         val gameMap = p.map
-        val txy = p.location.toTileXY()
+        val txy = p.location.toWorldTileXY()
         scanBuilding(txy, gameMap.buildingMap)
         store.playerLocation = p.location
     }

@@ -1,4 +1,4 @@
-package domain
+package tamra.common
 
 enum class ShipType {
     DOTBAE,

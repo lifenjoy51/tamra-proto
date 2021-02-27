@@ -2,9 +2,9 @@ package scene.world
 
 import com.soywiz.korma.geom.Angle
 import com.soywiz.korma.geom.plus
-import domain.*
-import domain.world.PlayerFleet
-import domain.world.WorldMap
+import tamra.common.*
+import tamra.world.PlayerFleet
+import tamra.world.WorldMap
 import ui.LiveData
 
 class WorldViewModel(
@@ -21,7 +21,7 @@ class WorldViewModel(
     private fun onMoveFleet(fleet: PlayerFleet) {
         playerFleet(fleet)
         val worldMap = fleet.map
-        val txy = fleet.location.toTileXY()
+        val txy = fleet.location.toWorldTileXY()
         scanNearPort(txy, worldMap.portPositions)
         scanNearLanding(txy, worldMap.landingPositions)
         // FIXME 바람 데이터는 어디서?
@@ -31,22 +31,22 @@ class WorldViewModel(
         store.fleet.location = fleet.location
     }
 
-    private fun scanNearPort(tileXY: TileXY, portPositions: Map<TileXY, Port?>) {
+    private fun scanNearPort(tileXY: TileXY, portPositions: Map<TileXY, PortId?>) {
         // 항구가 있으면 입항 표시.
-        val portIds = tileXY.crossXY.mapNotNull { txy -> portPositions[txy]?.id }
-        val portIdString = portIds.firstOrNull()?.name ?: ""
-        nearPort(portIdString)
+        val dist = portPositions.keys.firstOrNull { tileXY.distance(it) <= 2 }
+        val port = dist?.let { portPositions[it] }
+        nearPort(port?.name ?: "")
     }
 
     private fun scanNearLanding(tileXY: TileXY, landingPositions: Map<TileXY, LandingId?>) {
         // 상륙지가 있으면 표시.
-        val landingIds = tileXY.crossXY.mapNotNull { txy -> landingPositions[txy] }
-        val landingIdString = landingIds.firstOrNull()?.name ?: ""
-        nearLanding(landingIdString)
+        val dist = landingPositions.keys.firstOrNull { tileXY.distance(it) <= 2 }
+        val landing = dist?.let { landingPositions[it] }
+        nearLanding(landing?.name ?: "")
     }
 
-    fun initPlayerFleet(gameMap: WorldMap) {
-        val fleet = PlayerFleet(location = store.fleet.location, map = gameMap)
+    fun initPlayerFleet(worldMap: WorldMap) {
+        val fleet = PlayerFleet(location = store.fleet.location, map = worldMap)
         playerFleet(fleet)
         onMoveFleet(fleet)
     }

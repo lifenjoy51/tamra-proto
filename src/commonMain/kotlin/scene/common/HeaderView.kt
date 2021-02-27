@@ -1,14 +1,10 @@
 package scene.common
 
-import ViewModelProvider
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.view.*
-import defaultMargin
-import mainWidth
+import tamra.*
 import ui.tamraButton
 import ui.tamraText
-import windowHeight
-import windowWidth
 
 class HeaderView(viewModelProvider: ViewModelProvider) {
     private val vm = viewModelProvider.headerViewModel
@@ -16,14 +12,15 @@ class HeaderView(viewModelProvider: ViewModelProvider) {
     private val fleetInfoView = FleetInfoView(fleetInfoVm)
 
     fun draw(container: Container): FixedSizeContainer {
-        return container.fixedSizeContainer(windowWidth, windowHeight) {
+        return container.fixedSizeContainer(0, 0) {
+            propagateEvents = true
             // draw layer Fleet info
             val layerFleetInfo = fixedSizeContainer(windowWidth, windowHeight) {
                 centerOnStage()
             }
             fleetInfoView.draw(layerFleetInfo)
-            fleetInfoVm.toggleFleetInfo.observe {
-                layerFleetInfo.visible = it
+            fleetInfoVm.toggleFleetInfo.observe { fleetInfoOpened ->
+                layerFleetInfo.visible = fleetInfoOpened
             }
 
             // balance

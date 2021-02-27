@@ -1,18 +1,15 @@
-package domain.world
+package tamra.world
 
-import LineHelper
 import com.soywiz.korma.geom.*
-import domain.GameUnit
-import domain.LocationXY
-import domain.tileSize
-import domain.toTileXY
+import tamra.common.GameUnit
+import tamra.common.LocationXY
 
 data class PlayerFleet(
     override var location: LocationXY,
     override var velocity: Double = 0.1,
-    val map: WorldMap,
+    override val map: WorldMap,
     var angle: Angle = Angle.fromDegrees(90),
-    var sailState: SaleState = SaleState.CLOSE_SALE
+    var sailState: SaleState = SaleState.CLOSE_SALE,
 // 정박/반개/전개
 // 풍향?
 // 돛 각도.
@@ -47,7 +44,7 @@ data class PlayerFleet(
         if (velocity < -1) velocity = originVelocity
 
         // FIXME test
-        //velocity = 0.5
+        // velocity = 0.5
 
         // 0도 기준으로 위아래로 움직이는게 cosine, 좌우로 움직이는게 sine이다.
         val dx = -angle.sine * velocity
@@ -55,28 +52,6 @@ data class PlayerFleet(
         if (!this.moved(dx, dy) || originVelocity == 0.0) {
             velocity = originVelocity * 0.5
         }
-    }
-
-    private fun moved(dx: Double, dy: Double): Boolean {
-        val newXy = LocationXY(location.x + dx, location.y + dy)
-        val moved = isMovable(newXy)
-        if (moved) location = newXy
-        return moved
-    }
-
-    private fun isMovable(location: LocationXY): Boolean {
-        val txy = location.toTileXY()
-        val collisions = map.tileCollisions[map.tiles[txy]]
-        val p1 = location.abs().mod(tileSize)
-        val p2 = LocationXY(0.0, location.y).abs().mod(tileSize)
-        val base = p1 to p2
-        // 교점의 수가 홀수이면 안에 위치.
-        // https://en.wikipedia.org/wiki/LocationXY_in_polygon
-        return !(collisions?.any { area ->
-            area.map {
-                if (LineHelper.doIntersect(base, it)) 1 else 0
-            }.sum() % 2 == 1
-        } ?: true)
     }
 
     fun controlSail() {
@@ -90,10 +65,4 @@ data class PlayerFleet(
     fun stop() {
         sailState = SaleState.STOP
     }
-}
-
-private fun LocationXY.mod(tileSize: Int): LocationXY {
-    val x = this.x % tileSize.toDouble()
-    val y = this.y % tileSize.toDouble()
-    return LocationXY(x, y)
 }

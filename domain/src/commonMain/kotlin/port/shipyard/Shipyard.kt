@@ -1,6 +1,6 @@
-package domain.port.shipyard
+package tamra.port.shipyard
 
-import domain.*
+import tamra.common.*
 
 class ShipBlueprint(
     val type: ShipType,

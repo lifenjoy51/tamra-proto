@@ -1,18 +1,19 @@
 package scene.landing
 
-import ViewModelProvider
 import com.soywiz.korev.Key
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.view.Container
 import com.soywiz.korio.file.std.resourcesVfs
-import domain.SiteId
-import domain.landing.LandingMap
 import scene.event.EventView
 import scene.world.WorldScene
-import util.getMovableArea
+import tamra.ViewModelProvider
+import tamra.common.SiteId
+import tamra.landing.LandingMap
+import util.getCollisions
 import util.getObjectNames
+import util.getTiles
 
 class LandingScene(val viewModelProvider: ViewModelProvider) : Scene() {
 
@@ -28,12 +29,12 @@ class LandingScene(val viewModelProvider: ViewModelProvider) : Scene() {
     override suspend fun Container.sceneInit() {
         // load tiledMap
         val tiledMap = resourcesVfs["landing.tmx"].readTiledMap()
-        val movableArea = tiledMap.getMovableArea()
-        val sites = tiledMap.getObjectNames("sites").mapValues {
-            SiteId.valueOf(it.value)
-        }
+        val sites = tiledMap.getObjectNames("sites")
+            .mapValues { SiteId.valueOf(it.value) }
 
-        val landingMap = LandingMap(sites)
+        val tiles = tiledMap.getTiles()
+        val collisions = tiledMap.getCollisions()
+        val landingMap = LandingMap(sites, tiles, collisions)
 
         // save
         vm.save()
