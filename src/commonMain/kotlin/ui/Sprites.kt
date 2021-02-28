@@ -13,12 +13,16 @@ fun Bitmap.getDirectionSprites(): Map<Direction, SpriteAnimation> {
     )
 }
 
-fun Bitmap.getSpriteAnimation(seq: Int): SpriteAnimation {
+fun Bitmap.getSpriteAnimation(
+    size: Int = 8,
+    seq: Int = 0,
+    col: Int = 2
+): SpriteAnimation {
     return SpriteAnimation(
         spriteMap = this,
-        spriteWidth = 8,
-        spriteHeight = 8,
+        spriteWidth = size,
+        spriteHeight = size,
         marginTop = seq * 8,
-        columns = 2
+        columns = col
     )
 }

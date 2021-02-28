@@ -1,5 +1,6 @@
 package scene.world
 
+import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.component.onStageResized
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.readTiledMap
@@ -22,10 +23,7 @@ import tamra.mainHeight
 import tamra.mainWidth
 import tamra.world.PlayerFleet
 import tamra.world.WorldMap
-import ui.Pseudo3DFilter
-import ui.tamraButton
-import ui.tamraRect
-import ui.tamraText
+import ui.*
 import util.getCollisions
 import util.getObjectNames
 import util.getTiles
@@ -82,11 +80,13 @@ class WorldView(
                 scaledHeight = mainSize / 3
             }
 
-            // TODO change texture..
-            sprite(texture = resourcesVfs["S200.png"].readBitmap()) {
+            val shipSprite = resourcesVfs["ship.png"].readBitmap()
+                .getSpriteAnimation(size = 64, col = 4)
+            sprite(shipSprite) {
                 scale = 4.0 / vm.viewScale.get()
+                playAnimationLooped(shipSprite, spriteDisplayTime = TimeSpan(500.0))
                 center()
-                position(mainWidth / 2, mainWidth - 40)
+                position(mainWidth / 2, mainWidth - 80)
             }
 
             // on update fleet position
