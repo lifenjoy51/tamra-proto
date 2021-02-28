@@ -50,7 +50,7 @@ class PortScene(val viewModelProvider: ViewModelProvider) : Scene() {
         vm.init(portMap)
 
         // init eventView
-        eventView.draw(this)
+        // FIXME eventView.draw(this)
 
         // input
         keys.down {

@@ -75,7 +75,7 @@ class LandingViewModel(
     private fun onMovePlayer(p: LandingPlayer) {
         player(p)
         val gameMap = p.map
-        val txy = p.location.toWorldTileXY()
+        val txy = p.location.toTileXY()
         scanBuilding(txy, gameMap.sites)
         store.playerLocation = p.location
     }

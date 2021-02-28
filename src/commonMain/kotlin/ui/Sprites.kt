@@ -6,10 +6,10 @@ import tamra.common.Direction
 
 fun Bitmap.getDirectionSprites(): Map<Direction, SpriteAnimation> {
     return mapOf(
-        Direction.DOWN to getSpriteAnimation(0),
-        Direction.UP to getSpriteAnimation(1),
-        Direction.RIGHT to getSpriteAnimation(2),
-        Direction.LEFT to getSpriteAnimation(3),
+        Direction.DOWN to getSpriteAnimation(seq = 0),
+        Direction.UP to getSpriteAnimation(seq = 1),
+        Direction.RIGHT to getSpriteAnimation(seq = 2),
+        Direction.LEFT to getSpriteAnimation(seq = 3),
     )
 }
 

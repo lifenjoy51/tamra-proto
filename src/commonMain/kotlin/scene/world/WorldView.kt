@@ -69,7 +69,6 @@ class WorldView(
             // pos = tile * size.
             val tileMapView = tiledMapView(tiledMap) {
                 onStageResized { width, height ->
-                    println("$width $height")
                     filter = Pseudo3DFilter(width.toDouble(), height.toDouble())
                 }
             }

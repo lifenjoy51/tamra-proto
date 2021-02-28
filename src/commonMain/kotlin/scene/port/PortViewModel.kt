@@ -75,7 +75,7 @@ class PortViewModel(
     private fun onMovePlayer(p: Player) {
         player(p)
         val gameMap = p.map
-        val txy = p.location.toWorldTileXY()
+        val txy = p.location.toTileXY()
         scanBuilding(txy, gameMap.buildingMap)
         store.playerLocation = p.location
     }

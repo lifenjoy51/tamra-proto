@@ -5,7 +5,6 @@ import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.center
 import com.soywiz.korge.view.positionY
 import com.soywiz.korge.view.sprite
 import com.soywiz.korim.color.Colors
@@ -15,6 +14,8 @@ import scene.common.HeaderView
 import tamra.ViewModelProvider
 import tamra.common.BuildingType
 import tamra.common.Direction
+import tamra.common.tileSize
+import tamra.defaultMargin
 import tamra.mainHeight
 import tamra.mainWidth
 import ui.getDirectionSprites
@@ -35,12 +36,12 @@ class PortView(
 
         //
         container.apply {
-            tamraRect(width = width, height = height, color = Colors["#e8f1f4"])
+            tamraRect(width = mainWidth.toDouble(), height = mainHeight.toDouble(), color = Colors.DIMGREY)
 
             val playerSprites = resourcesVfs["player.png"].readBitmap()
                 .getDirectionSprites()
             val viewPlayer = sprite(playerSprites.getValue(Direction.DOWN)) {
-                center()
+                //center() // 맵이 벗어난다.
             }
 
             tiledMapView(tiledMap) {
@@ -52,8 +53,8 @@ class PortView(
 
             // on update player position
             vm.player.observe {
-                viewPlayer.x = it.location.x
-                viewPlayer.y = it.location.y
+                viewPlayer.x = it.location.x - tileSize / 2
+                viewPlayer.y = it.location.y - tileSize / 2
             }
             vm.playerDirection.observe {
                 val sprite = playerSprites.getValue(it)
@@ -62,6 +63,22 @@ class PortView(
 
             // draw header
             headerView.draw(container)
+
+            // move ui
+            val btnSize = 50
+            val btnSizeD = btnSize.toDouble()
+            tamraButton(text = "△", width = btnSizeD, height = btnSizeD, ax = btnSize, ay = mainHeight - btnSize * 3 - defaultMargin * 2) {
+                onClick { vm.up() }
+            }
+            tamraButton(text = "▽", width = btnSizeD, height = btnSizeD, ax = btnSize, ay = mainHeight - btnSize - defaultMargin * 2) {
+                onClick { vm.down() }
+            }
+            tamraButton(text = "◁", width = btnSizeD, height = btnSizeD, ax = 0, ay = mainHeight - btnSize * 2 - defaultMargin * 2) {
+                onClick { vm.left() }
+            }
+            tamraButton(text = "▷", width = btnSizeD, height = btnSizeD, ax = btnSize * 2, ay = mainHeight - btnSize * 2 - defaultMargin * 2) {
+                onClick { vm.right() }
+            }
 
             tamraButton(text = "바다로 나가기", width = 120.0, px = mainWidth - 130, py = mainHeight - 40) {
                 onClick {
