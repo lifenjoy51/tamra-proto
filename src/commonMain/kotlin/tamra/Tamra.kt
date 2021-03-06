@@ -11,6 +11,8 @@ import com.soywiz.korio.file.std.resourcesVfs
 import com.soywiz.korio.serialization.json.Json
 import com.soywiz.korma.geom.SizeInt
 import scene.MainScene
+import scene.battle.BattleScene
+import scene.battle.BattleViewModel
 import scene.common.FleetInfoViewModel
 import scene.common.HeaderViewModel
 import scene.event.EventViewModel
@@ -53,8 +55,9 @@ val spriteMap: MutableMap<String, BmpSlice> = mutableMapOf()
 
 object TamraModule : Module() {
     //override val mainScene: KClass<out Scene> = MainScene::class
-    override val mainScene: KClass<out Scene> = WorldScene::class
+    // override val mainScene: KClass<out Scene> = WorldScene::class
     //override val mainScene: KClass<out Scene> = PortScene::class
+    override val mainScene: KClass<out Scene> = BattleScene::class
 
     // override val mainScene: KClass<out Scene> = PortScene::class
     override val size: SizeInt = SizeInt(mainWidth, mainHeight)
@@ -79,6 +82,7 @@ object TamraModule : Module() {
         mapPrototype { MarketScene(get()) }
         mapPrototype { ShipyardScene(get()) }
         mapPrototype { LandingScene(get()) }
+        mapPrototype { BattleScene(get()) }
     }
 
     private suspend fun loadSprite() {
@@ -102,7 +106,8 @@ object TamraModule : Module() {
             ShipyardBuyViewModel(store),
             ShipyardSellViewModel(store),
             EventViewModel(store),
-            LandingViewModel(store)
+            LandingViewModel(store),
+            BattleViewModel(store)
         )
     }
 

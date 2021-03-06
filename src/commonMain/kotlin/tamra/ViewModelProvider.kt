@@ -1,5 +1,6 @@
 package tamra
 
+import scene.battle.BattleViewModel
 import scene.common.FleetInfoViewModel
 import scene.common.HeaderViewModel
 import scene.event.EventViewModel
@@ -22,4 +23,5 @@ class ViewModelProvider(
     val shipyardSellViewModel: ShipyardSellViewModel,
     val eventViewModel: EventViewModel,
     val landingViewModel: LandingViewModel,
+    val battleViewModel: BattleViewModel,
 )

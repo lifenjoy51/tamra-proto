@@ -41,3 +41,8 @@ enum class SiteId {
     EXIT,
     YONGYEON,
 }
+
+enum class BattleSiteId {
+    ALLY,
+    ENEMY,
+}

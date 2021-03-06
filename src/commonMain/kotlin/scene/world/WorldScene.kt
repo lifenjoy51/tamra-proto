@@ -40,7 +40,7 @@ class WorldScene(viewModelProvider: ViewModelProvider) : Scene() {
         }
 
         // play bg  sound
-        val bg = resourcesVfs["bg.mp3"].readSound()
+        val bg = resourcesVfs["tamra.mp3"].readSound()
         bgSoundChannel = bg.play(PlaybackTimes.INFINITE)
     }
 
