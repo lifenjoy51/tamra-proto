@@ -90,7 +90,6 @@ class WorldView(
 
             // on update fleet position
             vm.playerFleet.observe { fleet ->
-                //println(fleet.location)
                 // 하단 중앙을 기점으로 한다.
                 with(tileMapView) {
                     val rotatedPoint = (fleet.location.toPoint() - baseCoord.location.toPoint())

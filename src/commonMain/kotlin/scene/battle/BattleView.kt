@@ -1,5 +1,6 @@
 package scene.battle
 
+import com.soywiz.kmem.toIntCeil
 import com.soywiz.korge.input.onClick
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.TiledMapView
@@ -15,7 +16,9 @@ import com.soywiz.korma.geom.vector.roundRect
 import scene.common.HeaderView
 import tamra.ViewModelProvider
 import tamra.battle.BattleShip
+import tamra.battle.MAX_ACTION
 import tamra.common.BattleSiteId
+import tamra.common.TileXY
 import tamra.common.tileSize
 import tamra.mainHeight
 import tamra.mainWidth
@@ -57,60 +60,86 @@ class BattleView(
 
                 //scale = battleViewScale
                 drawGrid(this@tiledMapView)
+                onClick {
+                    val clickXy = (it.currentPosLocal / tileSize).let { p ->
+                        TileXY(p.x.toIntCeil(), p.y.toIntCeil())
+                    }
+                }
+            }
 
+            fun drawTemp(bs: BattleShip) {
+                tempViews?.removeFromParent()
+                tempViews = mapView.graphics { }
+                drawMoveableGrid(bs)
+                drawRangeGrid(bs)
+                drawMeleeGrid(bs)
+                drawDirection(bs)
             }
 
             // on update position
             vm.player.observe {
                 playerShipView.position(it)
-                tempViews?.removeFromParent()
-                tempViews = mapView.graphics { }
-                drawMoveableGrid(it)
-                drawDirection(it)
                 mapView.sendChildToFront(playerShipView)
+                drawTemp(it)
             }
             vm.ai.observe {
                 aiShipView.position(it)
+                mapView.sendChildToFront(aiShipView)
+                drawTemp(it)
             }
 
             // draw header
             headerView.draw(container)
 
             //ui
-            tamraText(text = "ALLY", px = 20, py = mainHeight - 160) {
+            tamraText(text = "", px = 15, py = mainHeight - 150) {
                 vm.turn.observe {
-                    text = it.name
+                    val t = if (it == BattleSiteId.ALLY) "아군" else "적군"
+                    text = "차례 : $t"
                 }
             }
-            tamraText(text = "", px = 20, py = mainHeight - 120) {
-                vm.player.observe {
-                    text = it.action.toString()
+            tamraText(text = "", px = 15, py = mainHeight - 110) {
+                vm.turn.observe {
+                    val bs = it.getBattleShip(vm)
+                    text = "행동 : ${bs.action}/$MAX_ACTION"
+                }
+            }
+            tamraText(text = "", px = 15, py = mainHeight - 70) {
+                vm.turn.observe {
+                    val bs = it.getBattleShip(vm)
+                    text = "선원 : ${bs.crew}/${bs.originCrew}"
+                }
+            }
+            tamraText(text = "", px = 15, py = mainHeight - 30) {
+                vm.turn.observe {
+                    val bs = it.getBattleShip(vm)
+                    text = "사기 : ${bs.morale}/${bs.originMorale}"
                 }
             }
 
-            tamraButton(text = "대기", width = 120.0, px = mainWidth - 130, py = mainHeight - 160) {
+            tamraButton(text = "대기", width = 80.0, px = mainWidth - 90, py = mainHeight - 160) {
                 onClick { vm.nextTurn() }
                 vm.turn.observe {
-                    //visible = it == BattleSiteId.ALLY
+                    visible = it == BattleSiteId.ALLY
                 }
             }
 
-            tamraButton(text = "좌회전", width = 120.0, px = mainWidth - 130, py = mainHeight - 120) {
+            tamraButton(text = "좌회전", width = 80.0, px = mainWidth - 90, py = mainHeight - 120) {
                 onClick { vm.turnCounterClockwise() }
                 vm.turn.observe {
                     visible = it == BattleSiteId.ALLY
                 }
             }
 
-            tamraButton(text = "우회전", width = 120.0, px = mainWidth - 130, py = mainHeight - 80) {
+            tamraButton(text = "우회전", width = 80.0, px = mainWidth - 90, py = mainHeight - 80) {
                 onClick { vm.turnClockwise() }
                 vm.turn.observe {
                     visible = it == BattleSiteId.ALLY
                 }
             }
 
-            tamraButton(text = "앞으로", width = 120.0, px = mainWidth - 130, py = mainHeight - 40) {
-                onClick { vm.move() }
+            tamraButton(text = "앞으로", width = 80.0, px = mainWidth - 90, py = mainHeight - 40) {
+                onClick { vm.move(vm.player.get()) }
                 vm.turn.observe {
                     visible = it == BattleSiteId.ALLY
                 }
@@ -127,7 +156,7 @@ class BattleView(
 
     private fun drawDirection(it: BattleShip) {
         tempViews?.apply {
-            stroke(Colors.SADDLEBROWN, StrokeInfo(thickness = 1.0)) {
+            stroke(Colors.WHITESMOKE, StrokeInfo(thickness = 2.0)) {
                 val xy = it.forwardXy()
                 roundRect(xy.x * tileSize + tileSize / 4, xy.y * tileSize + tileSize / 4, tileSize / 2, tileSize / 2, 2, 2)
             }
@@ -144,9 +173,29 @@ class BattleView(
         }
     }
 
+    private fun drawMeleeGrid(s: BattleShip) {
+        tempViews?.apply {
+            stroke(Colors.DARKBLUE, StrokeInfo(thickness = 1.0)) {
+                s.meleeArea().map { (x, y) ->
+                    rect(x * tileSize + 1, y * tileSize + 1, tileSize - 2, tileSize - 2)
+                }
+            }
+        }
+    }
+
+    private fun drawRangeGrid(s: BattleShip) {
+        tempViews?.apply {
+            stroke(Colors.DARKRED, StrokeInfo(thickness = 1.0)) {
+                s.rangeArea().map { (x, y) ->
+                    rect(x * tileSize + 2, y * tileSize + 2, tileSize - 4, tileSize - 4)
+                }
+            }
+        }
+    }
+
     private fun Sprite.position(s: BattleShip) {
-        this.x = s.location.x * tileSize - this.scaledWidth / 2 + tileSize / 2
-        this.y = s.location.y * tileSize - this.scaledHeight / 2 + tileSize / 2
+        this.x = s.tile.x * tileSize - this.scaledWidth / 2 + tileSize / 2
+        this.y = s.tile.y * tileSize - this.scaledHeight / 2 + tileSize / 2
     }
 
     private fun drawGrid(tiledMapView: TiledMapView) {

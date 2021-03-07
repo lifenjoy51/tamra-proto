@@ -8,9 +8,9 @@ const val ACTION_PER_TURN = 100
 const val MAX_ROTARY = 50
 const val MAX_VELOCITY = 25
 
-open class BattleShip(
+abstract class BattleShip(
     val map: BattleMap,
-    var location: TileXY,   // 위치
+    var tile: TileXY,   // 위치
     var direction: Direction,   // 방향
     var action: Int = 100, // 행동력
     var velocity: Double = 1.0,  // 속도
@@ -22,6 +22,8 @@ open class BattleShip(
 ) {
     val originCrew = crew
     val originMorale = morale
+
+    abstract var auto: Boolean
 
     private val rotaryAction = (MAX_ROTARY / rotary).toInt()
     private val moveAction = (MAX_VELOCITY / velocity).toInt()
@@ -43,18 +45,19 @@ open class BattleShip(
             && (forwardXy.y != 0)
             && (forwardXy.x != map.width - 1)
             && (forwardXy.y != map.height - 1)
+        //&& forwardXy != enemy?.tile   // TODO check unit
         ) {
-            location = forwardXy
+            tile = forwardXy
             action -= moveAction
         }
     }
 
     fun forwardXy(): TileXY {
         return when (this.direction) {
-            Direction.DOWN -> location.copy(y = location.y + 1)
-            Direction.UP -> location.copy(y = location.y - 1)
-            Direction.RIGHT -> location.copy(x = location.x + 1)
-            Direction.LEFT -> location.copy(x = location.x - 1)
+            Direction.DOWN -> tile.copy(y = tile.y + 1)
+            Direction.UP -> tile.copy(y = tile.y - 1)
+            Direction.RIGHT -> tile.copy(x = tile.x + 1)
+            Direction.LEFT -> tile.copy(x = tile.x - 1)
         }
     }
 
@@ -82,16 +85,72 @@ open class BattleShip(
         }
     }
 
-    fun movableArea(): List<TileXY> {
-        val list = mutableListOf<TileXY>()
-        for (w in this.left()..this.right()) {
-            for (h in this.up()..this.down()) {
-                val x = (w + location.x).coerceAtLeast(1).coerceAtMost(map.width - 2)
-                val y = (h + location.y).coerceAtLeast(1).coerceAtMost(map.height - 2)
-                list.add(TileXY(x, y))
+    private fun area(xl: Int, xr: Int, yu: Int, yd: Int): List<TileXY> {
+        return (tile.x + xl..tile.x + xr).flatMap { w ->
+            (tile.y + yu..tile.y + yd).map { h ->
+                val x = w.coerceAtLeast(1)
+                    .coerceAtMost(map.width - 2)
+                val y = h.coerceAtLeast(1)
+                    .coerceAtMost(map.height - 2)
+                TileXY(x, y)
             }
         }
-        return list
+    }
+
+    private fun tile(ax: Int = 0, ay: Int = 0): TileXY {
+        val x = (tile.x + ax)
+        val y = (tile.y + ay)
+        return TileXY(x, y)
+    }
+
+    private fun List<TileXY>.clip(): List<TileXY> {
+        return filter {
+            it.x > 0 && it.y > 0 && it.x < map.width - 1 && it.y < map.height - 1
+        }
+    }
+
+    fun movableArea(): List<TileXY> {
+        return area(this.left(), this.right(), this.up(), this.down())
+    }
+
+    fun meleeArea(): List<TileXY> {
+        // 상하좌우 1칸씩.
+        return when (this.direction) {
+            Direction.DOWN, Direction.UP -> {
+                listOf(
+                    tile(ax = -1),
+                    tile(ax = +1),
+                )
+            }
+            Direction.RIGHT, Direction.LEFT -> {
+                listOf(
+                    tile(ay = -1),
+                    tile(ay = +1),
+                )
+            }
+        }.clip()
+    }
+
+    fun rangeArea(): List<TileXY> {
+        // 좌우 십자가칸 씩.
+        return when (this.direction) {
+            Direction.DOWN, Direction.UP -> {
+                listOf(
+                    tile(ax = -1), tile(ax = +1),
+                    tile(ax = -2), tile(ax = +2),
+                    tile(ax = -1, ay = -1), tile(ax = -1, ay = +1),
+                    tile(ax = +1, ay = -1), tile(ax = +1, ay = +1),
+                )
+            }
+            Direction.RIGHT, Direction.LEFT -> {
+                listOf(
+                    tile(ay = -1), tile(ay = +1),
+                    tile(ay = -2), tile(ay = +2),
+                    tile(ax = -1, ay = -1), tile(ax = -1, ay = +1),
+                    tile(ax = +1, ay = -1), tile(ax = +1, ay = +1),
+                )
+            }
+        }.clip()
     }
 }
 
@@ -100,15 +159,19 @@ class PlayerBattleShip(
     location: TileXY,
 ) : BattleShip(
     map = battleMap,
-    location = location,
+    tile = location,
     direction = Direction.RIGHT
-)
+) {
+    override var auto = false
+}
 
 class AiBattleShip(
     battleMap: BattleMap,
     location: TileXY,
 ) : BattleShip(
     map = battleMap,
-    location = location,
+    tile = location,
     direction = Direction.LEFT
-)
+) {
+    override var auto = true
+}

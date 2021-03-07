@@ -1,13 +1,17 @@
 package scene.battle
 
+import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.scene.Scene
+import com.soywiz.korge.scene.delay
 import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korge.view.Container
+import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korio.file.std.resourcesVfs
 import scene.event.EventView
 import scene.world.WorldScene
 import tamra.ViewModelProvider
+import tamra.battle.BattleAI
 import tamra.battle.BattleMap
 import tamra.common.BattleSiteId
 import util.getCollisions
@@ -40,6 +44,19 @@ class BattleScene(val viewModelProvider: ViewModelProvider) : Scene() {
         // draw ui
         battleView.draw(this, tiledMap)
 
+        // play ai
+        val ai = BattleAI()
+        vm.turn.observe {
+            val bs = it.getBattleShip(vm)
+            val enemy = it.getEnemy(vm)
+            launchImmediately {
+                ai.run(bs, enemy,
+                    delay = { delay(TimeSpan(500.0)) },
+                    onAction = { vm.onAction(bs) },
+                    onEnd = { vm.nextTurn() }
+                )
+            }
+        }
 
         // init vm
         vm.init(battleMap)

@@ -6,7 +6,6 @@ import tamra.battle.BattleShip
 import tamra.battle.PlayerBattleShip
 import tamra.common.BattleSiteId
 import tamra.common.GameStore
-import tamra.common.TileXY
 import ui.LiveData
 
 class BattleViewModel(
@@ -15,63 +14,52 @@ class BattleViewModel(
     lateinit var battleMap: BattleMap
     val player: LiveData<PlayerBattleShip> = LiveData(null)
     val ai: LiveData<AiBattleShip> = LiveData(null)
-    var turn: LiveData<BattleSiteId> = LiveData(BattleSiteId.ALLY)
+    var turn: LiveData<BattleSiteId> = LiveData(null)
 
     fun init(battleMap: BattleMap) {
         this.battleMap = battleMap
-        initPlayer()
-        initAi()
+        val p = initPlayer()
+        val a = initAi()
+        turn(BattleSiteId.ALLY)
+        player(p as PlayerBattleShip)
     }
 
-    private fun initPlayer() {
+    private fun initPlayer(): BattleShip {
         val location = battleMap.sites.getValue(BattleSiteId.ALLY)
-        onMovePlayer(PlayerBattleShip(
+        val p = PlayerBattleShip(
             battleMap = battleMap,
             location = location
-        ))
-    }
-
-    private fun initAi() {
-        val location = battleMap.sites.getValue(BattleSiteId.ENEMY)
-        onMoveAi(AiBattleShip(
-            battleMap = battleMap,
-            location = location
-        ))
-    }
-
-    private fun onMovePlayer(p: PlayerBattleShip) {
+        )
         player(p)
-        scan(p)
+        return p
     }
 
-    private fun onMoveAi(a: AiBattleShip) {
+    private fun initAi(): BattleShip {
+        val location = battleMap.sites.getValue(BattleSiteId.ENEMY)
+        val a = AiBattleShip(
+            battleMap = battleMap,
+            location = location
+        )
         ai(a)
-        scan(a)
+        return a
     }
 
-    private fun scan(ship: BattleShip) {
-        val sites: Map<TileXY, BattleSiteId>
-        // TODO
-    }
-
-    fun move() {
-        player.value?.let {
-            it.move()
-            onMovePlayer(it)
-        }
+    fun move(bs: BattleShip) {
+        bs.move()
+        onAction(bs)
     }
 
     fun turnClockwise() {
         player.value?.let {
             it.turnClockwise()
-            onMovePlayer(it)
+            player(it)
         }
     }
 
     fun turnCounterClockwise() {
         player.value?.let {
             it.turnCounterClockwise()
-            onMovePlayer(it)
+            player(it)
         }
     }
 
@@ -86,16 +74,37 @@ class BattleViewModel(
             BattleSiteId.ALLY -> {
                 player.get().let {
                     it.newTurn()
-                    onMovePlayer(it)
+                    player(it)
                 }
 
             }
             BattleSiteId.ENEMY -> {
                 ai.get().let {
                     it.newTurn()
-                    onMoveAi(it)
+                    ai(it)
                 }
             }
         }
+    }
+
+    fun onAction(bs: BattleShip) {
+        when (bs) {
+            is PlayerBattleShip -> player(bs)
+            is AiBattleShip -> ai(bs)
+        }
+    }
+}
+
+fun BattleSiteId.getBattleShip(vm: BattleViewModel): BattleShip {
+    return when (this) {
+        BattleSiteId.ALLY -> vm.player.get()
+        BattleSiteId.ENEMY -> vm.ai.get()
+    }
+}
+
+fun BattleSiteId.getEnemy(vm: BattleViewModel): BattleShip {
+    return when (this) {
+        BattleSiteId.ALLY -> vm.ai.get()
+        BattleSiteId.ENEMY -> vm.player.get()
     }
 }
