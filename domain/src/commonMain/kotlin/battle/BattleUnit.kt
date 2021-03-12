@@ -18,7 +18,7 @@ abstract class BattleShip(
     var melee: Double = 0.2,  // 근접 공격
     var range: Double = 0.1,  // 원거리 공격
     var crew: Int = 20,  // 선원수
-    var morale: Int = 100,    // 사기
+    var morale: Double = 1.0,    // 사기
 ) {
     val originCrew = crew
     val originMorale = morale
@@ -27,6 +27,8 @@ abstract class BattleShip(
 
     private val rotaryAction = (MAX_ROTARY / rotary).toInt()
     private val moveAction = (MAX_VELOCITY / velocity).toInt()
+    private val meleeAction = 20
+    private val rangeAction = 20
 
     private fun Direction.movableDistance(direction: Direction) = if (this == direction) action / moveAction else 0
     fun down() = Direction.DOWN.movableDistance(direction)
@@ -58,6 +60,24 @@ abstract class BattleShip(
             Direction.UP -> tile.copy(y = tile.y - 1)
             Direction.RIGHT -> tile.copy(x = tile.x + 1)
             Direction.LEFT -> tile.copy(x = tile.x - 1)
+        }
+    }
+
+    fun clockwiseXy(): TileXY {
+        return when (this.direction) {
+            Direction.DOWN -> tile(ax = -1)
+            Direction.UP -> tile(ax = +1)
+            Direction.RIGHT -> tile(ay = +1)
+            Direction.LEFT -> tile(ay = -1)
+        }
+    }
+
+    fun counterClockwiseXy(): TileXY {
+        return when (this.direction) {
+            Direction.DOWN -> tile(ax = +1)
+            Direction.UP -> tile(ax = -1)
+            Direction.RIGHT -> tile(ay = -1)
+            Direction.LEFT -> tile(ay = +1)
         }
     }
 
@@ -151,6 +171,30 @@ abstract class BattleShip(
                 )
             }
         }.clip()
+    }
+
+    fun clockwise(): List<TileXY> {
+        return listOf(clockwiseXy()).clip()
+    }
+
+    fun counterClockwise(): List<TileXY> {
+        return listOf(counterClockwiseXy()).clip()
+    }
+
+    fun meleeAttack(enemy: BattleShip) {
+        if (enemy.tile in meleeArea() && action - meleeAction >= 0) {
+            enemy.morale *= 0.9 // TODO 사기공격 식..
+            enemy.crew -= (crew * morale * melee).toInt().coerceAtLeast(0)
+            action -= meleeAction
+        }
+    }
+
+    fun rangeAttack(enemy: BattleShip) {
+        if (enemy.tile in rangeArea() && action - rangeAction >= 0) {
+            enemy.morale *= 0.9 // TODO 사기공격.
+            enemy.crew -= (crew * morale * range).toInt().coerceAtLeast(0)
+            action -= rangeAction
+        }
     }
 }
 

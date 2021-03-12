@@ -42,13 +42,12 @@ class BattleScene(val viewModelProvider: ViewModelProvider) : Scene() {
         val battleMap = BattleMap(sites, tiledMap.width, tiledMap.height, tiles, collisions)
 
         // draw ui
-        battleView.draw(this, tiledMap)
+        battleView.draw(this, tiledMap, coroutineContext)
 
         // play ai
         val ai = BattleAI()
-        vm.turn.observe {
-            val bs = it.getBattleShip(vm)
-            val enemy = it.getEnemy(vm)
+        vm.turn.observe { bs ->
+            val enemy = vm.getEnemy(bs)
             launchImmediately {
                 ai.run(bs, enemy,
                     delay = { delay(TimeSpan(500.0)) },
