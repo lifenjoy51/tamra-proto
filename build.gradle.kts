@@ -3,6 +3,7 @@ import com.soywiz.korge.gradle.korge
 
 buildscript {
     val korgePluginVersion: String by project
+    val kotlinVersion: String by project
 
     repositories {
         mavenLocal()
@@ -13,6 +14,9 @@ buildscript {
     }
     dependencies {
         classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:$korgePluginVersion")
+        // kotlin-serialization 플러그인.
+        classpath(kotlin("gradle-plugin", version = kotlinVersion))
+        classpath(kotlin("serialization", version = kotlinVersion))
     }
 }
 

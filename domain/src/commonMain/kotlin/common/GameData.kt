@@ -1,5 +1,6 @@
 package tamra.common
 
+import kotlinx.serialization.Serializable
 import tamra.event.EventCondition
 import tamra.event.GameEvent
 import tamra.port.market.CargoItem
@@ -93,7 +94,8 @@ class Product(
     val price: Int,
 )
 
-class Site(
+@Serializable
+data class Site(
     val id: SiteId,
     val name: String,
     val subtitle: String,

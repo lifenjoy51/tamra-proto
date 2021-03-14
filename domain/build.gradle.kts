@@ -1,7 +1,10 @@
+import com.soywiz.korge.gradle.korge
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJsCompilation
 
 plugins {
     kotlin("multiplatform")
+    // @Serializable이 붙은 클래스를 자동 변환한다.
+    kotlin("plugin.serialization")
 }
 
 val kormaVersion = "2.0.6"
@@ -21,7 +24,8 @@ repositories {
 }
 
 dependencies {
-    commonMainImplementation("com.soywiz.korlibs.korma:korma:$kormaVersion")
+    commonMainApi("com.soywiz.korlibs.korma:korma:$kormaVersion")
+    commonMainApi("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 }
 
 kotlin {
