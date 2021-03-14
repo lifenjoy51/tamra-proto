@@ -55,9 +55,9 @@ val spriteMap: MutableMap<String, BmpSlice> = mutableMapOf()
 
 object TamraModule : Module() {
     //override val mainScene: KClass<out Scene> = MainScene::class
-    // override val mainScene: KClass<out Scene> = WorldScene::class
+    override val mainScene: KClass<out Scene> = WorldScene::class
     //override val mainScene: KClass<out Scene> = PortScene::class
-    override val mainScene: KClass<out Scene> = BattleScene::class
+    //override val mainScene: KClass<out Scene> = BattleScene::class
 
     // override val mainScene: KClass<out Scene> = PortScene::class
     override val size: SizeInt = SizeInt(mainWidth, mainHeight)

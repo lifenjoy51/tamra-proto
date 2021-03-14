@@ -1,5 +1,6 @@
 package tamra.port.market
 
+import kotlinx.serialization.Serializable
 import tamra.common.Fleet
 import tamra.common.GameData
 import tamra.common.PortId
@@ -11,6 +12,7 @@ data class MarketProductState(
     var supplyAndDemand: Int    // 시세를 결정하는 수요공급 값.
 )
 
+@Serializable
 data class CargoItem(
     val productId: ProductId,
     val price: Int,

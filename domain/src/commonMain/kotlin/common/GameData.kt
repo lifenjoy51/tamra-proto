@@ -46,6 +46,7 @@ class GameData(
     }
 }
 
+@Serializable
 class Fleet(
     val ships: MutableList<Ship>,   // 플레이어의 배 목록
     var balance: Int,
@@ -77,6 +78,7 @@ class Port(
     val shipYard: Shipyard,
 )
 
+@Serializable
 class Ship(
     val type: ShipType,
     val cargoSize: Int,

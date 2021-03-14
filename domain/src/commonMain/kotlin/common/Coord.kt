@@ -1,5 +1,6 @@
 package tamra.common
 
+import kotlinx.serialization.Serializable
 import kotlin.math.absoluteValue
 
 val baseCoord = Coord(126.1, -34.05)
@@ -33,6 +34,7 @@ data class Coord(
 }
 
 // 위치정보.
+@Serializable
 data class LocationXY(
     val x: Double,
     val y: Double
