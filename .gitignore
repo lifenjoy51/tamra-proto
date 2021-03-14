@@ -6,6 +6,6 @@ build/
 /.idea/
 /build/
 /tokens/StoredCredential
-/resource-downloader/src/main/resources/credentials.json
-/resource-downloader/build/
+/resource/src/main/resources/credentials.json
+/resource/build/
 .DS_Store

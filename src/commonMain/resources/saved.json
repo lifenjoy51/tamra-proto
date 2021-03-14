@@ -1,1 +1,0 @@
-{"fleet":{"ships":[{"type":"CHOMASUN","cargoSize":10,"speed":10.0,"name":"첫배"},{"type":"DOTBAE","cargoSize":5,"speed":4.0,"name":"짐배"}],"balance":1000,"port":"JEJU","location":{"x":101235.2618341064,"y":-32188.346048136693},"cargoItems":[]},"playerLocation":{"x":21.2,"y":20.79999999999996}}
