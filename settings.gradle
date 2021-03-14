@@ -4,3 +4,4 @@ rootProject.name = "tamra"
 include(":resource")
 include(":domain")
 include(":client")
+include(":server")

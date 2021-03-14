@@ -1,1 +1,29 @@
-{"fleet":{"ships":[{"type":"CHOMASUN","cargoSize":10,"speed":10.0,"name":"첫배"},{"type":"DOTBAE","cargoSize":5,"speed":4.0,"name":"짐배"}],"balance":1000,"port":"JEJU","location":{"x":101236.77631970563,"y":-32190.200228509606},"cargoItems":[]},"playerLocation":{"x":21.2,"y":20.79999999999996}}
+{
+  "fleet": {
+    "ships": [
+      {
+        "type": "CHOMASUN",
+        "cargoSize": 10,
+        "speed": 10.0,
+        "name": "첫배"
+      },
+      {
+        "type": "DOTBAE",
+        "cargoSize": 5,
+        "speed": 4.0,
+        "name": "짐배"
+      }
+    ],
+    "balance": 1000,
+    "port": "JEJU",
+    "location": {
+      "x": 101236.77631970563,
+      "y": -32190.200228509606
+    },
+    "cargoItems": []
+  },
+  "playerLocation": {
+    "x": 21.2,
+    "y": 20.79999999999996
+  }
+}
