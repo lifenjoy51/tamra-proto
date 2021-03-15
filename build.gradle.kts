@@ -16,3 +16,14 @@ buildscript {
         classpath(kotlin("serialization", version = kotlinVersion))
     }
 }
+
+allprojects{
+    repositories {
+        gradlePluginPortal()
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url = uri("https://dl.bintray.com/korlibs/korlibs") }
+        maven { url = uri("https://plugins.gradle.org/m2/") }
+    }
+}

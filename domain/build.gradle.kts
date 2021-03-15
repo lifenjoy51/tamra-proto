@@ -12,16 +12,6 @@ val kormaVersion = "2.0.6"
 group = "me.lifenjoy51.tamra"
 version "0.0.1"
 
-repositories {
-    gradlePluginPortal()
-    google()
-    jcenter()
-    mavenCentral()
-    maven {
-        url = uri("https://dl.bintray.com/korlibs/korlibs")
-
-    }
-}
 
 dependencies {
     commonMainApi("com.soywiz.korlibs.korma:korma:$kormaVersion")
